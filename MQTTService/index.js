@@ -1,6 +1,6 @@
 const express = require('express');
-const ServerPub = require('./ServerPub');
-const ServerSub = require('./ServerSub');
+const ServerPub = require('./Controller/ServerPub');
+const ServerSub = require('./Controller/ServerSub');
 
 const app = express();
 const mqtt = require('mqtt');
@@ -36,7 +36,6 @@ app.get('/send/:data', (req, res) => {
 
 
 app.get('/subTopic', (req, res) => {
-    ServerSub.coonectToServer('mqtt://127.0.0.1:1883');
    console.log( ServerSub.getData(topicName));
    res.send('subscribed');
 });
