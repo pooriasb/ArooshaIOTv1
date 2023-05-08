@@ -1,17 +1,22 @@
 const mqtt = require('mqtt');
-var client;
-function coonectToServer(address){
-     client = mqtt.connect(address);
-}
+const config = require('config');
+
+
+var client = mqtt.connect(brokerAddress);
 client.on("connect", function () {
-    console.log(`ServerPub connected to broker .`);
+    console.log(`ServerPub connected to broker .` + brokerAddress);
 });
-function sendData(topic,message){
+
+
+
+function sendData(topic, message) {
     client.publish(topic, message);
-console.log('ServerPub: Data Sent');
+    console.log('ServerPub: Data Sent');
+
 }
 module.exports = coonectToServer;
 module.exports = sendData;
+exports.brokerAddress;
 
 client.on('reconnect', function () {
     console.log('ServerPub Reconnecting...')

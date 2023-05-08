@@ -1,6 +1,7 @@
 const express = require('express');
-const ServerPub = require('./Controller/ServerPub');
-const ServerSub = require('./Controller/ServerSub');
+const ServerPub = require('./ServerPub');
+const ServerSub = require('./ServerSub');
+
 const app = express();
 const mqtt = require('mqtt');
 var option = {
@@ -16,7 +17,7 @@ var topicName = 'SajadHome/Room1';
 
 // client.on("connect", function () {
 //     console.log('connected to broker on 127.0.0.1:1883 .');
-  
+
 // });
 
 // client.publish(topicName, 'Hello message first publish.');
@@ -25,20 +26,25 @@ var topicName = 'SajadHome/Room1';
 
 //send data to broker on a specific topic
 app.get('/send/:data', (req, res) => {
-    ServerPub.coonectToServer('mqtt://127.0.0.1:1883');
-    ServerPub.sendData(topicName,req.params.data);
-   // client.publish(topicName, `test data sent from api:${req.params.data} `);
+
+    //ServerPub.coonectToServer('mqtt://127.0.0.1:1883');
+    ServerPub.sendData(topicName, req.params.data);
+    // client.publish(topicName, `test data sent from api:${req.params.data} `);
     console.log('data sent by index.js using serverpub.js');
     res.send('sent');
 });
 
 
+app.get('/subTopic', (req, res) => {
+    ServerSub.coonectToServer('mqtt://127.0.0.1:1883');
+   console.log( ServerSub.getData(topicName));
+   res.send('subscribed');
+});
 
 
 
-
- const port = process.env.port || 3001;
- app.listen(port,()=> console.log(`MQTT Service is listening on port ${port}` ));
+const port = process.env.port || 3001;
+app.listen(port, () => console.log(`MQTT Service is listening on port ${port}`));
 
 
 // client.on('message', (topic,message) => {
@@ -49,18 +55,18 @@ app.get('/send/:data', (req, res) => {
 
 
 
-client.on('reconnect', function () {
-    console.log('Reconnecting...')
-});
-client.on('close', function () {
-    console.log('Disconnected')
-});
-client.on('disconnect', function (packet) {
-    console.log(packet);
-    console.log('disconnected');
-});
-client.on('error', (e) => {
-    console.log('Error');
-});
+// client.on('reconnect', function () {
+//     console.log('Reconnecting...')
+// });
+// client.on('close', function () {
+//     console.log('Disconnected')
+// });
+// client.on('disconnect', function (packet) {
+//     console.log(packet);
+//     console.log('disconnected');
+// });
+// client.on('error', (e) => {
+//     console.log('Error');
+// });
 
 
