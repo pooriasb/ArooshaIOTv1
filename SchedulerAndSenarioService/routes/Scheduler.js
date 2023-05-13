@@ -1,6 +1,7 @@
 const express = require('express');
 const cron = require('node-cron');
 const router = express.Router();
+const _ = require('lodash');
 const mongoose = require('mongoose');
 
 
@@ -63,8 +64,6 @@ async function StartScheule(userId) {
     //   },{scheduled:true});
 
     const schedules = await ScheduleDocument.find({ userId: userId });
-
-
     schedules.forEach(element => {
         // console.log(element);
 
@@ -74,17 +73,14 @@ async function StartScheule(userId) {
             element.scheduleTimes.forEach(schetime => {
 
                 var schetimeToSet = schetime + ' * * *';
-                
                 cron.schedule(schetimeToSet, () => {
-                   console.log(element.eventList);
-                }, { scheduled: true });
+                    console.log('this is scheduler');
+                    console.log(_.map(element.eventList,o=> _.pick(o,'deviceId','eventId')));
+                }, { scheduled: element.isScheduled });
             });
         }
     });
-
-
 }
-
 /******************************************************* */
 
 module.exports = router;
