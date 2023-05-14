@@ -1,30 +1,25 @@
-
+var mongoose = require('mongoose');
 const _ = require('lodash');
-const mongoose = require('mongoose');
-
-mongoose.connect('mongodb://127.0.0.1:27017/ArooshaIOT')
-    .then(() => console.log('Connected to database'))
-    .catch(err => console.log('Error ' + err));
-    const eventListSchema = new mongoose.Schema({
-        deviceId: String,
-        eventId: String
-    });
-    const EventList = mongoose.model('EventList', eventListSchema);
-    const ScheduleDocument = mongoose.model('ScheduleDocument', new mongoose.Schema({
-        userId: String,
-        scheduleCreateDateTime: Date,
-        eventList: [eventListSchema],
-        isScheduled: Boolean,
-        scheduleTime: String
-    }));
+const scheduleModel = require('../models/scheduleModel');
 
 
 
 
-function createMqttMessageRequest(scheduleId ){
 
+async function createMqttMessageRequest(scheduleId) {
+    console.log('helper caled' + scheduleId);
+    var result = await scheduleModel.scheduleModel.findById(scheduleId);
+console.log(result);
+    // var eventListIndb = result.eventList;
+    // eventListIndb.forEach(element => {
 
+    //     var topic = scheduleModel.getDeviceTopic(element.deviceId);
+    //     var MacAddress = scheduleModel.getDeviceMac(element.deviceId);
+
+    //     console.log(topic + ' ' + MacAddress);
+    // });
 }
+
 
 
 module.exports.createMqttMessageRequest = createMqttMessageRequest;
