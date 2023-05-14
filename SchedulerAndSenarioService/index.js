@@ -1,10 +1,9 @@
 const express = require('express');
 const app = express();
-var cron = require('node-cron');
+
 const scheduler = require('./routes/Scheduler');
 
-app.use('/api/scheduler',scheduler);
-
+app.use('/api/scheduler', scheduler);
 
 
 
