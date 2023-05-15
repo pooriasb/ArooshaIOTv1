@@ -1,10 +1,17 @@
 // this file work as service gateway
 const express = require('express');
+const deviceModel = require('./models/device');
+
 const app = express();
 
 
 
-
+app.get('/GetDeviceTopic/:deviceID',(req,res)=>{
+     deviceModel.getDeviceTopic(req.params.deviceID).then(value => {res.send(value)});
+});
+app.get('/GetDeviceMac/:deviceID',(req,res)=>{
+    deviceModel.getDeviceMac(req.params.deviceID).then(value => {res.send(value)});
+});
 
 
 

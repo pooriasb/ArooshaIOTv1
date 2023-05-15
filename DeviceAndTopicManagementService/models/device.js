@@ -28,8 +28,10 @@ const DeviceDocument = mongoose.model('DeviceDocument', deviceSchema);
 //testDevice.save();
 
 
-function getDeviceTopic(deviceId){
-    var singleDeviceindb = DeviceDocument.findById(deviceId);
+async function getDeviceTopic(deviceId){
+    
+    var singleDeviceindb =await DeviceDocument.findById(deviceId);
+    
     return singleDeviceindb.Topic;
      
  }
@@ -41,4 +43,4 @@ function getDeviceTopic(deviceId){
 
   module.exports.getDeviceMac = getDeviceMac;
   module.exports.getDeviceTopic = getDeviceTopic;
-  module.exports.DeviceModel = mongoose.model('DeviceDocument',deviceSchema)
+  //module.exports.DeviceModel = mongoose.model('DeviceDocument',deviceSchema)
