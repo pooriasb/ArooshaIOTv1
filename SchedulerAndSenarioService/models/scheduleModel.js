@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 
 /************************Config database */
-mongoose.connect('mongodb://127.0.0.1:27017/ArooshaIOT',)
+mongoose.connect('mongodb://127.0.0.1:27017/ArooshaIOT')
     .then(() => console.log('Connected to database'))
     .catch(err => console.log('Error ' + err));
 
@@ -32,21 +32,7 @@ const ScheduleDocument = mongoose.model('ScheduleDocument',ScheduleDocumentChema
 
 // create test device
 
-const DeviceDocument = mongoose.model('DeviceDocument', new mongoose.Schema({
-    userId: String,
-    deviceName: String,
-    deviceModel: String,
-    Topic: String,
-    MacAddress : String
-}));
-const testDevice = new DeviceDocument({
-    userId: 'sajad',
-    deviceName: 'loostere Icerock',
-    deviceModel: 'ICEROCK0585',
-    Topic: 'ArooshaIOT/sajad/h1/r1',
-    MacAddress :'0253'
-});
-//testDevice.save();
+
 /********************************************************** */
 
 //scheduletime : m,h,d
@@ -76,23 +62,9 @@ async function CreateScheduler() {
     console.log(result);
 }
 
- function getDeviceTopic(deviceId){
-   var singleDeviceindb = DeviceDocument.findById(deviceId);
-   return singleDeviceindb.Topic;
-    
-}
- function getDeviceMac(deviceId){
-    // var singleDeviceindb = DeviceDocument.findById(deviceId);
-    // return singleDeviceindb.MacAddress;
-     
- }
-
+ 
  module.exports = {
-    getDeviceMac,
-    getDeviceTopic,
     CreateScheduler
  }
-//  module.exports.getDeviceMac = getDeviceMac();
-//  module.exports.getDeviceTopic = getDeviceTopic();
-// module.exports.CreateScheduler = CreateScheduler();
+
 module.exports.scheduleModel = mongoose.model('ScheduleDocument', ScheduleDocumentChema);
