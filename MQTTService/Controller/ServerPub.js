@@ -16,7 +16,9 @@ function sendData(topic, message) {
 
 module.exports.sendData = sendData;
 
-
+client.on('offline', function () {
+    console.log('offline')
+  })
 client.on('reconnect', function () {
     console.log('ServerPub Reconnecting...')
 });

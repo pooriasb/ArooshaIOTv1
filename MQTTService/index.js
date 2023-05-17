@@ -25,8 +25,7 @@ var topicName = 'SajadHome/Room1';
 /***********************Server connect end and start sendig message********************************* */
 
 //send data to broker on a specific topic
-app.get('/send/:data', (req, res) => {
-
+app.get('/send/:data/:topic', (req, res) => {
     //ServerPub.coonectToServer('mqtt://127.0.0.1:1883');
     ServerPub.sendData(topicName, req.params.data);
     // client.publish(topicName, `test data sent from api:${req.params.data} `);

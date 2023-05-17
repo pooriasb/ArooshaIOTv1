@@ -78,19 +78,17 @@ async function StartScheule(userId) {
 
 
 
-cron.schedule('*/5 * * * * *', async () => {
+cron.schedule('*/10 * * * * *', async () => {
 
     const schedules = await scheduleModel.scheduleModel.find({ isScheduled: true });
-    schedules.forEach(element => {
+    schedules.forEach( element => {
         var scheTime = JSON.parse(element.scheduleTime);
         //Scheduler run once
         if (scheTime.isOnce) {
             var now = new Date();
             if (now.getHours === scheTime.hour && now.getMinutes === scheTime.minute || true) {
                 //it is now and we have to run a task
-
-
-                helper.createMqttMessageRequest(element._id);
+             helper.createMqttMessageRequest(element._id);
 
             }
         }

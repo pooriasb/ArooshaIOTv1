@@ -35,8 +35,8 @@ async function getDeviceTopic(deviceId){
     return singleDeviceindb.Topic;
      
  }
-  function getDeviceMac(deviceId){
-     var singleDeviceindb = DeviceDocument.findById(deviceId);
+ async function getDeviceMac(deviceId){
+     var singleDeviceindb =await DeviceDocument.findById(deviceId);
      return singleDeviceindb.MacAddress;
       
   }
