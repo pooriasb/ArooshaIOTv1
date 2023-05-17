@@ -1,8 +1,11 @@
 const express = require('express');
 const ServerPub = require('./Controller/ServerPub');
 const ServerSub = require('./Controller/ServerSub');
-
+const bodyParser = require('body-parser');
 const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.raw());
 const mqtt = require('mqtt');
 var option = {
     clientId: '1PornHub',
@@ -34,37 +37,42 @@ app.get('/send/:data/:topic', (req, res) => {
 });
 
 
-app.get('/subTopic', (req, res) => {
-   console.log( ServerSub.getData(topicName));
-   res.send('subscribed');
+/*
+This code creates a POST route at /SendSchedulerData that takes in a request req and response res object. First, the request body is retrieved using req.body and assigned to a constant messages.
+Next, there is a nested loop that iterates through each item in each object in messages. On each iteration, it retrieves the deviceMac and eventid properties and assigns them to constants. Finally, it uses ServerPub.sendData to send a message containing the deviceMac and eventid to the server and logs it to the console if needed.
+After all messages have been sent, the server responds with a status code of 200 using res.sendStatus(200).
+ */
+app.post('/SendSchedulerData',(req,res) =>{
+const messages = req.body
+for (let key in messages) {
+    for (let i=0; i<messages[key].length; i++) {
+      const deviceMac = messages[key][i].deviceMac;
+      const eventId = messages[key][i].eventid;
+      ServerPub.sendData(key,`Device Mac: ${deviceMac}, Event Id: ${eventId}`);
+     //console.log(`Device Mac: ${deviceMac}, Event Id: ${eventId}`);
+    }
+  }
+res.sendStatus(200);
 });
 
 
 
+
+app.get('/subTopic', (req, res) => {
+   console.log( ServerSub.getData(topicName));
+
+   res.send('subscribed');
+});
 const port = process.env.port || 3001;
 app.listen(port, () => console.log(`MQTT Service is listening on port ${port}`));
 
 
-// client.on('message', (topic,message) => {
-//     console.log(message + ' Topic: '+ topic);
-// });
 
-
-
-
-
-// client.on('reconnect', function () {
-//     console.log('Reconnecting...')
-// });
-// client.on('close', function () {
-//     console.log('Disconnected')
-// });
-// client.on('disconnect', function (packet) {
-//     console.log(packet);
-//     console.log('disconnected');
-// });
-// client.on('error', (e) => {
-//     console.log('Error');
-// });
-
-
+function compileSchedulerData(Data){
+    // for (let index = 0; index < Data.length; index++) {
+    //     const element = Data[index];
+    //     console.log(element);
+    // } 
+    
+    console.log(Data);
+}

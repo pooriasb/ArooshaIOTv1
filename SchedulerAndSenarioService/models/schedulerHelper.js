@@ -3,7 +3,7 @@ const _ = require('lodash');
 const http = require('http');
 const config = require('config');
 const scheduleModel = require('../models/scheduleModel');
-const { resolve } = require('path');
+
 
 
 let messageList = [];
@@ -11,7 +11,7 @@ let messageList = [];
 
 async function createMqttMessageRequest(scheduleId) {
 
-    
+
     var result = await scheduleModel.scheduleModel.findById(scheduleId);
 
     var eventListIndb = result.eventList;
@@ -21,23 +21,29 @@ async function createMqttMessageRequest(scheduleId) {
         });
     });
     if (messageList.length !== 0) {
-       // console.log('MEssage list:' + messageList);
-       sendToMqttService(messageList);
-   
-       
+        // console.log('MEssage list:' + messageList);
+        sendToMqttService(messageList);
+
+
     }
     messageList = [];
 
-    
+
 }
 
-function sendToMqttService(messageList){
-//console.log(messageList);
-var grouped = _.mapValues(_.groupBy(messageList,'deviceTopic'),mList=>mList.map(message=>_.omit(message,'deviceTopic')));
+function sendToMqttService(messageList) {
+    //console.log(messageList);
+    var grouped = _.mapValues(_.groupBy(messageList, 'deviceTopic'), mList => mList.map(message => _.omit(message, 'deviceTopic')));
+   
+    fetch(config.MQTTServiceAddress + '/SendSchedulerData', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(grouped)
+})
+   .then(response => console.log('MQTT Response:'+ response.status));
 
-
-
-console.log( grouped);
 }
 
 
@@ -53,8 +59,14 @@ async function createMessage(element) {
         deviceTopic = res;
     });
     await getTMac(element.deviceId).then((res) => {
-        deviceMac = res;
+
+        let random_number = Math.floor(Math.random() * 100) + 1;
+
+        deviceMac = res + random_number ;
     });
+
+
+
     var message = { deviceTopic, deviceMac, eventid };
 
     return message;
@@ -67,12 +79,9 @@ function getTMac(deviceId) {
 
         http.get(config.DeviceServiceAddress + '/GetDeviceMac/' + deviceId, (resp) => {
             let data = "";
-
-            // A chunk of data has been recieved.
             resp.on("data", chunk => {
                 data += chunk;
             });
-            // The whole response has been received. Print out the result.
             resp.on("end", () => {
                 //    let url = JSON.parse(data).message;
 

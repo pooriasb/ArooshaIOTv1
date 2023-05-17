@@ -1,3 +1,4 @@
 {
-    "mqttAddress" : "mqtt://154.211.2.176:1883"
+  
+    "mqttAddress" : "mqtt://127.0.0.1:1883"
 }

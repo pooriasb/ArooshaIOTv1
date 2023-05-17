@@ -10,7 +10,7 @@ client.on("connect", function () {
 
 function sendData(topic, message) {
     client.publish(topic, message);
-    console.log('ServerPub: Data Sent');
+    console.log(`ServerPub: Data Sent to Topic:${topic}  and message : ${message}` );
 
 }
 
