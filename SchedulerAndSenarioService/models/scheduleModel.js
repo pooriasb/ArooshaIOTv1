@@ -14,9 +14,6 @@ const eventListSchema = new mongoose.Schema({
     deviceId: String,
     eventId: String
 });
-const EventList = mongoose.model('EventList', eventListSchema);
-
-
 
 const ScheduleDocumentChema = new mongoose.Schema({
     userId: String,
@@ -24,8 +21,10 @@ const ScheduleDocumentChema = new mongoose.Schema({
     eventList: [eventListSchema],
     isScheduled: Boolean,
     scheduleTime: String
-
+    
 });
+
+const EventList = mongoose.model('EventList', eventListSchema);
 
 
 const ScheduleDocument = mongoose.model('ScheduleDocument',ScheduleDocumentChema);
@@ -37,20 +36,12 @@ const ScheduleDocument = mongoose.model('ScheduleDocument',ScheduleDocumentChema
 
 //scheduletime : m,h,d
 async function CreateScheduler() {
-
-
-    // weekDays :[1,2,3],
-    // hour : 5,
-    // minute :10,
-    // isOnce:false
     var times = {
         isOnce: false,
         weekDays: [1, 2, 3],
         hour: 5,
         minute: 10
     }
-
-
     const newSchedule = new ScheduleDocument({
         userId: 'sajad',
         scheduleDateTime: Date.now(),
@@ -61,8 +52,24 @@ async function CreateScheduler() {
     const result = await newSchedule.save();
     console.log(result);
 }
+async function createScheduler(data) {
+    const { userId, isOnce, weekDays, hour, minute, events } = data; // destructuring the input object
+    const scheduleTime = JSON.stringify({ isOnce, weekDays, hour, minute });
+    const eventList = events.map((event) => ({
+      deviceId: event.deviceId,
+      eventId: event.eventId,
+    }));
+    const newSchedule = await ScheduleDocument.create({
+      userId,
+      scheduleDateTime: Date.now(),
+      eventList,
+      isScheduled: true,
+      scheduleTime,
+    });
+    console.log(newSchedule);
+  }
+  
 
- 
  module.exports = {
     CreateScheduler
  }

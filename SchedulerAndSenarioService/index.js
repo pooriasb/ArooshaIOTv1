@@ -1,12 +1,7 @@
 const express = require('express');
 const app = express();
-
-const scheduler = require('./routes/Scheduler');
-
-app.use('/api/scheduler', scheduler);
-
-
-
+const SchedulerRouter = require('./routes/Scheduler');
+app.use('/api/scheduler', SchedulerRouter);
 
 
 const port = process.env.port || 3002;

@@ -3,17 +3,9 @@ const _ = require('lodash');
 const http = require('http');
 const config = require('config');
 const scheduleModel = require('../models/scheduleModel');
-
-
-
 let messageList = [];
-
-
-async function createMqttMessageRequest(scheduleId) {
-
-
+export async function createMqttMessageRequest(scheduleId) {
     var result = await scheduleModel.scheduleModel.findById(scheduleId);
-
     var eventListIndb = result.eventList;
     eventListIndb.forEach(async (element) => {
         await createMessage(element).then(singleMessageCreated => {
@@ -23,76 +15,42 @@ async function createMqttMessageRequest(scheduleId) {
     if (messageList.length !== 0) {
         // console.log('MEssage list:' + messageList);
         sendToMqttService(messageList);
-
-
     }
     messageList = [];
-
-
 }
-
-function sendToMqttService(messageList) {
-    //console.log(messageList);
-    var grouped = _.mapValues(_.groupBy(messageList, 'deviceTopic'), mList => mList.map(message => _.omit(message, 'deviceTopic')));
-   
-    fetch(config.MQTTServiceAddress + '/SendSchedulerData', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(grouped)
-})
-   .then(response => console.log('MQTT Response:'+ response.status));
-
+async function sendToMqttService(messageList) {
+    try {
+        var grouped = _.mapValues(_.groupBy(messageList, 'deviceTopic'), mList => mList.map(message => _.omit(message, 'deviceTopic')));
+        const response = await fetch(config.MQTTServiceAddress + '/SendSchedulerData', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(grouped)
+        })
+        console.log(`MQTT Response: ${response.status}`);
+    } catch (error) {
+        console.error(`Error sending data to MQTT Service: ${error.message}`);
+    }
 }
-
-
 function addToMEssageList(message) {
     messageList.push(message);
 }
-
 async function createMessage(element) {
-    var deviceTopic = "";
-    var deviceMac = "";
-    var eventid = element.eventId;
-    await getTopic(element.deviceId).then((res) => {
-        deviceTopic = res;
-    });
-    await getTMac(element.deviceId).then((res) => {
-
-        let random_number = Math.floor(Math.random() * 100) + 1;
-
-        deviceMac = res + random_number ;
-    });
-
-
-
-    var message = { deviceTopic, deviceMac, eventid };
-
+    const deviceTopic = await getTopic(element.deviceId);
+    const deviceMac = `${await getTMac(element.deviceId)}${Math.floor(Math.random() * 100) + 1}`;
+    const message = { deviceTopic, deviceMac, eventid: element.eventId };
     return message;
-
-
 }
-
 function getTMac(deviceId) {
-    return p = new Promise((resolve, reject) => {
-
-        http.get(config.DeviceServiceAddress + '/GetDeviceMac/' + deviceId, (resp) => {
-            let data = "";
-            resp.on("data", chunk => {
-                data += chunk;
-            });
-            resp.on("end", () => {
-                //    let url = JSON.parse(data).message;
-
-                resolve(data);
-            });
-        }).on("error", err => {
-            console.log("Error: " + err.message);
-        });
+    return new Promise((resolve, reject) => {
+        http.get(config.DeviceServiceAddress + '/GetDeviceMac/' + deviceId, resp => {
+            let data = '';
+            resp.on('data', chunk => data += chunk);
+            resp.on('end', () => resolve(data));
+        }).on('error', err => reject(err));
     });
 }
-
 function getTopic(deviceId) {
     return p = new Promise((resolve, reject) => {
 
@@ -114,9 +72,3 @@ function getTopic(deviceId) {
         });
     });
 }
-
-
-
-
-
-module.exports.createMqttMessageRequest = createMqttMessageRequest;

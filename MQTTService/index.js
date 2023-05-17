@@ -42,20 +42,30 @@ This code creates a POST route at /SendSchedulerData that takes in a request req
 Next, there is a nested loop that iterates through each item in each object in messages. On each iteration, it retrieves the deviceMac and eventid properties and assigns them to constants. Finally, it uses ServerPub.sendData to send a message containing the deviceMac and eventid to the server and logs it to the console if needed.
 After all messages have been sent, the server responds with a status code of 200 using res.sendStatus(200).
  */
-app.post('/SendSchedulerData',(req,res) =>{
-const messages = req.body
-for (let key in messages) {
-    for (let i=0; i<messages[key].length; i++) {
-      const deviceMac = messages[key][i].deviceMac;
-      const eventId = messages[key][i].eventid;
-      ServerPub.sendData(key,`Device Mac: ${deviceMac}, Event Id: ${eventId}`);
-     //console.log(`Device Mac: ${deviceMac}, Event Id: ${eventId}`);
+// app.post('/SendSchedulerData',(req,res) =>{
+// const messages = req.body
+// for (let key in messages) {
+//     for (let i=0; i<messages[key].length; i++) {
+//       const deviceMac = messages[key][i].deviceMac;
+//       const eventId = messages[key][i].eventid;
+//       ServerPub.sendData(key,`Device Mac: ${deviceMac}, Event Id: ${eventId}`);
+//      //console.log(`Device Mac: ${deviceMac}, Event Id: ${eventId}`);
+//     }
+//   }
+// res.sendStatus(200);
+// });
+
+app.post('/SendSchedulerData', (req, res) => {
+    const { body: messages } = req;
+    for (const key in messages) {
+      for (let i = 0; i < messages[key].length; i++) {
+        const { deviceMac, eventid: eventId } = messages[key][i];
+        ServerPub.sendData(key, `Device Mac: ${deviceMac}, Event Id: ${eventId}`);
+      }
     }
-  }
-res.sendStatus(200);
-});
-
-
+    res.sendStatus(200);
+  });
+  
 
 
 app.get('/subTopic', (req, res) => {
