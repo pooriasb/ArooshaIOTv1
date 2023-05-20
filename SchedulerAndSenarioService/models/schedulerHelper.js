@@ -4,7 +4,7 @@ const http = require('http');
 const config = require('config');
 const scheduleModel = require('../models/scheduleModel');
 let messageList = [];
-export async function createMqttMessageRequest(scheduleId) {
+ async function createMqttMessageRequest(scheduleId) {
     var result = await scheduleModel.scheduleModel.findById(scheduleId);
     var eventListIndb = result.eventList;
     eventListIndb.forEach(async (element) => {
@@ -72,3 +72,5 @@ function getTopic(deviceId) {
         });
     });
 }
+
+module.exports.createMqttMessageRequest = createMqttMessageRequest;

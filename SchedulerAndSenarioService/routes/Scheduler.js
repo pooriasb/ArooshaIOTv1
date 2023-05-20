@@ -21,87 +21,34 @@ router.get('/CreateScheduler', (req, res) => {
 /**********************************Start Schedule and Connect to mqtt Service */
 
 router.get('/StartScheule', (req, res) => {
-
     StartScheule('sajad')
-
-
     res.sendStatus(200);
 });
-
-async function StartScheule(userId) {
-
-
-
-
-
-
-    /*************************Testing Node-Corn*************************** */
-
-    // cron.schedule('*/1 * * * * *', () => {
-    //     console.log('running a task every minute');
-    //   },{scheduled:true});
-
-    // const schedules = await ScheduleDocument.find({ userId: userId });
-
-    // schedules.forEach(element => {
-
-    //     element.scheduleTimes.forEach(schetime => {
-    //         var schetimeToSet = schetime + ' * * *';
-    //         const url_taskMap = {};
-    //         var job = cron.schedule(schetimeToSet, () => {
-
-    //             doSchedulerJob(element._id);
-
-
-    //             //  var ungroupedData = [];
-
-    //             // var EventsWithDeviceAndEvent = _.map(element.eventList, o => _.pick(o, 'deviceId', 'eventId'));
-    //             //  console.log(element.eventList);
-
-    //             // EventsWithDeviceAndEvent.forEach(async deviceAndEvent => {
-    //             //     var selectedDeviceId = deviceAndEvent.deviceId;
-
-    //             //     var selectedTopic = await DeviceDocument.findById(selectedDeviceId).select({ Topic: 1, _id: 0 });
-    //             //     var topicParsed = selectedTopic['Topic'];
-    //             //     ungroupedData.push({ topicParsed, DeviceID: selectedDeviceId, EventID: deviceAndEvent.eventId });
-
-    //             // });
-
-    //         }, { scheduled: true });
-
-    //     });
-    // });
-
-}
-/******************************************************* */
-
-
-
-
 cron.schedule('*/10 * * * * *', async () => {
 
-    const schedules = await scheduleModel.scheduleModel.find({ isScheduled: true });
+    const schedules = await scheduleModel.scheduleModel.find({ isScheduled: true }); 
     schedules.forEach( element => {
         var scheTime = JSON.parse(element.scheduleTime);
         //Scheduler run once
         if (scheTime.isOnce) {
             var now = new Date();
-            if (now.getHours === scheTime.hour && now.getMinutes === scheTime.minute || true) {
+            if (now.getHours === scheTime.hour && now.getMinutes === scheTime.minute) {
                 //it is now and we have to run a task
              helper.createMqttMessageRequest(element._id);
-
             }
         }
         /// scheduler is repeater
         else {
             //console.log('its Repeater');
+            var now = new Date();
+        console.log(scheTime.weekDays.includes(now.getDay()) + ' ' + now.getDay());
+        if (now.getHours === scheTime.hour && now.getMinutes === scheTime.minute && scheTime.weekDays.includes(now.getDay()) || true) {
+            //it is now and we have to run a task
+         helper.createMqttMessageRequest(element._id);
         }
-
+        }
     })
-
-
 }, { scheduled: true });
-
 
 module.exports = router;
 

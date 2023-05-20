@@ -9,25 +9,27 @@ client.on("connect", function () {
 
 
 function  getData(topic) {
-    client.subscribe(topic);
-    client.on('message', (topic, message) => {
-        console.log('serverSu Message: ' + message + ' Topic: ' + topic );
-        return message + ' Topic: ' + topic;
-    });
+   
 }
-
+client.subscribe('ArooshaIOT/#');
+client.on('message', (topic,message) => {
+    console.log('serverSu Message: ' + message + ' Topic: ' + topic );
+});
 module.exports.getData = getData;
-
-client.on('reconnect', function () {
+/***********************Status Manager */
+client.on('reconnect', () => {
     console.log('ServerSub Reconnecting...')
-});
-client.on('close', function () {
+  });
+  
+  client.on('close', () => {
     console.log('ServerSub Disconnected')
-});
-client.on('disconnect', function (packet) {
+  });
+  
+  client.on('disconnect', (packet) => {
     console.log(packet);
     console.log(' ServerSub disconnected');
-});
-client.on('error', (e) => {
-    console.log('ServerSub Error');
-});
+  });
+  
+  client.on('error', (error) => {
+    console.error('ServerSub Error:', error);
+  });

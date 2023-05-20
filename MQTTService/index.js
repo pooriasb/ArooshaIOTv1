@@ -13,7 +13,7 @@ var option = {
     password: '369',
 };
 
-var topicName = 'SajadHome/Room1';
+var topicName = 'ArooshaIOT/#';
 
 //var client = mqtt.connect('mqtt://127.0.0.1:1883');
 
@@ -69,8 +69,7 @@ app.post('/SendSchedulerData', (req, res) => {
 
 
 app.get('/subTopic', (req, res) => {
-   console.log( ServerSub.getData(topicName));
-
+  ServerSub.getData(topicName);
    res.send('subscribed');
 });
 const port = process.env.port || 3001;

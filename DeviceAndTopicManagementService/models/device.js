@@ -12,6 +12,7 @@ const deviceSchema = new mongoose.Schema({
     deviceModel: String,
     Topic: String,
     MacAddress : String
+    
 })
 const DeviceDocument = mongoose.model('DeviceDocument', deviceSchema);
 
