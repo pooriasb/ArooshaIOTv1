@@ -12,6 +12,8 @@ function  getData(topic) {
    
 }
 client.subscribe('ArooshaIOT/#');
+
+
 client.on('message', (topic,message) => {
     console.log('serverSu Message: ' + message + ' Topic: ' + topic );
 });
