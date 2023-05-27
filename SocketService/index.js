@@ -34,7 +34,8 @@ io.on('connection', (socket) => {
         break;
         
       case "S":
-       helper.createScheduleMessage(data.message);
+     var message=  helper.createScheduleMessage(data.message);
+     sendScheduleToClient(message.room,message.mac,message.eventId);
         break;
         
       default:
@@ -46,7 +47,12 @@ io.on('connection', (socket) => {
 
 
 
-
+function sendScheduleToClient(room,mac,deviceId){
+  socket.join(room);
+  var message = {mac,deviceId};
+  io.to('room').emit('response', message); // Send event to all sockets in 'room1'
+console.log('message '+message+' sent from socket to all client in room :'+room);
+}
 
 
   function handleSingleRequest(data) {
