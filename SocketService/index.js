@@ -4,6 +4,7 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server, { cors: { origin: '*' } });
 const helper = require('./models/helper');
 const cors = require('cors');
+
 // CORS configuration
 const corsOptions = {
   origin: '*',
@@ -33,7 +34,7 @@ io.on('connection', (socket) => {
         break;
         
       case "S":
-        console.log('Schedule : ' + data.message)
+       helper.createScheduleMessage(data.message);
         break;
         
       default:
