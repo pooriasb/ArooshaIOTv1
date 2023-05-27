@@ -50,7 +50,7 @@ async function CreateScheduler() {
         scheduleTime: JSON.stringify(times)
     });
     const result = await newSchedule.save();
-    console.log(result);
+   
 }
 async function createScheduler(data) {
     const { userId, isOnce, weekDays, hour, minute, events } = data; // destructuring the input object
@@ -66,7 +66,6 @@ async function createScheduler(data) {
       isScheduled: true,
       scheduleTime,
     });
-    console.log(newSchedule);
   }
   
 

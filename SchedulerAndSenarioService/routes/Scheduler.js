@@ -31,33 +31,18 @@ cron.schedule('*/10 * * * * *', async () => {
     schedules.forEach( element => {
         var scheTime = JSON.parse(element.scheduleTime);
         //Scheduler run once
-        if (scheTime.isOnce) {
+        if (scheTime.isOnce) {// it is not repeater
             var now = new Date();
             if (now.getHours === scheTime.hour && now.getMinutes === scheTime.minute) {
-                //it is now and we have to run a task
              helper.createMqttMessageRequest(element._id);
             }
         }
-        /// scheduler is repeater
         else {
-            //console.log('its Repeater');
             var now = new Date();
-        console.log(scheTime.weekDays.includes(now.getDay()) + ' ' + now.getDay());
         if (now.getHours === scheTime.hour && now.getMinutes === scheTime.minute && scheTime.weekDays.includes(now.getDay()) || true) {
-            //it is now and we have to run a task
          helper.createMqttMessageRequest(element._id);
         }
         }
     })
 }, { scheduled: true });
-
 module.exports = router;
-
-// let rule = new cron.RecurrenceRule();
-// rule.hour = 02;
-// rule.minute = 57;
-// rule.seconds = 00;
-
-// let backUpMeteorLogs = cron.scheduleJob(rule, function(){
-//   console.log("The cron task is complete");
-// });
