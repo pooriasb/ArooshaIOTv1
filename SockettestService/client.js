@@ -9,10 +9,19 @@ socket.on('connect', () => {
 });
 
 // Listen for message event
-socket.on('message', (data) => {
+socket.on('response', (data) => {
+  console.log('Received message from server:', data);
+});
+socket.on('messageFromServer', (data) => {
   console.log('Received message from server:', data);
 });
 
-// Emit a message to the server
+socket.emit('request', {message:'hellow',type :'A'});
+socket.on('reciveId', (data) => {
+  showId(data);
+});
 
-socket.emit('new message', 'Hello server!');
+
+function showId(data){
+  console.log('Received my id:', data);
+}

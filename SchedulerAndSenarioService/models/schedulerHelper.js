@@ -2,6 +2,8 @@ var mongoose = require('mongoose');
 const _ = require('lodash');
 const http = require('http');
 const config = require('config');
+const io = require('socket.io-client');
+const socket = io(config.SocketAddress);//SocketAddress
 const scheduleModel = require('../models/scheduleModel');
 let messageList = [];
  async function createMqttMessageRequest(scheduleId) {
@@ -13,11 +15,21 @@ let messageList = [];
         });
     });
     if (messageList.length !== 0) {
-        // console.log('MEssage list:' + messageList);
-        sendToMqttService(messageList);
+       
+        //sendToMqttService(messageList);
+        sendToSocketService(messageList);
     }
     messageList = [];
 }
+function sendToSocketService(messageList){
+    var grouped = _.mapValues(_.groupBy(messageList, 'deviceTopic'), mList => mList.map(message => _.omit(message, 'deviceTopic')));
+    socket.on('connect', () => {
+        console.log('Connected to socket server!');
+      });
+      socket.emit('request', {message:grouped,type :'S'});
+}
+
+
 async function sendToMqttService(messageList) {
     try {
         var grouped = _.mapValues(_.groupBy(messageList, 'deviceTopic'), mList => mList.map(message => _.omit(message, 'deviceTopic')));

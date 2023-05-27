@@ -24,6 +24,7 @@ router.get('/StartScheule', (req, res) => {
     StartScheule('sajad')
     res.sendStatus(200);
 });
+
 cron.schedule('*/10 * * * * *', async () => {
 
     const schedules = await scheduleModel.scheduleModel.find({ isScheduled: true }); 

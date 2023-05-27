@@ -36,11 +36,22 @@ async function getDeviceTopic(deviceId){
     return singleDeviceindb.Topic;
      
  }
- async function getDeviceMac(deviceId){
-     var singleDeviceindb =await DeviceDocument.findById(deviceId);
-     return singleDeviceindb.MacAddress;
-      
-  }
+async function getDeviceMac(deviceId) {
+    try {
+        let singleDeviceindb = await DeviceDocument.findById(deviceId);
+       
+    return singleDeviceindb.MacAddress;
+
+      } catch (error) {
+        if (error instanceof mongoose.Error.CastError) {
+          console.error(`Invalid document ID: ${error.value}`);
+        } else {
+          console.error(`Error finding document: ${error.message}`);
+        }
+      }
+}
+
+
 
   module.exports.getDeviceMac = getDeviceMac;
   module.exports.getDeviceTopic = getDeviceTopic;

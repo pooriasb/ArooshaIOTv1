@@ -6,11 +6,23 @@ const app = express();
 
 
 
-app.get('/GetDeviceTopic/:deviceID',(req,res)=>{
-     deviceModel.getDeviceTopic(req.params.deviceID).then(value => {res.send(value)});
+app.get('/GetDeviceTopic/:deviceID', (req, res) => {
+  try {
+    console.log('GetTopic : ' + req.params.deviceID);
+    deviceModel.getDeviceTopic(req.params.deviceID).then(value => {res.send(value)});
+  } catch(error) {
+    console.log('GetDeviceTopic error');
+    res.status(500).send("Internal server error.")
+  }
 });
+
 app.get('/GetDeviceMac/:deviceID',(req,res)=>{
+  try {
     deviceModel.getDeviceMac(req.params.deviceID).then(value => {res.send(value)});
+  } catch(error) {
+    console.log('GetDeviceMac Error');
+    res.status(500).send("Internal server error.")
+  }
 });
 
 

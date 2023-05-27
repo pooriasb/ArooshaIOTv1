@@ -6,4 +6,9 @@
 2. MQTT service{port:3001}
 3. SchedulerAndSenarioService {port : 3002}
 4. DeviceAndTopicManagementService {port : 3003}
-SocketService {port : 3004}
+5. SocketService {port : 3004}
+
+------------------------------------------------
+Socket Coding
+A : alive signal
+S : Schedules
