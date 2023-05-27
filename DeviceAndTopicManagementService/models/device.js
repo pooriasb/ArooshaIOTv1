@@ -36,11 +36,11 @@ async function getDeviceTopic(deviceId) {
         return singleDeviceindb.Topic;
     } catch (error) {
         if (error instanceof mongoose.Error.CastError) {
-            console.error(`Invalid document ID: ${error.value}`);
+            console.error(`Invalid Device ID: ${error.value}`);
         } else {
-            console.error(`Error finding document: ${error.message}`);
+            console.error(`Error finding Device: ${error.message}`);
         }
-        return 0;
+        return "0";
     }
 }
 
@@ -55,7 +55,7 @@ async function getDeviceMac(deviceId) {
         } else {
             console.error(`Error finding document: ${error.message}`);
         }
-        return 0;
+        return "0";
     }
 }
 
