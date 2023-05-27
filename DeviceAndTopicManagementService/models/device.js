@@ -11,8 +11,8 @@ const deviceSchema = new mongoose.Schema({
     deviceName: String,
     deviceModel: String,
     Topic: String,
-    MacAddress : String
-    
+    MacAddress: String
+
 })
 const DeviceDocument = mongoose.model('DeviceDocument', deviceSchema);
 
@@ -29,30 +29,38 @@ const DeviceDocument = mongoose.model('DeviceDocument', deviceSchema);
 //testDevice.save();
 
 
-async function getDeviceTopic(deviceId){
-    
-    var singleDeviceindb =await DeviceDocument.findById(deviceId);
-    
-    return singleDeviceindb.Topic;
-     
- }
+async function getDeviceTopic(deviceId) {
+    try {
+        let singleDeviceindb = await DeviceDocument.findById(deviceId);
+
+        return singleDeviceindb.Topic;
+    } catch (error) {
+        if (error instanceof mongoose.Error.CastError) {
+            console.error(`Invalid document ID: ${error.value}`);
+        } else {
+            console.error(`Error finding document: ${error.message}`);
+        }
+        return 0;
+    }
+}
+
 async function getDeviceMac(deviceId) {
     try {
         let singleDeviceindb = await DeviceDocument.findById(deviceId);
-       
-    return singleDeviceindb.MacAddress;
 
-      } catch (error) {
+        return singleDeviceindb.MacAddress;
+    } catch (error) {
         if (error instanceof mongoose.Error.CastError) {
-          console.error(`Invalid document ID: ${error.value}`);
+            console.error(`Invalid document ID: ${error.value}`);
         } else {
-          console.error(`Error finding document: ${error.message}`);
+            console.error(`Error finding document: ${error.message}`);
         }
-      }
+        return 0;
+    }
 }
 
 
 
-  module.exports.getDeviceMac = getDeviceMac;
-  module.exports.getDeviceTopic = getDeviceTopic;
+module.exports.getDeviceMac = getDeviceMac;
+module.exports.getDeviceTopic = getDeviceTopic;
   //module.exports.DeviceModel = mongoose.model('DeviceDocument',deviceSchema)
