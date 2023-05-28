@@ -76,9 +76,19 @@ async function getUserDeviceList(userId) {
    return '-1';
 }
 
+async function createDevice(device) {
+  try {
+    const { userId, deviceName, deviceModel, Topic, MacAddress } = device;
+    const testDevice = new DeviceDocument({ userId, deviceName, deviceModel, Topic, MacAddress });
+    await testDevice.save();
+    return 1;
+  } catch (error) {
+    console.error(error);
+    return 0;
+  }
+}
 
-
+module.exports.createDevice = createDevice;
 module.exports.getDeviceMac = getDeviceMac;
 module.exports.getUserDeviceList = getUserDeviceList;
 module.exports.getDeviceTopic = getDeviceTopic;
-  //module.exports.DeviceModel = mongoose.model('DeviceDocument',deviceSchema)

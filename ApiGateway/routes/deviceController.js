@@ -7,7 +7,7 @@ router.get('/sendMessage',(req,res)=>{
     res.sendStatus(200);
 });
 /***************************************************Device Management  */
-// it needs to select specific filds to return in the device micro service
+//TODO: it needs to select specific filds to return in the device micro service
 router.get('/getMyDeviceList/:userId', (req, res) => {
     //http://127.0.0.1:3003/api/ctrl/list/sajad
     getMyDeviceListFromService(req.params.userId).then((value)=>{
@@ -44,6 +44,8 @@ function getMyDeviceListFromService(userId) {
 router.get('/CreateDevice', (req, res) => {
     res.sendStatus(200);
 });
+
+
 router.get('/DeleteDevice', (req, res) => {
     res.sendStatus(200);
 });
