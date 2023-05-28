@@ -54,6 +54,7 @@ function sendCreateRequestToService(device) {
 router.get('/DeleteDevice', (req, res) => {
     res.sendStatus(200);
 });
+
 /************************************************************ */
 /*********************************Room Management */
 router.get('/GetMyRoomList', (req, res) => {

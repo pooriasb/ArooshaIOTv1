@@ -15,7 +15,11 @@ router.post('/createDevice', (req, res) => {
         .catch((error) => res.status(400).send(error));
 });
 
-
+router.get('/delete/:deviceId',(req,res)=>{
+    device.deleteDevice(req.params.deviceId).then((value)=>{
+res.send(value);
+    });
+});
 
 
 

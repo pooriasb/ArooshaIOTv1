@@ -87,7 +87,17 @@ async function createDevice(device) {
     return '0';
   }
 }
+async function deleteDevice(deviceId) {
+    try {
+      const result = await DeviceDocument.deleteOne({ _id: deviceId });
+      return result;
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
+
+module.exports.deleteDevice = deleteDevice;
 module.exports.createDevice = createDevice;
 module.exports.getDeviceMac = getDeviceMac;
 module.exports.getUserDeviceList = getUserDeviceList;
