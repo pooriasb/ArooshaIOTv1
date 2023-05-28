@@ -81,10 +81,10 @@ async function createDevice(device) {
     const { userId, deviceName, deviceModel, Topic, MacAddress } = device;
     const testDevice = new DeviceDocument({ userId, deviceName, deviceModel, Topic, MacAddress });
     await testDevice.save();
-    return 1;
+    return '1';
   } catch (error) {
     console.error(error);
-    return 0;
+    return '0';
   }
 }
 
