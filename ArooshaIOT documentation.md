@@ -12,3 +12,15 @@
 Socket Coding
 A : alive signal
 S : Schedules
+
+------------------------------------------
+api list in api gate way
+schedule.js:
+CreateSchedule
+getMyScheduleList
+
+deviceController.js:
+sendMessage
+getMyDeviceList
+GetMyRoomList
+CreateDevice

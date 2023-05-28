@@ -4,15 +4,33 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server, { cors: { origin: '*' } });
 const helper = require('./models/helper');
 const cors = require('cors');
+const apiGatewayRouter = require('./routes/gateway');
+
+app.use('/api',apiGatewayRouter);
 // CORS configuration
 const corsOptions = {
   origin: '*',
   methods: ['GET', 'POST']
 };
 app.use(cors(corsOptions));
+
+
+
+
+io.use((socket, next) => {
+  const ttValue = socket.handshake.headers['tt'];
+  console.log(`Value of tt: ${ttValue}`);
+  next();
+});
+
 // Listen for new client connections
 io.on('connection', (socket) => {
   console.log('New client: ' + socket.id);
+
+  const ttValue = socket.handshake.headers['tt'];
+  console.log(`Value of tt: ${ttValue}`);
+
+
   socket.on('request', handleRequest);
   socket.on('requestToSingle', handleSingleRequest);
   socket.on('sendToRoom', handelRoomRequest);
@@ -72,5 +90,5 @@ io.on('connection', (socket) => {
 
 const { PORT = 3004 } = process.env;
 server.listen(PORT, () => {
-  console.log(`App is listening on port ${PORT}`);
+  console.log(`SocketService is listening on port ${PORT}`);
 });
