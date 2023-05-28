@@ -3,4 +3,5 @@
     "DeviceServiceAddress" : "http://127.0.0.1:3003",
     "MQTTServiceAddress" : "http://127.0.0.1:3001",
     "SocketAddress" : "http://localhost:3004"
+
 }
