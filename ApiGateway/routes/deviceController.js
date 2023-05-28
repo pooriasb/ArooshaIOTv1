@@ -15,7 +15,6 @@ router.get('/getMyDeviceList/:userId', (req, res) => {
     });
 
 });
-
 function getMyDeviceListFromService(userId) {
     return p = new Promise((resolve, reject) => {
 
@@ -36,21 +35,11 @@ function getMyDeviceListFromService(userId) {
         });
     });
 }
-
-
-
-
-
 router.get('/CreateDevice/:userId/:deviceName/:deviceModel/:Topic/:MacAddress', (req, res) => {
     //TODO: validation 
     sendCreateRequestToService();
     res.sendStatus(200);
 });
-
-
-
-
-
 function sendCreateRequestToService(device) {
     const data = {
         userId: device.userId,
@@ -59,7 +48,6 @@ function sendCreateRequestToService(device) {
         topic: device.topic,
         macAddress: device.macAddress
     };
-
     return axios.post(config.DeviceServiceAddress + '/api/ctrl/createDevice', data);
 }
 
