@@ -2,18 +2,18 @@ const express = require('express');
 const router = express.Router();
 const config = require('config');
 const http = require('http');
-
-router.get('/sendMessage',(req,res)=>{
+const axios = require('axios');
+router.get('/sendMessage', (req, res) => {
     res.sendStatus(200);
 });
 /***************************************************Device Management  */
 //TODO: it needs to select specific filds to return in the device micro service
 router.get('/getMyDeviceList/:userId', (req, res) => {
     //http://127.0.0.1:3003/api/ctrl/list/sajad
-    getMyDeviceListFromService(req.params.userId).then((value)=>{
+    getMyDeviceListFromService(req.params.userId).then((value) => {
         res.send(value);
     });
-    
+
 });
 
 function getMyDeviceListFromService(userId) {
@@ -41,10 +41,27 @@ function getMyDeviceListFromService(userId) {
 
 
 
-router.get('/CreateDevice', (req, res) => {
+router.get('/CreateDevice/:userId/:deviceName/:deviceModel/:Topic/:MacAddress', (req, res) => {
+    //TODO: validation 
+    sendCreateRequestToService();
     res.sendStatus(200);
 });
 
+
+
+
+
+function sendCreateRequestToService(device) {
+    const data = {
+        userId: device.userId,
+        deviceName: device.deviceName,
+        deviceModel: device.deviceModel,
+        topic: device.topic,
+        macAddress: device.macAddress
+    };
+
+    return axios.post(config.DeviceServiceAddress + '/api/ctrl/createDevice', data);
+}
 
 router.get('/DeleteDevice', (req, res) => {
     res.sendStatus(200);
