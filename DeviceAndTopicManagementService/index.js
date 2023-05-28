@@ -1,10 +1,11 @@
 // this file work as service gateway
+//++++++++++++++DEVICE Service++++++++++++++++++++
 const express = require('express');
 const deviceModel = require('./models/device');
-
+const controllerRouter = require('./routes/DeviceCtrl');
 const app = express();
 
-
+app.use('/api/ctrl',controllerRouter);
 
 app.get('/GetDeviceTopic/:deviceID', (req, res) => {
   try {

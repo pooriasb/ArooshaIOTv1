@@ -19,6 +19,7 @@ const DeviceDocument = mongoose.model('DeviceDocument', deviceSchema);
 
 
 
+
 // const testDevice = new DeviceDocument({
 //     userId: 'sajad',
 //     deviceName: 'loostere Icerock',
@@ -59,8 +60,25 @@ async function getDeviceMac(deviceId) {
     }
 }
 
+async function getUserDeviceList(userId) {
+    console.log('userID:'+userId);
+   try {
+      const documents = await DeviceDocument.find({ userId: userId });
+      if (documents && documents.length > 0) {
+         return documents;
+      } else {
+         console.log("No documents found");
+      }
+   } catch (error) {
+      console.error("Error finding documents", error);
+      throw new Error("Error finding documents");
+   }
+   return '-1';
+}
+
 
 
 module.exports.getDeviceMac = getDeviceMac;
+module.exports.getUserDeviceList = getUserDeviceList;
 module.exports.getDeviceTopic = getDeviceTopic;
   //module.exports.DeviceModel = mongoose.model('DeviceDocument',deviceSchema)
