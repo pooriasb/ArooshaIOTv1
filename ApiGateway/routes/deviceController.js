@@ -66,11 +66,19 @@ function sendDeleteRequestToService(deviceId){
 }
 /************************************************************ */
 /*********************************Room Management */
-router.get('/GetMyRoomList', (req, res) => {
-
-    
-    res.sendStatus(200);
+router.get('/GetMyRoomList/:userId', (req, res) => {
+    res.send(sendGetMyRoomListToserver(req.params.userId));
 });
+
+function sendGetMyRoomListToserver(userId){
+    axios.get(config.DeviceServiceAddress + '/api/ctrl/RoomList/'+userId)
+    .then(response => {
+    return  response.data;
+    })
+    .catch(error => {
+     return "-1";
+    });
+}
 router.get('/CreateRoom', (req, res) => {
     res.sendStatus(200);
 });
