@@ -9,12 +9,13 @@ const app = express();
  app.use(express.static('Public'))
 // app.use('/api/schedule',schedule);
 
-
  app.use('/api/device',deviceControllrouter);
  app.use('/api/schedule',scheduleRouter);
 
 
 
+
+// run server
 const { PORT = 3000 } = process.env;
 app.listen(PORT, () => {
   console.log(`Api Gateway is listening on port ${PORT}`);
