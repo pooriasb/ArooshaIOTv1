@@ -3,10 +3,11 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server, { cors: { origin: '*' } });
 const helper = require('./models/helper');
-const cors = require('cors');
+
 const apiGatewayRouter = require('./routes/gateway');
 
 app.use('/api',apiGatewayRouter);
+const cors = require('cors');
 // CORS configuration
 const corsOptions = {
   origin: '*',
