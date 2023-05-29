@@ -16,19 +16,6 @@ const deviceSchema = new mongoose.Schema({
 const DeviceDocument = mongoose.model('DeviceDocument', deviceSchema);
 
 
-
-
-
-// const testDevice = new DeviceDocument({
-//     userId: 'sajad',
-//     deviceName: 'loostere Icerock',
-//     deviceModel: 'ICEROCK0585',
-//     Topic: 'ArooshaIOT/sajad/h1/r1',
-//     MacAddress :'0253'
-// });
-//testDevice.save();
-
-
 async function getDeviceTopic(deviceId) {
     try {
         let singleDeviceindb = await DeviceDocument.findById(deviceId);

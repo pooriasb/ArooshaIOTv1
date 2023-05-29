@@ -13,3 +13,69 @@ const roomSchema = new mongoose.Schema({
     devices: [String]
 });
 const roomDocument = mongoose.model('rooms', roomSchema);
+
+// Create a new room document
+const createRoom = async (userId, roomName, devices) => {
+  try {
+    const newRoom = await roomDocument.create({
+      userId,
+      roomName,
+      devices
+    });
+    return newRoom;
+  } catch (error) {
+    // Replace with appropriate error handling mechanism
+    console.error(error);
+    throw new Error('Failed to create room');
+  }
+}
+
+// Read all room documents
+const getRooms = async (userId) => {
+  try {
+    const rooms = await roomDocument.find({userId:userId});
+    return rooms;
+  } catch (error) {
+    // Replace with appropriate error handling mechanism
+    console.error(error);
+    throw new Error('Failed to get rooms');
+  }
+}
+
+// Read a single room document by ID
+const getRoomById = async (id) => {
+  try {
+    const room = await roomDocument.findById(id);
+    return room;
+  } catch (error) {
+    // Replace with appropriate error handling mechanism
+    console.error(error);
+    throw new Error('Failed to get room by ID');
+  }
+}
+
+// Update a room document by ID
+const updateRoomById = async (id, updates) => {
+  try {
+    const room = await roomDocument.findByIdAndUpdate(id, updates, { new: true });
+    return room;
+  } catch (error) {
+    // Replace with appropriate error handling mechanism
+    console.error(error);
+    throw new Error('Failed to update room by ID');
+  }
+}
+
+// Delete a room document by ID
+const deleteRoomById = async (id) => {
+  try {
+    await roomDocument.findByIdAndDelete(id);
+  } catch (error) {
+    // Replace with appropriate error handling mechanism
+    console.error(error);
+    throw new Error('Failed to delete room by ID');
+  }
+}
+
+
+module.exports = { createRoom, getRooms, getRoomById, updateRoomById, deleteRoomById };
