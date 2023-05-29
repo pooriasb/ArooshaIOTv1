@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 router.use(express.json());
 const device = require('../models/device');
+
+
+
 router.get('/list/:userId', (req, res) => {
     device.getUserDeviceList(req.params.userId).then(value => { res.send(value) });
 });
@@ -9,7 +12,6 @@ router.get('/list/:userId', (req, res) => {
 router.post('/create', (req, res) => {
     const { userId, deviceName, deviceModel, Topic, MacAddress } = req.body;
     const recivedDevice = { userId, deviceName, deviceModel, Topic, MacAddress };
-
     //TODO: do proper validation 
     device.createDevice(recivedDevice)
         .then((value) => res.send(value))
