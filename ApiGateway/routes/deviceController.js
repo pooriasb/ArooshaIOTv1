@@ -67,6 +67,8 @@ function sendDeleteRequestToService(deviceId){
 /************************************************************ */
 /*********************************Room Management */
 router.get('/GetMyRoomList', (req, res) => {
+
+    
     res.sendStatus(200);
 });
 router.get('/CreateRoom', (req, res) => {
