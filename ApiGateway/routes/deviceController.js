@@ -51,10 +51,19 @@ function sendCreateRequestToService(device) {
     return axios.post(config.DeviceServiceAddress + '/api/ctrl/createDevice', data);
 }
 
-router.get('/DeleteDevice', (req, res) => {
-    res.sendStatus(200);
+router.get('/DeleteDevice/:deviceId', (req, res) => {
+    sendDeleteRequestToService(req.params.deviceId);
+    res.send( sendDeleteRequestToService(req.params.deviceId));
 });
-
+function sendDeleteRequestToService(deviceId){
+    axios.get(config.DeviceServiceAddress + '/api/ctrl/delete/'+deviceId)
+    .then(response => {
+    return  response.data;
+    })
+    .catch(error => {
+     return "-1";
+    });
+}
 /************************************************************ */
 /*********************************Room Management */
 router.get('/GetMyRoomList', (req, res) => {
@@ -64,6 +73,13 @@ router.get('/CreateRoom', (req, res) => {
     res.sendStatus(200);
 });
 router.get('/DeleteRoom', (req, res) => {
+    res.sendStatus(200);
+});
+
+router.get('/DeviceListInRoom', (req, res) => {
+    res.sendStatus(200);
+});
+router.post('/AddDevicetoRoom', (req, res) => {
     res.sendStatus(200);
 });
 /************************************************** */

@@ -8,16 +8,16 @@ router.get('/list/:userId', (req, res) => {
 router.post('/createDevice', (req, res) => {
     const { userId, deviceName, deviceModel, topic, macAddress } = req.body;
     const device = { userId, deviceName, deviceModel, topic, macAddress };
-    
+
     //TODO: do proper validation 
     device.createDevice(device)
         .then((value) => res.send(value))
         .catch((error) => res.status(400).send(error));
 });
 
-router.get('/delete/:deviceId',(req,res)=>{
-    device.deleteDevice(req.params.deviceId).then((value)=>{
-res.send(value);
+router.get('/delete/:deviceId', (req, res) => {
+    device.deleteDevice(req.params.deviceId).then((value) => {
+        res.send(value);
     });
 });
 
