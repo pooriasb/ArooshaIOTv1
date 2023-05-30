@@ -45,14 +45,23 @@ router.get('/scenarios/:userId', async (req, res) => {
 
 app.get('/scenario/:senarioId', async (req, res) => {
     try {
-      const senarioId = req.params.senarioId;
-      const result = await senario.readScenario(senarioId);
-      
-      res.status(200).json(result);
+        const senarioId = req.params.senarioId;
+        const result = await senario.readScenario(senarioId);
+
+        res.status(200).json(result);
     } catch (err) {
-      console.error(err);
-      res.status(500).send('Error getting scenario');
+        console.error(err);
+        res.status(500).send('Error getting scenario');
     }
-  });
+});
+
+
+app.post('/startSenario', async (req, res) => {
+    const { senarioId } = req.body;
+     await senario.readScenario(senarioId).then((value)=>{
+        // we have to send senario into socket service
+     });
+
+});
 
 module.exports = router;
