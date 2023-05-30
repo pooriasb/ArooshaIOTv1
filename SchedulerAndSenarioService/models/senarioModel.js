@@ -19,9 +19,6 @@ const senarioSchema = new mongoose.Schema({
 
 const Senario = mongoose.model('EventList', senarioSchema);
 
-
-
-
 async function createSenario(data) {
   const newSenario = new Senario({
     userId: data.userId,
@@ -51,9 +48,6 @@ async function readScenario(userId) {
     console.error(err);
   }
 }
-
-
-
 async function deleteScenario(userId, scenarioName) {
   try {
     await Senario.deleteOne({ userId, name: scenarioName });
@@ -64,5 +58,9 @@ async function deleteScenario(userId, scenarioName) {
     return "0"
   }
 }
-
+module.exports = {
+    deleteScenario,
+    readScenario,
+    createSenario
+ }
 module.exports.senarioSchema = Senario;
