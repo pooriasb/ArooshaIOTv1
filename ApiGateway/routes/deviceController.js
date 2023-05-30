@@ -80,13 +80,24 @@ function sendGetMyRoomListToserver(userId){
      return "-1";
     });
 }
-router.get('/CreateRoom', (req, res) => {
+router.post('/CreateRoom', (req, res) => {
+    const { userId, roomName, devices } = req.body;
+    try {
+       
+        res.send(roomName);
+    } catch (error) {
+        // Replace with appropriate error handling mechanism
+        console.error(error);
+        res.status(500).send('Failed to create room');
+    }
     res.sendStatus(200);
 });
-router.get('/DeleteRoom', (req, res) => {
+router.get('/DeleteRoom/:roomId', (req, res) => {
     res.sendStatus(200);
 });
-
+router.get('/updateRoom', (req, res) => {
+    res.sendStatus(200);
+});
 router.get('/DeviceListInRoom', (req, res) => {
     res.sendStatus(200);
 });

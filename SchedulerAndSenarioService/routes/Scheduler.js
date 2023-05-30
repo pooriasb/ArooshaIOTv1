@@ -20,10 +20,7 @@ router.get('/CreateScheduler', (req, res) => {
 
 /**********************************Start Schedule and Connect to mqtt Service */
 
-router.get('/StartScheule', (req, res) => {
-    StartScheule('sajad')
-    res.sendStatus(200);
-});
+
 
 cron.schedule('*/10 * * * * *', async () => {
 
@@ -45,4 +42,7 @@ cron.schedule('*/10 * * * * *', async () => {
         }
     })
 }, { scheduled: true });
+
+
+
 module.exports = router;

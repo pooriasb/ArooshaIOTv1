@@ -32,26 +32,35 @@ const ScheduleDocument = mongoose.model('ScheduleDocument',ScheduleDocumentChema
 // create test device
 
 
+function deleteSchedule(scheduleId){
+    ScheduleDocument.deleteOne({ _id: 'your_schedule_id_here' }, (err) => {
+        if (err) {
+           console.error(err);
+        } else {
+           console.log('Schedule document deleted successfully');
+        }
+     });
+}
+
 /********************************************************** */
 
 //scheduletime : m,h,d
-async function CreateScheduler() {
-    var times = {
-        isOnce: false,
-        weekDays: [1, 2, 3],
-        hour: 5,
-        minute: 10
-    }
-    const newSchedule = new ScheduleDocument({
-        userId: 'sajad',
-        scheduleDateTime: Date.now(),
-        eventList: [new EventList({ deviceId: '3223', eventId: '008' }), new EventList({ deviceId: '123', eventId: '009' })],
-        isScheduled: true,
-        scheduleTime: JSON.stringify(times)
-    });
-    const result = await newSchedule.save();
-   
-}
+// async function CreateScheduler() {
+//     var times = {
+//         isOnce: false,
+//         weekDays: [1, 2, 3],
+//         hour: 5,
+//         minute: 10
+//     }
+//     const newSchedule = new ScheduleDocument({
+//         userId: 'sajad',
+//         scheduleDateTime: Date.now(),
+//         eventList: [new EventList({ deviceId: '3223', eventId: '008' }), new EventList({ deviceId: '123', eventId: '009' })],
+//         isScheduled: true,
+//         scheduleTime: JSON.stringify(times)
+//     });
+//     const result = await newSchedule.save();
+// }
 async function createScheduler(data) {
     const { userId, isOnce, weekDays, hour, minute, events } = data; // destructuring the input object
     const scheduleTime = JSON.stringify({ isOnce, weekDays, hour, minute });
@@ -70,7 +79,8 @@ async function createScheduler(data) {
   
 
  module.exports = {
-    CreateScheduler
+    createScheduler,
+    deleteSchedule
  }
 
 module.exports.scheduleModel = mongoose.model('ScheduleDocument', ScheduleDocumentChema);
