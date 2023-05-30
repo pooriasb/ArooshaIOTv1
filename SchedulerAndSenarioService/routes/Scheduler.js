@@ -2,7 +2,7 @@ const express = require('express');
 const cron = require('node-cron');
 const router = express.Router();
 const _ = require('lodash');
-const mongoose = require('mongoose');
+
 const helper = require('../models/schedulerHelper');
 const scheduleModel = require('../models/scheduleModel');
 

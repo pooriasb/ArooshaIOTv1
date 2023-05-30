@@ -40,7 +40,7 @@ async function createSenario(data) {
   }
 }
 
-async function readScenario(userId) {
+async function readScenarios(userId) {
   try {
     const senarios = await Scenario.find({ userId: userId });
    return senarios;
@@ -48,6 +48,14 @@ async function readScenario(userId) {
     console.error(err);
   }
 }
+async function readScenario(senarioId) {
+    try {
+      const senario = await Scenario.find({ _id: senarioId });
+     return senario;
+    } catch (err) {
+      console.error(err);
+    }
+  }
 async function deleteScenario(userId, scenarioName) {
   try {
     await Senario.deleteOne({ userId, name: scenarioName });
@@ -60,6 +68,7 @@ async function deleteScenario(userId, scenarioName) {
 }
 module.exports = {
     deleteScenario,
+    readScenarios,
     readScenario,
     createSenario
  }
