@@ -8,12 +8,21 @@ const scheduleModel = require('../models/scheduleModel');
 
 
 /***********************************Create Scheduler */
-router.get('/CreateScheduler', (req, res) => {
+router.post('/CreateScheduler', (req, res) => {
     scheduleModel.scheduleModel.CreateScheduler();
     res.sendStatus(200);
 });
 
-
+router.get('/mySchedules/:userId', (req, res) => {
+    scheduleModel.readSchedules(req.params.userId).then((value) => {
+        res.send(value);
+    });
+});
+router.get('/deleteSchedule/:scheduleId',(req,res)=>{
+    scheduleModel.deleteSchedule(req.params.scheduleId).then((value)=>{
+        return value;
+    });
+});
 /******************************End create scheduler */
 
 
@@ -24,21 +33,21 @@ router.get('/CreateScheduler', (req, res) => {
 
 cron.schedule('*/10 * * * * *', async () => {
 
-    const schedules = await scheduleModel.scheduleModel.find({ isScheduled: true }); 
-    schedules.forEach( element => {
+    const schedules = await scheduleModel.scheduleModel.find({ isScheduled: true });
+    schedules.forEach(element => {
         var scheTime = JSON.parse(element.scheduleTime);
         //Scheduler run once
         if (scheTime.isOnce) {// it is not repeater
             var now = new Date();
             if (now.getHours === scheTime.hour && now.getMinutes === scheTime.minute) {
-             helper.createMqttMessageRequest(element._id);
+                helper.createMqttMessageRequest(element._id);
             }
         }
         else {
             var now = new Date();
-        if (now.getHours === scheTime.hour && now.getMinutes === scheTime.minute && scheTime.weekDays.includes(now.getDay()) || true) {
-         helper.createMqttMessageRequest(element._id);
-        }
+            if (now.getHours === scheTime.hour && now.getMinutes === scheTime.minute && scheTime.weekDays.includes(now.getDay()) || true) {
+                helper.createMqttMessageRequest(element._id);
+            }
         }
     })
 }, { scheduled: true });

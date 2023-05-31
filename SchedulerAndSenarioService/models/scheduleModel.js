@@ -44,16 +44,17 @@ const readSchedules = async (userId) => {
 
 
 function deleteSchedule(scheduleId){
-    ScheduleDocument.deleteOne({ _id: scheduleId }, (err) => {
-        if (err) {
-           console.error(err);
-           return "0";
-        } else {
-          console.log('Schedule document deleted successfully');
-          return "1";
-        }
-     });
+  return ScheduleDocument.deleteOne({ _id: scheduleId })
+    .then(() => {
+      console.log('Schedule document deleted successfully');
+      return "1";
+    })
+    .catch((err) => {
+      console.error(err);
+      return "0";
+    });
 }
+
 
 /********************************************************** */
 
