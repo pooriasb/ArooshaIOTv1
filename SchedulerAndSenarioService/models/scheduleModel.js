@@ -55,26 +55,6 @@ function deleteSchedule(scheduleId){
     });
 }
 
-
-/********************************************************** */
-
-//scheduletime : m,h,d
-// async function CreateScheduler() {
-//     var times = {
-//         isOnce: false,
-//         weekDays: [1, 2, 3],
-//         hour: 5,
-//         minute: 10
-//     }
-//     const newSchedule = new ScheduleDocument({
-//         userId: 'sajad',
-//         scheduleDateTime: Date.now(),
-//         eventList: [new EventList({ deviceId: '3223', eventId: '008' }), new EventList({ deviceId: '123', eventId: '009' })],
-//         isScheduled: true,
-//         scheduleTime: JSON.stringify(times)
-//     });
-//     const result = await newSchedule.save();
-// }
 async function createScheduler(data) {
     const { userId, isOnce, weekDays, hour, minute, events } = data; // destructuring the input object
     const scheduleTime = JSON.stringify({ isOnce, weekDays, hour, minute });
@@ -90,11 +70,29 @@ async function createScheduler(data) {
       scheduleTime,
     });
   }
-  
+
+const setScheduleActivation = async (scheduleId, isScheduled) => {
+  try {
+    const scheduleDocument = await ScheduleDocumentChema.findById(scheduleId);
+    
+    if (!scheduleDocument) {
+     console.log('Schedule document not found');
+     return "0";
+    }
+    
+    scheduleDocument.isScheduled = isScheduled;
+    await scheduleDocument.save();
+    return "1";
+  } catch (error) {
+    console.error('set schedule actiovation error'+error);
+  }
+};
+
 
  module.exports = {
     createScheduler,
     readSchedules,
+    setScheduleActivation,
     deleteSchedule
  }
 
@@ -102,4 +100,3 @@ module.exports.scheduleModel = mongoose.model('ScheduleDocument', ScheduleDocume
 
 
 
-//sudo service mongod status

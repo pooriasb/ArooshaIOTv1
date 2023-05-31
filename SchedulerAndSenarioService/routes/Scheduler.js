@@ -2,11 +2,10 @@ const express = require('express');
 const cron = require('node-cron');
 const router = express.Router();
 const _ = require('lodash');
-
 const helper = require('../models/schedulerHelper');
 const scheduleModel = require('../models/scheduleModel');
 
-
+router.use(express.json());
 /***********************************Create Scheduler */
 router.post('/CreateScheduler', (req, res) => {
     scheduleModel.scheduleModel.CreateScheduler();
@@ -18,13 +17,18 @@ router.get('/mySchedules/:userId', (req, res) => {
         res.send(value);
     });
 });
-router.get('/deleteSchedule/:scheduleId',(req,res)=>{
-    scheduleModel.deleteSchedule(req.params.scheduleId).then((value)=>{
+router.get('/deleteSchedule/:scheduleId', (req, res) => {
+    scheduleModel.deleteSchedule(req.params.scheduleId).then((value) => {
         return value;
     });
 });
 /******************************End create scheduler */
-
+router.post('/setActivation', (req, res) => {
+    const { scheduleId, isScheduled } = req.body;//we have to get token and some validation here
+    scheduleModel.setScheduleActivation(scheduleId, isScheduled).then((value) => {
+        return value;
+    });
+});
 
 
 /**********************************Start Schedule and Connect to mqtt Service */
