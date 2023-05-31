@@ -68,10 +68,10 @@ function sendDeleteRequestToService(deviceId){
 /************************************************************ */
 /*********************************Room Management */
 router.get('/GetMyRoomList/:userId', (req, res) => {
-    res.send(sendGetMyRoomListToserver(req.params.userId));
+    res.send(sendGetMyRoomListToservice(req.params.userId));
 });
 
-function sendGetMyRoomListToserver(userId){
+function sendGetMyRoomListToservice(userId){
     axios.get(config.DeviceServiceAddress + '/api/ctrl/RoomList/'+userId)
     .then(response => {
     return  response.data;
