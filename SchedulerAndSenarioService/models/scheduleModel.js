@@ -32,12 +32,25 @@ const ScheduleDocument = mongoose.model('ScheduleDocument',ScheduleDocumentChema
 // create test device
 
 
+const readSchedules = async (userId) => {
+  try {
+    const schedules = await ScheduleDocument.find({userId: userId}).exec();
+    return schedules;
+  } catch (err) {
+    console.error(err);
+    throw new Error('Error getting schedules');
+  }
+};
+
+
 function deleteSchedule(scheduleId){
-    ScheduleDocument.deleteOne({ _id: 'your_schedule_id_here' }, (err) => {
+    ScheduleDocument.deleteOne({ _id: scheduleId }, (err) => {
         if (err) {
            console.error(err);
+           return "0";
         } else {
-           console.log('Schedule document deleted successfully');
+          console.log('Schedule document deleted successfully');
+          return "1";
         }
      });
 }
@@ -80,7 +93,12 @@ async function createScheduler(data) {
 
  module.exports = {
     createScheduler,
+    readSchedules,
     deleteSchedule
  }
 
 module.exports.scheduleModel = mongoose.model('ScheduleDocument', ScheduleDocumentChema);
+
+
+
+//sudo service mongod status
