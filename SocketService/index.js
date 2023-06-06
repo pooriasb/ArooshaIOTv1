@@ -19,8 +19,8 @@ app.use(cors(corsOptions));
 
 
 io.use((socket, next) => {
-  const ttValue = socket.handshake.headers['tt'];
-  console.log(`Value of tt: ${ttValue}`);
+  const macValue = socket.handshake.headers['mac'];
+ socket.id = macValue
   next();
 });
 
@@ -28,8 +28,8 @@ io.use((socket, next) => {
 io.on('connection', (socket) => {
   console.log('New client: ' + socket.id);
 
-  const ttValue = socket.handshake.headers['tt'];
-  console.log(`Value of tt: ${ttValue}`);
+  // const ttValue = socket.handshake.headers['tt'];
+  // console.log(`Value of tt: ${ttValue}`);
 
 
   socket.on('request', handleRequest);
@@ -37,11 +37,15 @@ io.on('connection', (socket) => {
   socket.on('sendToRoom', handelRoomRequest);
   socket.on('getMySocketId', sendSocketId);
   socket.on('disconnect', handleDisconnect);
+
+
+
+
   function handleRequest(data) {
     console.log('Client Say: ' + data.message);
     switch (data.type) {
       case "A": // Alive signal
-        console.log('alive signal : ' + data.message);
+        console.log('alive signal : ' + JSON.stringify( data.message));
         io.emit('response', '200');
         break;
       case "S":
