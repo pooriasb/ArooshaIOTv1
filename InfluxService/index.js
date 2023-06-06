@@ -13,5 +13,7 @@ app.post('/Alive', (req, res) => {
     res.sendStatus(200);
 });
 
+dbManager.getData();
+
 const port = process.env.port || 3005;
 app.listen(port, () => console.log(`influx Service is listening on port ${port}`));
