@@ -7,6 +7,7 @@
 3. SchedulerAndSenarioService {port : 3002}
 4. DeviceAndTopicManagementService {port : 3003}
 5. SocketService {port : 3004}
+6. InfluxdbService {port: 3005}
 
 ------------------------------------------------
 Socket Coding
