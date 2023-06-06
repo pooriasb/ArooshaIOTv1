@@ -12,13 +12,13 @@ function createScheduleMessage(messages) {
    // console.log('Recived Message :' + JSON.stringify(data));
 }
 
-const sendAliveSignalToinfluxService = ({ userId, mac, hue, rgbBrightness, colorTemperature, brightness, dance }) => {
+const sendAliveSignalToInfluxService = ({ userId, mac, hue, rgbBrightness, colorTemperature, brightness, dance }) => {
   // Required Data in POST Request Body
   const data = {
     userId,
     MAC: mac,
     HUE: hue,
-    RGBBrightnes: rgbBrightness,
+    RGBBrightness: rgbBrightness,
     ColorTemperature: colorTemperature,
     Brightness: brightness,
     Dance: dance
@@ -35,5 +35,6 @@ const sendAliveSignalToinfluxService = ({ userId, mac, hue, rgbBrightness, color
 };
 
 
-module.exports.sendAliveSignalToinfluxService = sendAliveSignalToinfluxService;
+
+module.exports.sendAliveSignalToInfluxService = sendAliveSignalToInfluxService ;
 module.exports.createScheduleMessage = createScheduleMessage;

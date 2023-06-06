@@ -91,18 +91,27 @@ io.on('connection', (socket) => {
 
 
 
-function processAliveSignal(mac, message) {
+// function processAliveSignal(mac, message) {
 
-  const parsedData = message;
-var mac = mac;
-var userId = 'Sajad';
-var hue =  message.hue;
-var rgbBrightness=  message.RGBBrightnes;
-var colorTemperature = message.ColorTemperature
-var brightness = message.Brightness;
-var dance = message.Dance;
-helper.sendAliveSignalToinfluxService({userId,mac,hue,rgbBrightness,colorTemperature,brightness,dance});
+//   const parsedData = message;
+//   var mac = mac;
+//   var userId = 'Sajad';
+//   var hue = message.hue;
+//   var rgbBrightness = message.RGBBrightnes;
+//   var colorTemperature = message.ColorTemperature
+//   var brightness = message.Brightness;
+//   var dance = message.Dance;
+//   helper.sendAliveSignalToinfluxService({ userId, mac, hue, rgbBrightness, colorTemperature, brightness, dance });
+// }
+
+function processAliveSignal(macAddress, data) {
+  const { hue, RGBBrightness, ColorTemperature, Brightness, Dance } = data;
+  const userId = 'Sajad';
+  const mac = macAddress;
+ helper.sendAliveSignalToInfluxService({ userId, mac, hue, RGBBrightness, ColorTemperature, Brightness, Dance });
 }
+
+
 
 const { PORT = 3004 } = process.env;
 server.listen(PORT, () => {

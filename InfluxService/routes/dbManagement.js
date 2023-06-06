@@ -23,7 +23,7 @@ function saveAliveSignal(userId, MAC, HUE, RGBBrightness, ColorTemperature, Brig
         .tag('ColorTemperature', ColorTemperature)
         .tag('Brightness', Brightness)
         .tag('Dance', Dance);
-       
+
 
     writeApi.writePoint(point)
     writeApi
@@ -40,26 +40,22 @@ function saveAliveSignal(userId, MAC, HUE, RGBBrightness, ColorTemperature, Brig
 function getData() {
 
     const queryApi = new InfluxDB({ url: 'http://154.211.2.176:8086', token: token }).getQueryApi(org)
-   
+
     const fluxQuery = `from(bucket:"Aroosha") |> range(start: -20m) |> filter(fn: (r) => r._measurement == "Sajad")`
 
-const fluxQuery2 = `from(bucket:"Aroosha") 
-                     |> range(start: -10m)
-                     |> filter(fn: (r) => r._measurement == "Sajad" and tag == "your_tag")`
+    // const fluxQuery2 = `from(bucket:"Aroosha") 
+    //                  |> range(start: -10m)
+    //                  |> filter(fn: (r) => r._measurement == "Sajad" and tag == "your_tag")`
 
     const myQuery = async () => {
-        for await (const {values, tableMeta} of queryApi.iterateRows(fluxQuery)) {
-          const o = tableMeta.toObject(values)
-        //   console.log(
-        //     `${o._time} ${o._measurement} in '${o.location}' (${o.sensor_id}): ${o._field}=${o._value}`
-        //   );
-console.log(o);
-
+        for await (const { values, tableMeta } of queryApi.iterateRows(fluxQuery)) {
+            const objectFromTableMeta = tableMeta.toObject(values)
+            console.log(objectFromTableMeta);
         }
-      }
-      
-      /** Execute a query and receive line table metadata and rows. */
-      myQuery()
+    }
+
+    /** Execute a query and receive line table metadata and rows. */
+    myQuery()
 }
 
 
