@@ -1,6 +1,6 @@
 
 const axios = require('axios');
-
+const config = require('config');
 function createScheduleMessage(messages) {
     for (const key in messages) {
         for (let i = 0; i < messages[key].length; i++) {
@@ -12,30 +12,27 @@ function createScheduleMessage(messages) {
    // console.log('Recived Message :' + JSON.stringify(data));
 }
 
-function sendAliveSignalToinfluxService(userId,MAC,HUE,RGBBrightnes,ColorTemperature,Brightness,Dance){
-
-
-// Required Data in POST Request Body
-const data= {
-  userId: userId,
-  MAC: MAC,
-  HUE: HUE,
-  RGBBrightnes: RGBBrightnes,
-  ColorTemperature: ColorTemperature,
-  Brightness: Brightness,
-  Dance: Dance
+const sendAliveSignalToinfluxService = ({ userId, mac, hue, rgbBrightness, colorTemperature, brightness, dance }) => {
+  // Required Data in POST Request Body
+  const data = {
+    userId,
+    MAC: mac,
+    HUE: hue,
+    RGBBrightnes: rgbBrightness,
+    ColorTemperature: colorTemperature,
+    Brightness: brightness,
+    Dance: dance
+  };
+  
+  // Send POST Request to the API Route
+  axios.post(`${config.InfluxAddress}/Alive`, data)
+    .then(response => {
+      console.log('Request successful');
+    })
+    .catch(error => {
+      console.log(`Request failed! ${error.message}`);
+    });
 };
-
-// Send POST Request to the API Route
-axios.post('http://localhost:3005/Alive', data)
-  .then(function (response) {
-    console.log('Request successful');
-  })
-  .catch(function (error) {
-    console.log('Request failed!');
-  });
-
-}
 
 
 module.exports.sendAliveSignalToinfluxService = sendAliveSignalToinfluxService;

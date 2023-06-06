@@ -6,7 +6,7 @@ const helper = require('./models/helper');
 
 const apiGatewayRouter = require('./routes/gateway');
 
-app.use('/api',apiGatewayRouter);
+app.use('/api', apiGatewayRouter);
 const cors = require('cors');
 // CORS configuration
 const corsOptions = {
@@ -20,7 +20,7 @@ app.use(cors(corsOptions));
 
 io.use((socket, next) => {
   const macValue = socket.handshake.headers['mac'];
- socket.id = macValue
+  socket.id = macValue
   next();
 });
 
@@ -42,10 +42,10 @@ io.on('connection', (socket) => {
 
 
   function handleRequest(data) {
-    console.log('Client Say: ' + data.message);
+
     switch (data.type) {
       case "A": // Alive signal
-        console.log('alive signal : ' + JSON.stringify( data.message));
+        processAliveSignal(socket.id, data.message);
         io.emit('response', '200');
         break;
       case "S":
@@ -91,7 +91,18 @@ io.on('connection', (socket) => {
 
 
 
+function processAliveSignal(mac, message) {
 
+  const parsedData = message;
+var mac = mac;
+var userId = 'Sajad';
+var hue =  message.hue;
+var rgbBrightness=  message.RGBBrightnes;
+var colorTemperature = message.ColorTemperature
+var brightness = message.Brightness;
+var dance = message.Dance;
+helper.sendAliveSignalToinfluxService({userId,mac,hue,rgbBrightness,colorTemperature,brightness,dance});
+}
 
 const { PORT = 3004 } = process.env;
 server.listen(PORT, () => {

@@ -5,29 +5,31 @@ const token = 'XKlWnw2A09WNqISlYUuprBH9WryaFg6L31dtpjJ0EtZ6wFXUy1tLvb3y5ET9Wy2cH
 const org = 'Aroosha'
 const bucket = 'Aroosha'
 
-const client = new InfluxDB({ url: 'http://154.211.2.176:8086', token: token })
 
 
-const { Point } = require('@influxdata/influxdb-client')
-const writeApi = client.getWriteApi(org, bucket)
-writeApi.useDefaultTags({ host: 'host1' })
+function saveAliveSignal(userId, MAC, HUE, RGBBrightness, ColorTemperature, Brightness, Dance) {
 
 
-function saveAliveSignal(userId,MAC,HUE,RGBBrightnes,ColorTemperature,Brightness,Dance) {
+    const client = new InfluxDB({ url: 'http://154.211.2.176:8086', token: token })
+
+
+    const { Point } = require('@influxdata/influxdb-client')
+    const writeApi = client.getWriteApi(org, bucket)
+    writeApi.useDefaultTags({ host: 'host1' })
     const point = new Point(userId)
         .stringField('MAC', MAC)
         .stringField('HUE', HUE)
-        .intField('RGBBrightnes ', RGBBrightnes)
-        .intField('ColorTemperature  ',ColorTemperature)
-        .intField('Brightness   ', Brightness)
-        .intField('Dance   ', Dance)
-
+        .intField('RGBBrightness', RGBBrightness)
+        .intField('ColorTemperature', ColorTemperature)
+        .intField('Brightness', Brightness)
+        .intField('Dance', Dance)
+        .tag('deviceID', MAC);
 
     writeApi.writePoint(point)
     writeApi
         .close()
         .then(() => {
-            console.log('Alive signal inserted')
+            console.log('Alive Signal inserted')
         })
         .catch(e => {
             console.error(e)

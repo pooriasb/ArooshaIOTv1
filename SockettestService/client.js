@@ -21,11 +21,14 @@ socket.on('messageFromServer', (data) => {
 });
 
 setInterval(sendAliveSignal,5000);
+
+
+
 function sendAliveSignal(){
   socket.emit('request', {message :{ hue :'ACDSF256',
-  RGBBrightnes :'56',
-  ColorTemperature :'80',
-  Brightness :'90',
+  RGBBrightnes :Math.floor(Math.random() * 101),
+  ColorTemperature :Math.floor(Math.random() * 101),
+  Brightness :Math.floor(Math.random() * 101),
   Dance : '0',
   isChanged : '1'},
   type :'A'
