@@ -4,7 +4,7 @@ const express = require('express');
 const deviceModel = require('./models/device');
 const controllerRouter = require('./routes/DeviceCtrl');
 const app = express();
-
+const DeviceInfo = require('./models/deviceinfo');
 app.use('/api/ctrl',controllerRouter);
 
 app.get('/GetDeviceTopic/:deviceID', (req, res) => {
