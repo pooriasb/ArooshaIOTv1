@@ -97,6 +97,18 @@ async function getMyRoolList(userId) {
     var uniqueTopics = Array.from(new Set(Topics));
     return JSON.stringify(uniqueTopics);
 }
+
+
+async function getDeviceByMac(mac) {
+  try {
+    const device = await DeviceDocument.findOne({ MacAddress: mac });
+    return device;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+module.exports.getDeviceByMac = getDeviceByMac;
 module.exports.getMyRoolList = getMyRoolList;
 module.exports.deleteDevice = deleteDevice;
 module.exports.createDevice = createDevice;

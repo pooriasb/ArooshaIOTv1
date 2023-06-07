@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-router.use(express.json());
 const device = require('../models/device');
 const deviceinfo = require('../models/deviceinfo');
 
@@ -39,6 +38,16 @@ router.get('/GetdeviceinfoByModel/:model', (req, res) => {
     .catch(err => {
       res.status(500).send('Error retrieving device from database');
     });
+});
+
+router.get('/getDeviceByMac/:mac', async (req, res) => {
+  try {
+    const device = await getDeviceByMac(req.params.mac);
+    res.send(device);
+  } catch(err) {
+    console.log(err);
+    res.status(500).json({ errorMessage: 'Error getting device by MAC address' });
+  }
 });
 
 module.exports = router;
