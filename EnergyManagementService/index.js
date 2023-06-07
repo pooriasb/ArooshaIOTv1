@@ -4,7 +4,7 @@ const app = express();
 const reportsRouter= require('./routes/reports');
 
 
-
+app.use('/api/report',reportsRouter);
 
 
 const { PORT = 3006 } = process.env;

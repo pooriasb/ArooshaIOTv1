@@ -42,8 +42,8 @@ router.get('/GetdeviceinfoByModel/:model', (req, res) => {
 
 router.get('/getDeviceByMac/:mac', async (req, res) => {
   try {
-    const device = await getDeviceByMac(req.params.mac);
-    res.send(device);
+    const deviceobj = await  device.getDeviceByMac(req.params.mac);
+    res.send(deviceobj);
   } catch(err) {
     console.log(err);
     res.status(500).json({ errorMessage: 'Error getting device by MAC address' });
