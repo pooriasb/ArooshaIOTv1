@@ -33,6 +33,28 @@ mongoose.connect(config.dbAddress)
     });
     
     const DeviceInfo = mongoose.model('DeviceInfo', DeviceInfoSchema);
+
+
+
+
+function getDeviceByModel(model) {
+  return DeviceInfo.findOne({ deviceModel: model })
+    .then(device => {
+      return device;
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}
+
+
+
+
+
+
+
+
+
     const testDevices = [
   {
     deviceName: "lostere hobabi",
@@ -82,7 +104,8 @@ mongoose.connect(config.dbAddress)
 
 
 
-    module.exports = DeviceInfo;
+    module.exports.deviceinfoModel = DeviceInfo;
+    module.exports.getDeviceByModel = getDeviceByModel;
 
 
     
