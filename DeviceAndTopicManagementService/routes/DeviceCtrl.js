@@ -24,10 +24,10 @@ router.get('/delete/:deviceId', (req, res) => {
     });
 });
 
-router.get('/RoomList/:userId', (req, res) => {
-    device.getMyRoolList(req.params.userId).then((value) => {
-        res.send(value);
-    });
+router.get('/RoomList/:userId', async (req, res) => {
+  const value = await device.getMyRoolList(req.params.userId);
+  res.send(value);
 });
+
 
 module.exports = router;

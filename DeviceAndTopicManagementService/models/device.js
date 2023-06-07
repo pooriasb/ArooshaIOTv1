@@ -49,7 +49,8 @@ async function getDeviceMac(deviceId) {
 async function getUserDeviceList(userId) {
     console.log('userID:' + userId);
     try {
-        const documents = await DeviceDocument.find({ userId: userId });
+        const documents = await DeviceDocument.find({ userId: userId })
+        .select('-_id deviceName deviceModel Topic MacAddress');
         if (documents && documents.length > 0) {
             return documents;
         } else {

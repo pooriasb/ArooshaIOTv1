@@ -3,17 +3,26 @@ const router = express.Router();
 const config = require('config');
 const http = require('http');
 const axios = require('axios');
+router.use(express.json());
 router.get('/sendMessage', (req, res) => {
     res.sendStatus(200);
 });
 /***************************************************Device Management  */
 //TODO: it needs to select specific filds to return in the device micro service
-router.get('/getMyDeviceList/:userId', (req, res) => {
+router.get('/getMyDeviceList/:userId', async (req, res) => {
     //http://127.0.0.1:3003/api/ctrl/list/sajad
-    
-    getMyDeviceListFromService(req.params.userId).then((value) => {
-        res.send(value);
-    });
+
+    try {
+        const deviceList = await getMyDeviceListFromService(req.params.userId);
+        const roomlist = await sendGetMyRoomListToservice(req.params.userId);
+        const data = {
+            deviceList,
+            roomlist
+        };
+        res.send(JSON.stringify(data));
+    } catch (error) {
+       console.log('Error:  '+ error)
+    }
 
 });
 function getMyDeviceListFromService(userId) {
@@ -54,16 +63,16 @@ function sendCreateRequestToService(device) {
 
 router.get('/DeleteDevice/:deviceId', (req, res) => {
     sendDeleteRequestToService(req.params.deviceId);
-    res.send( sendDeleteRequestToService(req.params.deviceId));
+    res.send(sendDeleteRequestToService(req.params.deviceId));
 });
-function sendDeleteRequestToService(deviceId){
-    axios.get(config.DeviceServiceAddress + '/api/ctrl/delete/'+deviceId)
-    .then(response => {
-    return  response.data;
-    })
-    .catch(error => {
-     return "-1";
-    });
+function sendDeleteRequestToService(deviceId) {
+    axios.get(config.DeviceServiceAddress + '/api/ctrl/delete/' + deviceId)
+        .then(response => {
+            return response.data;
+        })
+        .catch(error => {
+            return "-1";
+        });
 }
 /************************************************************ */
 /*********************************Room Management */
@@ -71,19 +80,19 @@ router.get('/GetMyRoomList/:userId', (req, res) => {
     res.send(sendGetMyRoomListToservice(req.params.userId));
 });
 
-function sendGetMyRoomListToservice(userId){
-    axios.get(config.DeviceServiceAddress + '/api/ctrl/RoomList/'+userId)
-    .then(response => {
-    return  response.data;
-    })
-    .catch(error => {
-     return "-1";
-    });
+async function sendGetMyRoomListToservice(userId) {
+  try {
+    const response = await axios.get(config.DeviceServiceAddress + '/api/ctrl/RoomList/' + userId);
+    return response.data;
+  } catch (error) {
+    return "-1";
+  }
 }
+
 router.post('/CreateRoom', (req, res) => {
     const { userId, roomName, devices } = req.body;
     try {
-       
+
         res.send(roomName);
     } catch (error) {
         // Replace with appropriate error handling mechanism
