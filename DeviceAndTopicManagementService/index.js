@@ -5,7 +5,10 @@ const deviceModel = require('./models/device');
 const controllerRouter = require('./routes/DeviceCtrl');
 const app = express();
 const DeviceInfo = require('./models/deviceinfo');
+const roomRouter = require('./routes/roomsCtrl');
+
 app.use('/api/ctrl',controllerRouter);
+app.use('/api/room',roomRouter);
 
 app.get('/GetDeviceTopic/:deviceID', (req, res) => {
   try {
