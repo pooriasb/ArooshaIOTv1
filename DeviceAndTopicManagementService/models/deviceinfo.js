@@ -37,17 +37,14 @@ mongoose.connect(config.dbAddress)
 
 
 
-function getDeviceByModel(model) {
-  return DeviceInfo.findOne({ deviceModel: model })
-    .then(device => {
-      return device;
-    })
-    .catch(err => {
-      console.log(err);
-    });
+async function getDeviceByModel(model) {
+  try {
+    const device = await DeviceInfo.findOne({ deviceModel: model });
+    return device;
+  } catch (err) {
+    console.log(err);
+  }
 }
-
-
 
 
 

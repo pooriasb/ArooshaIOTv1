@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 router.use(express.json());
 const device = require('../models/device');
+const deviceinfo = require('../models/deviceinfo');
 
 
 
@@ -29,5 +30,15 @@ router.get('/RoomList/:userId', async (req, res) => {
   res.send(value);
 });
 
+router.get('/GetdeviceinfoByModel/:model', (req, res) => {
+  const model = req.params.model;
+  deviceinfo.getDeviceByModel(model)
+    .then(device => {
+      res.status(200).json(device);
+    })
+    .catch(err => {
+      res.status(500).send('Error retrieving device from database');
+    });
+});
 
 module.exports = router;
