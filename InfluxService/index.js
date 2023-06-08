@@ -5,8 +5,8 @@ const dbManager = require('./routes/dbManagement');
 app.use(express.json());
 
 app.post('/Alive', (req, res) => {
-    const { userId, MAC, HUE, RGBBrightnes, ColorTemperature, Brightness, Dance } = req.body;
-    dbManager.saveAliveSignal(userId, MAC, HUE, RGBBrightnes, ColorTemperature, Brightness, Dance);
+    const { userId, mac, hue, rgbBrightness, colorTemperature, brightness, dance } = req.body;
+    dbManager.saveAliveSignal(userId, mac, hue, rgbBrightness, colorTemperature, brightness, dance);
     res.sendStatus(200);
 });
 

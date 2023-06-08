@@ -12,16 +12,16 @@ function createScheduleMessage(messages) {
    // console.log('Recived Message :' + JSON.stringify(data));
 }
 
-const sendAliveSignalToInfluxService = ({ userId, mac, hue, rgbBrightness, colorTemperature, brightness, dance }) => {
+const sendAliveSignalToInfluxService = ({ userId, mac, hue,rgbBrightness, colorTemperature, brightness, dance }) => {
   // Required Data in POST Request Body
   const data = {
     userId,
-    MAC: mac,
-    HUE: hue,
-    RGBBrightness: rgbBrightness,
-    ColorTemperature: colorTemperature,
-    Brightness: brightness,
-    Dance: dance
+    mac: mac,
+    hue: hue,
+    rgbBrightness: rgbBrightness,
+    colorTemperature: colorTemperature,
+    brightness: brightness,
+    dance: dance
   };
   
   // Send POST Request to the API Route

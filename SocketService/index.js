@@ -105,11 +105,12 @@ io.on('connection', (socket) => {
 // }
 
 function processAliveSignal(macAddress, data) {
-  const { hue, RGBBrightness, ColorTemperature, Brightness, Dance } = data;
+  const { hue, rgbBrightness, colorTemperature, brightness, dance } = data;
   const userId = 'Sajad';
   const mac = macAddress;
- helper.sendAliveSignalToInfluxService({ userId, mac, hue, RGBBrightness, ColorTemperature, Brightness, Dance });
+ helper.sendAliveSignalToInfluxService({ userId, mac, hue,rgbBrightness, colorTemperature, brightness, dance });
 }
+
 
 
 

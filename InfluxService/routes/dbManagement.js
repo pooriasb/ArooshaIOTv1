@@ -7,7 +7,7 @@ const bucket = 'Aroosha'
 
 
 
-function saveAliveSignal(userId, MAC, HUE, RGBBrightness, ColorTemperature, Brightness, Dance) {
+function saveAliveSignal(userId, mac, hue, rgbBrightness, colorTemperature, brightness, dance) {
 
 
     const client = new InfluxDB({ url: 'http://154.211.2.176:8086', token: token })
@@ -17,12 +17,12 @@ function saveAliveSignal(userId, MAC, HUE, RGBBrightness, ColorTemperature, Brig
     const writeApi = client.getWriteApi(org, bucket)
     //writeApi.useDefaultTags({ host: 'host1' })
     const point = new Point(userId)
-        .stringField('deviceID', MAC)
-        .tag('HUE', HUE)
-        .tag('RGBBrightness', RGBBrightness)
-        .tag('ColorTemperature', ColorTemperature)
-        .tag('Brightness', Brightness)
-        .tag('Dance', Dance);
+        .stringField('deviceID', mac)
+        .tag('hue', hue)
+        .tag('rgbBrightness', rgbBrightness)
+        .tag('colorTemperature', colorTemperature)
+        .tag('brightness', brightness)
+        .tag('dance', dance);
 
 
     writeApi.writePoint(point)
@@ -62,10 +62,11 @@ const queryApi = new InfluxDB({ url: 'http://154.211.2.176:8086', token: token }
 const fluxQuery = `from(bucket: "Aroosha")
     |> range(start: ${start})
     |> filter(fn: (r) => r._value == "${mac}")
-    |> group(columns: ["_measurement"], mode:"by")
-    |> keep(columns: ["_time", "_field", "RGBBrightness", "ColorTemperature" , "Brightness"])`
+     |> group(columns: ["_measurement"], mode:"by")
+     |> keep(columns: ["_time", "_field", "rgbBrightness", "colorTemperature" , "brightness"])
+    `
 
-
+   
     const resultArray = []
 
     for await (const { values, tableMeta } of queryApi.iterateRows(fluxQuery)) {
