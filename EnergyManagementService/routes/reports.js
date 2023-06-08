@@ -27,8 +27,8 @@ async function energyUsageByDevice(mac, start) {
 
     //console.log(JSON.stringify(signals));
     let signalLength = signals.length
-    let sumColorWhiteTemperature = 0;
-    let sumColorYellowTemperature = 0;
+    let sumColorWhitePower = 0;
+    let sumColorYellowPower = 0;
     let sumRgbBrightness = 0;
     let sumBrightness = 0;
     let ColorTemperaturelength = 0;
@@ -53,12 +53,16 @@ async function energyUsageByDevice(mac, start) {
             yellowTemp = 100;
             whiteTemp += parseInt(signal.colorTemperature) * 2
           }
-/************************************************* */
-          yellowPower = deviceInfo.driverYellowPower * (yellowTemp / 100);
-          whitePower =  deviceInfo.driverWhitePower * (whiteTemp / 100);
-//----------------------------------------------------
-          sumColorYellowTemperature += yellowTemp;
-          sumColorWhiteTemperature += whiteTemp;
+          /*************************************************  */
+          //calculate energy usage per driver by color temp
+          // base on dimmer
+          yellowPower = (deviceInfo.driverYellowPower * (yellowTemp / 100)) * (signal.brightness / 100);
+          whitePower = (deviceInfo.driverWhitePower * (whiteTemp / 100)) * (signal.brightness / 100);
+          console.log('single record white = ' + whitePower);
+          console.log('single record yellow = ' + yellowPower);
+          //----------------------------------------------------
+          sumColorYellowPower += yellowPower;
+          sumColorWhitePower += whitePower;
           ColorTemperaturelength++;
 
         }
@@ -85,10 +89,10 @@ async function energyUsageByDevice(mac, start) {
     // console.log('sumColorYellowTemperature: ' + sumColorYellowTemperature + ' >len: ' + ColorTemperaturelength
     // +' >Energy: '+ calculateEnergyUsage(sumColorYellowTemperature,deviceInfo.driverYellowPower,0));
 
-    console.log('sumColorWhiteTemperature: ' + sumColorWhiteTemperature + ' >len: ' + ColorTemperaturelength
-      + ' >Energy: ' + calculateEnergyUsage((sumColorWhiteTemperature / ColorTemperaturelength), deviceInfo.driverWhitePower, 0));
-    console.log('sumColorYellowTemperature: ' + sumColorYellowTemperature + ' >len: ' + ColorTemperaturelength
-      + ' >Energy: ' + calculateEnergyUsage((sumColorYellowTemperature / ColorTemperaturelength), deviceInfo.driverYellowPower, 0));
+    console.log('sumColorWhiteTemperature: ' + sumColorWhitePower + ' >len: ' + ColorTemperaturelength
+      + ' >Energy: ' + calculateEnergyUsage((sumColorWhitePower / ColorTemperaturelength), deviceInfo.driverWhitePower, 0));
+    console.log('sumColorYellowTemperature: ' + sumColorYellowPower + ' >len: ' + ColorTemperaturelength
+      + ' >Energy: ' + calculateEnergyUsage((sumColorYellowPower / ColorTemperaturelength), deviceInfo.driverYellowPower, 0));
     console.log('brightness: ' + sumBrightness + ' >len: ' + Brightnesslength);
     console.log('RgbBrightness: ' + sumRgbBrightness + ' >len: ' + RgbBrightnesslength);
 
