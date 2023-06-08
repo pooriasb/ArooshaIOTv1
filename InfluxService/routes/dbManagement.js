@@ -53,12 +53,28 @@ function getData() {
             console.log(objectFromTableMeta);
         }
     }
-
     /** Execute a query and receive line table metadata and rows. */
     myQuery()
 }
 
+async function getSignalByMac(mac, start) {
+const queryApi = new InfluxDB({ url: 'http://154.211.2.176:8086', token: token }).getQueryApi(org)
+const fluxQuery = `from(bucket: "Aroosha")
+    |> range(start: ${start})
+    |> filter(fn: (r) => r._value == "${mac}")
+    |> group(columns: ["_measurement"], mode:"by")
+    |> keep(columns: ["_time", "_field", "RGBBrightness", "ColorTemperature" , "Brightness"])`
 
 
+    const resultArray = []
+
+    for await (const { values, tableMeta } of queryApi.iterateRows(fluxQuery)) {
+        const objectFromTableMeta = tableMeta.toObject(values)
+        resultArray.push(objectFromTableMeta)
+    }
+    return resultArray;
+}
+
+module.exports.getSignalByMac = getSignalByMac;
 module.exports.saveAliveSignal = saveAliveSignal;
 module.exports.getData = getData;

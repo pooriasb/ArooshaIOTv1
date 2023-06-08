@@ -4,42 +4,52 @@ const mongoose = require('mongoose');
 const config = require('config');
 
 mongoose.connect(config.dbAddress)
-    .then(() => console.log('Connected to database'))
-    .catch(err => console.log('Error ' + err));
+  .then(() => console.log('Connected to database'))
+  .catch(err => console.log('Error ' + err));
 
-    const Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-    const DeviceInfoSchema = new Schema({
-      deviceName: {
-        type: String,
-        required: true
-      },
-      deviceModel: {
-        type: String,
-        required: true
-      },
-      driverWhitePower: {
-        type: String,
-        required: true
-      },
-      driverYellowPower: {
-        type: String,
-        required: true
-      },
-      driverRGBPower: {
-        type: String,
-        required: true
-      }
-    });
-    
-    const DeviceInfo = mongoose.model('DeviceInfo', DeviceInfoSchema);
+const DeviceInfoSchema = new Schema({
+  deviceName: {
+    type: String,
+    required: true
+  },
+  deviceModel: {
+    type: String,
+    required: true
+  },
+  driverWhitePower: {
+    type: String,
+    required: true
+  },
+  driverYellowPower: {
+    type: String,
+    required: true
+  },
+  driverRGBPower: {
+    type: String,
+    required: true
+  }
+});
+
+const DeviceInfo = mongoose.model('DeviceInfo', DeviceInfoSchema);
 
 
 
 
 async function getDeviceByModel(model) {
   try {
-    const device = await DeviceInfo.findOne({ deviceModel: model });
+const device = await DeviceInfo.findOne({ 
+  deviceModel: model 
+}, {
+  driverRGBPower: true,
+  driverYellowPower: true,
+  driverWhitePower: true,
+  _id: false 
+});
+
+
+    console.log(device);
     return device;
   } catch (err) {
     console.log(err);
@@ -52,7 +62,7 @@ async function getDeviceByModel(model) {
 
 
 
-    const testDevices = [
+const testDevices = [
   {
     deviceName: "lostere hobabi",
     deviceModel: "A2408",
@@ -101,8 +111,7 @@ async function getDeviceByModel(model) {
 
 
 
-    module.exports.deviceinfoModel = DeviceInfo;
-    module.exports.getDeviceByModel = getDeviceByModel;
+module.exports.deviceinfoModel = DeviceInfo;
+module.exports.getDeviceByModel = getDeviceByModel;
 
 
-    
