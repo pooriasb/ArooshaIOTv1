@@ -27,7 +27,8 @@ async function energyUsageByDevice(mac, start) {
 
     //console.log(JSON.stringify(signals));
     let signalLength = signals.length
-    let sumColorTemperature = 0;
+    let sumColorWhiteTemperature = 0;
+    let sumColorYellowTemperature = 0;
     let sumRgbBrightness = 0;
     let sumBrightness = 0;
     let ColorTemperaturelength = 0;
@@ -36,8 +37,30 @@ async function energyUsageByDevice(mac, start) {
     if (signalLength > 0) {
       signals.forEach(signal => {
         if (Number.isInteger(parseInt(signal.colorTemperature))) {
-          sumColorTemperature += parseInt(signal.colorTemperature);
+          // sumColorTemperature += parseInt(signal.colorTemperature);
+          let whiteTemp = 0;
+          let yellowTemp = 0;
+          let yellowPower = 0;
+          let whitePower = 0;
+          if (parseInt(signal.colorTemperature) > 50) { //yellow
+            yellowTemp = (100 - parseInt(signal.colorTemperature)) * 2;
+            whiteTemp = 100;
+          } else if (parseInt(signal.colorTemperature) === 50) {
+            yellowTemp = 100;
+            whiteTemp = 100;
+
+          } else {//white
+            yellowTemp = 100;
+            whiteTemp += parseInt(signal.colorTemperature) * 2
+          }
+/************************************************* */
+          yellowPower = deviceInfo.driverYellowPower * (yellowTemp / 100);
+          whitePower =  deviceInfo.driverWhitePower * (whiteTemp / 100);
+//----------------------------------------------------
+          sumColorYellowTemperature += yellowTemp;
+          sumColorWhiteTemperature += whiteTemp;
           ColorTemperaturelength++;
+
         }
         if (Number.isInteger(parseInt(signal.rgbBrightness))) {
           sumRgbBrightness += parseInt(signal.rgbBrightness);
@@ -57,7 +80,15 @@ async function energyUsageByDevice(mac, start) {
     console.log('driver RGB power : ' + deviceInfo.driverRGBPower);
 
     console.log('signals count: ' + signals.length);
-    console.log('colorTemperature: ' + sumColorTemperature + ' >len: ' + ColorTemperaturelength);
+    // console.log('sumColorWhiteTemperature: ' + sumColorWhiteTemperature + ' >len: ' + ColorTemperaturelength
+    //  + ' >Energy: '+calculateEnergyUsage(sumColorWhiteTemperature,deviceInfo.driverWhitePower,0));
+    // console.log('sumColorYellowTemperature: ' + sumColorYellowTemperature + ' >len: ' + ColorTemperaturelength
+    // +' >Energy: '+ calculateEnergyUsage(sumColorYellowTemperature,deviceInfo.driverYellowPower,0));
+
+    console.log('sumColorWhiteTemperature: ' + sumColorWhiteTemperature + ' >len: ' + ColorTemperaturelength
+      + ' >Energy: ' + calculateEnergyUsage((sumColorWhiteTemperature / ColorTemperaturelength), deviceInfo.driverWhitePower, 0));
+    console.log('sumColorYellowTemperature: ' + sumColorYellowTemperature + ' >len: ' + ColorTemperaturelength
+      + ' >Energy: ' + calculateEnergyUsage((sumColorYellowTemperature / ColorTemperaturelength), deviceInfo.driverYellowPower, 0));
     console.log('brightness: ' + sumBrightness + ' >len: ' + Brightnesslength);
     console.log('RgbBrightness: ' + sumRgbBrightness + ' >len: ' + RgbBrightnesslength);
 
@@ -69,6 +100,12 @@ async function energyUsageByDevice(mac, start) {
     console.error(error);
   }
 }
+
+function calculateEnergyUsage(temperature, w, brightness) {
+  let percentofwatoftempeture = w * (temperature / 100);
+  return percentofwatoftempeture;
+}
+
 
 module.exports = router;
 
