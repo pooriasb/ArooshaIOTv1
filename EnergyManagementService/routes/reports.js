@@ -17,16 +17,14 @@ router.get('/energyUsageByDevice/:mac/:start', async (req, res) => {
 });
 async function energyUsageByDevice(mac, start) {
   try {
-    const deviceResponse = await axios.get(config.DeviceServiceAddress + '/api/ctrl//getDeviceByMac/' + mac);
+    const deviceResponse = await axios.get(`${config.DeviceServiceAddress}/api/ctrl/getDeviceByMac/${mac}`);
     const device = deviceResponse.data;
-    const deviceInfoResponse = await axios.get(config.DeviceServiceAddress + '/api/ctrl//getDeviceInfoByModel/' + device.deviceModel);
+    const deviceInfoResponse = await axios.get(`${config.DeviceServiceAddress}/api/ctrl/getDeviceInfoByModel/${device.deviceModel}`);
     const deviceInfo = deviceInfoResponse.data;
-
-    const signalResponse = await axios.get(config.InfluxServiceAddress + '/getSignalsByMac/' + mac + '/' + start);
+    const signalResponse = await axios.get(`${config.InfluxServiceAddress}/getSignalsByMac/${mac}/${start}`);
     const signals = signalResponse.data;
 
-    //console.log(JSON.stringify(signals));
-    let signalLength = signals.length
+    let signalLength = signals.length;
     let sumColorWhitePower = 0;
     let sumColorYellowPower = 0;
     let sumRgbBrightness = 0;
@@ -34,37 +32,33 @@ async function energyUsageByDevice(mac, start) {
     let ColorTemperaturelength = 0;
     let RgbBrightnesslength = 0;
     let Brightnesslength = 0;
+    
     if (signalLength > 0) {
       signals.forEach(signal => {
         if (Number.isInteger(parseInt(signal.colorTemperature))) {
-          // sumColorTemperature += parseInt(signal.colorTemperature);
+          
           let whiteTemp = 0;
           let yellowTemp = 0;
           let yellowPower = 0;
           let whitePower = 0;
+          
           if (parseInt(signal.colorTemperature) > 50) { //yellow
             yellowTemp = (100 - parseInt(signal.colorTemperature)) * 2;
             whiteTemp = 100;
           } else if (parseInt(signal.colorTemperature) === 50) {
             yellowTemp = 100;
             whiteTemp = 100;
-
-          } else {//white
+          } else {
             yellowTemp = 100;
-            whiteTemp += parseInt(signal.colorTemperature) * 2
+            whiteTemp += parseInt(signal.colorTemperature) * 2;
           }
-          /*************************************************  */
-          //calculate energy usage per driver by color temp
-          // base on dimmer
+          
           yellowPower = (deviceInfo.driverYellowPower * (yellowTemp / 100)) * (signal.brightness / 100);
           whitePower = (deviceInfo.driverWhitePower * (whiteTemp / 100)) * (signal.brightness / 100);
-          console.log('single record white = ' + whitePower);
-          console.log('single record yellow = ' + yellowPower);
-          //----------------------------------------------------
+
           sumColorYellowPower += yellowPower;
           sumColorWhitePower += whitePower;
           ColorTemperaturelength++;
-
         }
         if (Number.isInteger(parseInt(signal.rgbBrightness))) {
           sumRgbBrightness += parseInt(signal.rgbBrightness);
@@ -77,33 +71,22 @@ async function energyUsageByDevice(mac, start) {
       });
     }
 
+    console.log(`Device Model: ${device.deviceModel}`);
+    console.log(`driver yellow power: ${deviceInfo.driverYellowPower}`);
+    console.log(`driver white power: ${deviceInfo.driverWhitePower}`);
+    console.log(`driver RGB power: ${deviceInfo.driverRGBPower}`);
+    console.log(`signals count: ${signals.length}`);
+    
+    console.log(`sumColorWhiteTemperature: ${sumColorWhitePower} >len: ${ColorTemperaturelength} >Energy: ${calculateEnergyUsage((sumColorWhitePower / ColorTemperaturelength), deviceInfo.driverWhitePower, 0)}`);
+    console.log(`sumColorYellowTemperature: ${sumColorYellowPower} >len: ${ColorTemperaturelength} >Energy: ${calculateEnergyUsage((sumColorYellowPower / ColorTemperaturelength), deviceInfo.driverYellowPower, 0)}`);
+    console.log(`brightness: ${sumBrightness} >len: ${Brightnesslength}`);
+    console.log(`RgbBrightness: ${sumRgbBrightness} >len: ${RgbBrightnesslength}`);
 
-    console.log('Device Model: ' + device.deviceModel);
-    console.log('driver yellow power : ' + deviceInfo.driverYellowPower);
-    console.log('driver white power : ' + deviceInfo.driverWhitePower);
-    console.log('driver RGB power : ' + deviceInfo.driverRGBPower);
-
-    console.log('signals count: ' + signals.length);
-    // console.log('sumColorWhiteTemperature: ' + sumColorWhiteTemperature + ' >len: ' + ColorTemperaturelength
-    //  + ' >Energy: '+calculateEnergyUsage(sumColorWhiteTemperature,deviceInfo.driverWhitePower,0));
-    // console.log('sumColorYellowTemperature: ' + sumColorYellowTemperature + ' >len: ' + ColorTemperaturelength
-    // +' >Energy: '+ calculateEnergyUsage(sumColorYellowTemperature,deviceInfo.driverYellowPower,0));
-
-    console.log('sumColorWhiteTemperature: ' + sumColorWhitePower + ' >len: ' + ColorTemperaturelength
-      + ' >Energy: ' + calculateEnergyUsage((sumColorWhitePower / ColorTemperaturelength), deviceInfo.driverWhitePower, 0));
-    console.log('sumColorYellowTemperature: ' + sumColorYellowPower + ' >len: ' + ColorTemperaturelength
-      + ' >Energy: ' + calculateEnergyUsage((sumColorYellowPower / ColorTemperaturelength), deviceInfo.driverYellowPower, 0));
-    console.log('brightness: ' + sumBrightness + ' >len: ' + Brightnesslength);
-    console.log('RgbBrightness: ' + sumRgbBrightness + ' >len: ' + RgbBrightnesslength);
-
-
-    // 2 - get footprint from influx
-    // 3 - calculate usage
-    // 4 - sum usage
   } catch (error) {
     console.error(error);
   }
 }
+
 
 function calculateEnergyUsage(temperature, w, brightness) {
   let percentofwatoftempeture = w * (temperature / 100);
