@@ -75,6 +75,19 @@ const deleteRoomById = async (id) => {
     throw new Error('Failed to delete room by ID');
   }
 }
+const addDeviceToRoom = async (userId, roomName, deviceMac) => {
+  try {
+    const room = await roomDocument.findOne({ userId, roomName });
+    if (!room) throw new Error('Room not found');
+
+    room.devices.push(deviceMac);
+    await room.save();
+
+    return deviceMac;
+  } catch (err) {
+    return { error: err.message };
+  }
+};
 
 
-module.exports = { createRoom, getRooms, getRoomById, updateRoomById, deleteRoomById };
+module.exports = { createRoom, getRooms, getRoomById, updateRoomById, deleteRoomById,addDeviceToRoom };
