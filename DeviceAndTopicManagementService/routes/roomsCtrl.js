@@ -48,4 +48,19 @@ router.get('/delete/:id', async (req, res) => {
       res.status(500).send('Failed to delete room by ID');
     }
   });
+  router.get('/addDeviceToRoom/:roomName/:deviceMac', async (req, res) => {
+    const roomName = req.params.roomName;
+  
+    try {
+      await rooms.addDeviceToRoom('Sajad',roomName,req.params.deviceMac);
+      res.send('added to room successfully');
+    } catch (error) {
+      // Replace with appropriate error handling mechanism
+      console.error(error);
+      res.status(500).send('Failed to delete room by ID');
+    }
+  });
+
+
+
 module.exports = router;
