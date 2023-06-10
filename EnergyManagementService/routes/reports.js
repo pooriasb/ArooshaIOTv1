@@ -102,6 +102,28 @@ async function energyUsageByDevice(mac, start) {
   }
 }
 
+router.get('/energyUsageByUser/:userId', async (req, res) => {
+  //1. get user devices by mac
+  //127.0.0.1:3003/api/ctrl/list/sajad
+  const macs = [];
+  const deviceResponse = await axios.get(`${config.DeviceServiceAddress}/api/ctrl/list/${req.params.userId}`);
+  const devices = deviceResponse.data;
+  devices.forEach(device=>{
+    macs.push(device.MacAddress);
+  });
+
+  //2. use energyUsageByDevice for each devices
+  //3. concat results and return
+  res.send(macs);
+});
+router.get('energyUsageByRoom/:roomId', (req, res) => {
+  //1. get devices macs in room
+  //2. use energyUsageByDevice for each devices
+  //3. concat results and return
+  res.sendStatus(200);
+});
+
+
 
 function calculateEnergyUsage(temperature, w, brightness) {
   let percentofwatoftempeture = w * (temperature / 100);
