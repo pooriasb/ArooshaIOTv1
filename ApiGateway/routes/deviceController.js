@@ -90,10 +90,18 @@ async function sendGetMyRoomListToservice(userId) {
 }
 
 router.post('/CreateRoom', (req, res) => {
-    const { userId, roomName, devices } = req.body;
     try {
+        const { roomName } = req.body;
+        axios.post(config.DeviceServiceAddress+'/api/room/create', { roomName })
+        .then(response => {
+            res.sendStatus(200);
+        })
+        .catch(error => {
+          // handle error
+          console.log(error);
+        });
+        
 
-        res.send(roomName);
     } catch (error) {
         // Replace with appropriate error handling mechanism
         console.error(error);

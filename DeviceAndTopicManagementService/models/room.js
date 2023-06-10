@@ -15,12 +15,11 @@ const roomSchema = new mongoose.Schema({
 const roomDocument = mongoose.model('rooms', roomSchema);
 
 // Create a new room document
-const createRoom = async (userId, roomName, devices) => {
+const createRoom = async (userId, roomName) => {
   try {
     const newRoom = await roomDocument.create({
       userId,
       roomName,
-      devices
     });
     return newRoom;
   } catch (error) {

@@ -12,9 +12,9 @@ router.get('/getSingle/:roomId', (req, res) => {
 });
 
 router.post('/create', async (req, res) => {
-    const { userId, roomName, devices } = req.body;
+    const { roomName } = req.body;
     try {
-        const newRoom = await rooms.createRoom(userId, roomName, devices);
+        const newRoom = await rooms.createRoom('Sajad', roomName);
         res.send(newRoom);
     } catch (error) {
         // Replace with appropriate error handling mechanism

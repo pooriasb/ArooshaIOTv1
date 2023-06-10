@@ -32,16 +32,16 @@ async function energyUsageByDevice(mac, start) {
     let ColorTemperaturelength = 0;
     let RgbBrightnesslength = 0;
     let Brightnesslength = 0;
-    
+
     if (signalLength > 0) {
       signals.forEach(signal => {
         if (Number.isInteger(parseInt(signal.colorTemperature))) {
-          
+
           let whiteTemp = 0;
           let yellowTemp = 0;
           let yellowPower = 0;
           let whitePower = 0;
-          
+
           if (parseInt(signal.colorTemperature) > 50) { //yellow
             yellowTemp = (100 - parseInt(signal.colorTemperature)) * 2;
             whiteTemp = 100;
@@ -52,7 +52,7 @@ async function energyUsageByDevice(mac, start) {
             yellowTemp = 100;
             whiteTemp += parseInt(signal.colorTemperature) * 2;
           }
-          
+
           yellowPower = (deviceInfo.driverYellowPower * (yellowTemp / 100)) * (signal.brightness / 100);
           whitePower = (deviceInfo.driverWhitePower * (whiteTemp / 100)) * (signal.brightness / 100);
 
@@ -71,17 +71,32 @@ async function energyUsageByDevice(mac, start) {
       });
     }
 
-    console.log(`Device Model: ${device.deviceModel}`);
-    console.log(`driver yellow power: ${deviceInfo.driverYellowPower}`);
-    console.log(`driver white power: ${deviceInfo.driverWhitePower}`);
-    console.log(`driver RGB power: ${deviceInfo.driverRGBPower}`);
-    console.log(`signals count: ${signals.length}`);
-    
-    console.log(`sumColorWhiteTemperature: ${sumColorWhitePower} >len: ${ColorTemperaturelength} >Energy: ${calculateEnergyUsage((sumColorWhitePower / ColorTemperaturelength), deviceInfo.driverWhitePower, 0)}`);
-    console.log(`sumColorYellowTemperature: ${sumColorYellowPower} >len: ${ColorTemperaturelength} >Energy: ${calculateEnergyUsage((sumColorYellowPower / ColorTemperaturelength), deviceInfo.driverYellowPower, 0)}`);
-    console.log(`brightness: ${sumBrightness} >len: ${Brightnesslength}`);
-    console.log(`RgbBrightness: ${sumRgbBrightness} >len: ${RgbBrightnesslength}`);
+    // console.log(`Device Model: ${device.deviceModel}`);
+    // console.log(`driver yellow power: ${deviceInfo.driverYellowPower}`);
+    // console.log(`driver white power: ${deviceInfo.driverWhitePower}`);
+    // console.log(`driver RGB power: ${deviceInfo.driverRGBPower}`);
+    // console.log(`signals count: ${signals.length}`);
+    // console.log(`sumColorWhiteTemperature: ${sumColorWhitePower} >len: ${ColorTemperaturelength} >Energy: ${whiteEnergyUsage}`);
+    // console.log(`sumColorYellowTemperature: ${sumColorYellowPower} >len: ${ColorTemperaturelength} >Energy: ${yellowEnergyUsage}`);
+    // console.log(`brightness: ${sumBrightness} >len: ${Brightnesslength}`);
+    // console.log(`RgbBrightness: ${sumRgbBrightness} >len: ${RgbBrightnesslength}`);
 
+
+    let whiteEnergyUsage = calculateEnergyUsage((sumColorWhitePower / ColorTemperaturelength), deviceInfo.driverWhitePower, 0);
+    let yellowEnergyUsage = calculateEnergyUsage((sumColorYellowPower / ColorTemperaturelength), deviceInfo.driverYellowPower, 0);
+    let rgbEnergyUsage = calculateEnergyUsage((sumRgbBrightness / RgbBrightnesslength), deviceInfo.driverRGBPower, 0);
+    var energyResult = {
+      deviceModel: device.deviceModel,
+      driverYellowPower: deviceInfo.driverYellowPower,
+      driverWhitePower: deviceInfo.driverWhitePower,
+      driverRGBPower: deviceInfo.driverRGBPower,
+      signalsCount: signals.length,
+      whiteEnergyUsage,
+      yellowEnergyUsage,
+      rgbEnergyUsage
+
+    }
+    return energyResult;
   } catch (error) {
     console.error(error);
   }
