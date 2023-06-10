@@ -38,28 +38,28 @@ router.post('/update/:id', async (req, res) => {
 });
 router.get('/delete/:id', async (req, res) => {
     const roomId = req.params.id;
-  
+
     try {
-      await rooms.deleteRoomById(roomId);
-      res.send('Room deleted successfully');
+        await rooms.deleteRoomById(roomId);
+        res.send('Room deleted successfully');
     } catch (error) {
-      // Replace with appropriate error handling mechanism
-      console.error(error);
-      res.status(500).send('Failed to delete room by ID');
+        // Replace with appropriate error handling mechanism
+        console.error(error);
+        res.status(500).send('Failed to delete room by ID');
     }
-  });
-  router.get('/addDeviceToRoom/:roomName/:deviceMac', async (req, res) => {
+});
+router.get('/addDeviceToRoom/:roomName/:deviceMac', async (req, res) => {
     const roomName = req.params.roomName;
-  
+
     try {
-      await rooms.addDeviceToRoom('Sajad',roomName,req.params.deviceMac);
-      res.send('added to room successfully');
+        await rooms.addDeviceToRoom('Sajad', roomName, req.params.deviceMac);
+        res.send('added to room successfully');
     } catch (error) {
-      // Replace with appropriate error handling mechanism
-      console.error(error);
-      res.status(500).send('Failed to delete room by ID');
+        // Replace with appropriate error handling mechanism
+        console.error(error);
+        res.status(500).send('Failed to delete room by ID');
     }
-  });
+});
 
 
 

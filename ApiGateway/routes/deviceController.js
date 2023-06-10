@@ -21,7 +21,7 @@ router.get('/getMyDeviceList/:userId', async (req, res) => {
         };
         res.send(JSON.stringify(data));
     } catch (error) {
-       console.log('Error:  '+ error)
+        console.log('Error:  ' + error)
     }
 
 });
@@ -81,26 +81,26 @@ router.get('/GetMyRoomList/:userId', (req, res) => {
 });
 
 async function sendGetMyRoomListToservice(userId) {
-  try {
-    const response = await axios.get(config.DeviceServiceAddress + '/api/ctrl/RoomList/' + userId);
-    return response.data;
-  } catch (error) {
-    return "-1";
-  }
+    try {
+        const response = await axios.get(config.DeviceServiceAddress + '/api/ctrl/RoomList/' + userId);
+        return response.data;
+    } catch (error) {
+        return "-1";
+    }
 }
 
 router.post('/CreateRoom', (req, res) => {
     try {
         const { roomName } = req.body;
-        axios.post(config.DeviceServiceAddress+'/api/room/create', { roomName })
-        .then(response => {
-            res.sendStatus(200);
-        })
-        .catch(error => {
-          // handle error
-          console.log(error);
-        });
-        
+        axios.post(config.DeviceServiceAddress + '/api/room/create', { roomName })
+            .then(response => {
+                res.sendStatus(200);
+            })
+            .catch(error => {
+                // handle error
+                console.log(error);
+            });
+
 
     } catch (error) {
         // Replace with appropriate error handling mechanism
@@ -119,7 +119,22 @@ router.get('/DeviceListInRoom', (req, res) => {
     res.sendStatus(200);
 });
 router.post('/AddDevicetoRoom', (req, res) => {
-    res.sendStatus(200);
+    try {
+        const { roomName, deviceMac } = req.body;
+        axios.get(config.DeviceServiceAddress + '/api/room/addDeviceToRoom/' + roomName + '/' + deviceMac)
+            .then(response => {
+                res.sendStatus(200);
+            })
+            .catch(error => {
+                // handle error
+                console.log(error);
+                res.sendStatus(500);
+            });
+    } catch (error) {
+        // Replace with appropriate error handling mechanism
+        console.error(error);
+        res.status(500).send('Failed to create room');
+    }
 });
 /************************************************** */
 
