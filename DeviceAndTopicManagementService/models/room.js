@@ -31,8 +31,10 @@ const createRoom = async (userId, roomName) => {
 
 // Read all room documents
 const getRooms = async (userId) => {
+
   try {
-    const rooms = await roomDocument.find({userId:userId});
+    const rooms = await roomDocument.find({userId:userId}).select('roomName devices');
+    
     return rooms;
   } catch (error) {
     // Replace with appropriate error handling mechanism

@@ -61,12 +61,11 @@ function sendCreateRequestToService(device) {
     return axios.post(config.DeviceServiceAddress + '/api/ctrl/createDevice', data);
 }
 
-router.get('/DeleteDevice/:deviceId', (req, res) => {
-    sendDeleteRequestToService(req.params.deviceId);
-    res.send(sendDeleteRequestToService(req.params.deviceId));
+router.get('/DeleteDevice/:mac', (req, res) => {
+    res.send(sendDeleteRequestToService(req.params.mac));
 });
-function sendDeleteRequestToService(deviceId) {
-    axios.get(config.DeviceServiceAddress + '/api/ctrl/delete/' + deviceId)
+function sendDeleteRequestToService(mac) {
+    axios.get(config.DeviceServiceAddress + '/api/ctrl/delete/' + mac)
         .then(response => {
             return response.data;
         })
@@ -76,13 +75,17 @@ function sendDeleteRequestToService(deviceId) {
 }
 /************************************************************ */
 /*********************************Room Management */
-router.get('/GetMyRoomList/:userId', (req, res) => {
-    res.send(sendGetMyRoomListToservice(req.params.userId));
+router.get('/GetMyRoomList/:userId',async (req, res) => {
+   
+    var response =await sendGetMyRoomListToservice(req.params.userId);
+    res.send(JSON.stringify(response));
 });
 
 async function sendGetMyRoomListToservice(userId) {
     try {
-        const response = await axios.get(config.DeviceServiceAddress + '/api/ctrl/RoomList/' + userId);
+       
+        const response = await axios.get(config.DeviceServiceAddress + '/api/room/list/' + userId);
+       console.log(response.data);
         return response.data;
     } catch (error) {
         return "-1";
@@ -92,6 +95,7 @@ async function sendGetMyRoomListToservice(userId) {
 router.post('/CreateRoom', (req, res) => {
     try {
         const { roomName } = req.body;
+        console.log(roomName);
         axios.post(config.DeviceServiceAddress + '/api/room/create', { roomName })
             .then(response => {
                 res.sendStatus(200);
@@ -99,15 +103,15 @@ router.post('/CreateRoom', (req, res) => {
             .catch(error => {
                 // handle error
                 console.log(error);
+        res.status(500).send('request to device service faild');
+
             });
-
-
     } catch (error) {
         // Replace with appropriate error handling mechanism
         console.error(error);
         res.status(500).send('Failed to create room');
     }
-    res.sendStatus(200);
+  
 });
 router.get('/DeleteRoom/:roomId', (req, res) => {
     res.sendStatus(200);

@@ -4,7 +4,10 @@ router.use(express.json());
 const rooms = require('../models/room');
 
 router.get('/list/:userId', (req, res) => {
-    rooms.getRooms(req.params.userId).then(value => { res.send(value) });
+   
+    rooms.getRooms(req.params.userId).then(value => { 
+        
+        res.send(value) });
 });
 
 router.get('/getSingle/:roomId', (req, res) => {

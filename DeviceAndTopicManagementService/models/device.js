@@ -74,9 +74,9 @@ async function createDevice(device) {
         return '0';
     }
 }
-async function deleteDevice(deviceId) {
+async function deleteDevice(mac) {
     try {
-        const result = await DeviceDocument.deleteOne({ _id: deviceId });
+        const result = await DeviceDocument.deleteOne({ MacAddress: mac });
         return result;
     } catch (err) {
         console.error(err);
@@ -87,6 +87,7 @@ async function getMyRoolList(userId) {
     //list devices >> topics
     // topics Splited by /
     var Topics = [];
+    
     const devices = await DeviceDocument.find({ userId: userId });
     devices.forEach(device => {
         //  console.log(`User ID: ${device.userId}, Topic: ${device.Topic}`);

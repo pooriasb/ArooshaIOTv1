@@ -18,13 +18,14 @@ router.post('/create', (req, res) => {
         .catch((error) => res.status(400).send(error));
 });
 
-router.get('/delete/:deviceId', (req, res) => {
-    device.deleteDevice(req.params.deviceId).then((value) => {
+router.get('/delete/:mac', (req, res) => {
+    device.deleteDevice(req.params.mac).then((value) => {
         res.send(value);
     });
 });
 
 router.get('/RoomList/:userId', async (req, res) => {
+  
   const value = await device.getMyRoolList(req.params.userId);
   res.send(value);
 });
