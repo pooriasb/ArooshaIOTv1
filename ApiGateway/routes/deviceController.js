@@ -136,7 +136,7 @@ router.post('/updateRoomName', async (req, res) => {
   }
 });
 
-
+//removeDeviceFromRoom
 
 router.get('/DeviceListInRoom', (req, res) => {
     res.sendStatus(200);
@@ -146,6 +146,24 @@ router.post('/AddDevicetoRoom', (req, res) => {
         const { roomName, deviceMac } = req.body;
 
         axios.get(config.DeviceServiceAddress + '/api/room/addDeviceToRoom/' + roomName + '/' + deviceMac)
+            .then(response => {
+                res.sendStatus(200);
+            })
+            .catch(error => {
+                // handle error
+                console.log(error);
+                res.sendStatus(500);
+            });
+    } catch (error) {
+        // Replace with appropriate error handling mechanism
+        console.error(error);
+        res.status(500).send('Failed to create room');
+    }
+});
+router.get('/removeDeviceFromRoom', (req, res) => {
+    try {
+        const { roomId, deviceMac } = req.params;
+        axios.get(config.DeviceServiceAddress + '/api/room/removeDeviceFromRoom/' + roomId + '/' + deviceMac)
             .then(response => {
                 res.sendStatus(200);
             })
