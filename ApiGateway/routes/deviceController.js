@@ -14,10 +14,10 @@ router.get('/getMyDeviceList/:userId', async (req, res) => {
 
     try {
         const deviceList = await getMyDeviceListFromService(req.params.userId);
-        const roomlist = await sendGetMyRoomListToservice(req.params.userId);
+        const roomList = await sendGetMyRoomListToservice(req.params.userId);
         const data = {
             deviceList,
-            roomlist
+            roomList
         };
         res.send(JSON.stringify(data));
     } catch (error) {
@@ -25,26 +25,16 @@ router.get('/getMyDeviceList/:userId', async (req, res) => {
     }
 
 });
-function getMyDeviceListFromService(userId) {
-    return p = new Promise((resolve, reject) => {
-
-        http.get(config.DeviceServiceAddress + '/api/ctrl/list/' + userId, (resp) => {
-            let data = "";
-            // A chunk of data has been recieved.
-            resp.on("data", chunk => {
-                data += chunk;
-            });
-            // The whole response has been received. Print out the result.
-            resp.on("end", () => {
-                //    let url = JSON.parse(data).message;
-
-                resolve(data);
-            });
-        }).on("error", err => {
-            console.log("Error: " + err.message);
-        });
-    });
+async function getMyDeviceListFromService(userId) {
+  try {
+    var response = await axios.get(config.DeviceServiceAddress + '/api/ctrl/list/' + userId);
+    return response.data;
+  } catch (error) {
+    console.log(`Error: ${error.message}`);
+   return 'error';
+  }
 }
+
 router.get('/CreateDevice/:userId/:deviceName/:deviceModel/:Topic/:MacAddress', (req, res) => {
     //TODO: validation 
     sendCreateRequestToService();
@@ -122,18 +112,18 @@ router.get('/updateRoom', (req, res) => {
     res.sendStatus(200);
 });
 router.post('/updateRoomName', async (req, res) => {
-  try {
-    let roomName = req.body.roomName;
-    let roomId = req.body.roomId;
-    const response = await axios.post(config.DeviceServiceAddress + '/api/room/updateName/', {
-      roomName,
-      roomId
-    });
-    res.status(200).send('updated');
-  } catch (error) {
-    console.log(`Error: ${error.message}`);
-    res.status(500).send('Error updating room name');
-  }
+    try {
+        let roomName = req.body.roomName;
+        let roomId = req.body.roomId;
+        const response = await axios.post(config.DeviceServiceAddress + '/api/room/updateName/', {
+            roomName,
+            roomId
+        });
+        res.status(200).send('updated');
+    } catch (error) {
+        console.log(`Error: ${error.message}`);
+        res.status(500).send('Error updating room name');
+    }
 });
 
 //removeDeviceFromRoom
