@@ -4,13 +4,13 @@ const mongoose = require('mongoose');
 const config = require('config');
 
 mongoose.connect(config.dbAddress)
-    .then(() => console.log('Connected to database'))
-    .catch(err => console.log('Error ' + err));
+  .then(() => console.log('Connected to database'))
+  .catch(err => console.log('Error ' + err));
 
 const roomSchema = new mongoose.Schema({
-    userId: String,
-    roomName: String,
-    devices: [String]
+  userId: String,
+  roomName: String,
+  devices: [String]
 });
 const roomDocument = mongoose.model('rooms', roomSchema);
 
@@ -33,8 +33,8 @@ const createRoom = async (userId, roomName) => {
 const getRooms = async (userId) => {
 
   try {
-    const rooms = await roomDocument.find({userId:userId}).select('roomName devices');
-    
+    const rooms = await roomDocument.find({ userId: userId }).select('roomName devices');
+
     return rooms;
   } catch (error) {
     // Replace with appropriate error handling mechanism
@@ -67,29 +67,50 @@ const updateRoomById = async (id, updates) => {
   }
 }
 
+const updateRoomName = async (id, newRoomName) => {
+  try {
+    await roomDocument.updateOne({ _id: id }, { roomName: newRoomName });
+    return 'Room name updated successfully!';
+  } catch (error) {
+    return `Error: ${error.message}`;
+  }
+};
+
+
+
 // Delete a room document by ID
 const deleteRoomById = async (id) => {
   try {
     await roomDocument.findByIdAndDelete(id);
+    return 'ok';
   } catch (error) {
     // Replace with appropriate error handling mechanism
     console.error(error);
-    throw new Error('Failed to delete room by ID');
+    return 'Failed to delete room by ID';
   }
 }
 const addDeviceToRoom = async (userId, roomName, deviceMac) => {
   try {
+
     const room = await roomDocument.findOne({ userId, roomName });
     if (!room) throw new Error('Room not found');
 
     room.devices.push(deviceMac);
     await room.save();
 
-    return deviceMac;
+    return room;
   } catch (err) {
     return { error: err.message };
   }
 };
 
 
-module.exports = { createRoom, getRooms, getRoomById, updateRoomById, deleteRoomById,addDeviceToRoom };
+module.exports = {
+  createRoom,
+  getRooms,
+  getRoomById,
+  updateRoomById,
+  deleteRoomById,
+  addDeviceToRoom,
+  updateRoomName
+};

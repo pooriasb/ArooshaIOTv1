@@ -85,7 +85,7 @@ async function sendGetMyRoomListToservice(userId) {
     try {
        
         const response = await axios.get(config.DeviceServiceAddress + '/api/room/list/' + userId);
-       console.log(response.data);
+     
         return response.data;
     } catch (error) {
         return "-1";
@@ -113,8 +113,10 @@ router.post('/CreateRoom', (req, res) => {
     }
   
 });
-router.get('/DeleteRoom/:roomId', (req, res) => {
-    res.sendStatus(200);
+router.get('/DeleteRoom/:roomId',async (req, res) => {
+    const response = await axios.get(config.DeviceServiceAddress + '/api/room/delete/' + req.params.roomId);
+   
+    res.status(200).send(response.data);
 });
 router.get('/updateRoom', (req, res) => {
     res.sendStatus(200);
@@ -125,6 +127,7 @@ router.get('/DeviceListInRoom', (req, res) => {
 router.post('/AddDevicetoRoom', (req, res) => {
     try {
         const { roomName, deviceMac } = req.body;
+     
         axios.get(config.DeviceServiceAddress + '/api/room/addDeviceToRoom/' + roomName + '/' + deviceMac)
             .then(response => {
                 res.sendStatus(200);
