@@ -165,7 +165,7 @@ router.get('/removeDeviceFromRoom', (req, res) => {
         const { roomId, deviceMac } = req.params;
         axios.get(config.DeviceServiceAddress + '/api/room/removeDeviceFromRoom/' + roomId + '/' + deviceMac)
             .then(response => {
-                res.sendStatus(200);
+                res.status(200).send(response.data);
             })
             .catch(error => {
                 // handle error
