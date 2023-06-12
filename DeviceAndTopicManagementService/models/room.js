@@ -103,7 +103,22 @@ const addDeviceToRoom = async (userId, roomName, deviceMac) => {
     return { error: err.message };
   }
 };
+// Function to remove a device from the devices array field of the room document with the provided id
+const removeDeviceFromRoom = async (id, deviceToRemove) => {
+  try {
+    const room = await roomDocument.findById(id);
+    if (!room) return `Room with ID ${id} not found`;
 
+    const deviceIndex = room.devices.indexOf(deviceToRemove);
+    if (deviceIndex === -1) return `${deviceToRemove} not found in the devices of the room`;
+
+    room.devices.splice(deviceIndex, 1);
+    await room.save();
+    return `Device ${deviceToRemove} removed from room successfully`;
+  } catch (error) {
+    return `Error: ${error.message}`;
+  }
+};
 
 module.exports = {
   createRoom,

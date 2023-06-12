@@ -39,6 +39,20 @@ router.post('/update/:id', async (req, res) => {
         res.status(500).send('Failed to update room by ID');
     }
 });
+
+router.post('/updateName/', async (req, res) => {
+  
+    const {roomName, roomId} = req.body;
+
+    try {
+        const updatedRoom = await rooms.updateRoomName(roomId,roomName);
+        res.send(updatedRoom);
+    } catch (error) {
+        // Replace with appropriate error handling mechanism
+        console.error(error);
+        res.status(500).send('Failed to update room ');
+    }
+});
 router.get('/delete/:id', async (req, res) => {
     const roomId = req.params.id;
 
