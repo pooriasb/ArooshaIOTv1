@@ -18,7 +18,7 @@ router.get('/getSingle/:roomId', (req, res) => {
 router.post('/create', async (req, res) => {
     const { roomName } = req.body;
     try {
-        const newRoom = await rooms.createRoom('Sajad', roomName);
+        const newRoom = await rooms.createRoom('sajad', roomName);
         res.send(newRoom);
     } catch (error) {
         // Replace with appropriate error handling mechanism
@@ -68,13 +68,12 @@ router.get('/delete/:id', async (req, res) => {
         res.status(500).send('Failed to delete room by ID');
     }
 });
-router.get('/addDeviceToRoom/:roomName/:deviceMac', async (req, res) => {
-    const roomName = req.params.roomName;
-
+router.get('/addDeviceToRoom/:roomId/:deviceMac', async (req, res) => {
+    const roomId = req.params.roomId;
+    console.log(roomId );
+    console.log(req.params.deviceMac );
     try {
-
-
-        var result = await rooms.addDeviceToRoom('Sajad', roomName, req.params.deviceMac);
+        var result = await rooms.addDeviceToRoom(roomId, req.params.deviceMac);
         res.send(result);
     } catch (error) {
         // Replace with appropriate error handling mechanism

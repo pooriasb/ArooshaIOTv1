@@ -92,20 +92,23 @@ const deleteRoomById = async (id) => {
     return 'Failed to delete room by ID';
   }
 }
-const addDeviceToRoom = async (userId, roomName, deviceMac) => {
+const addDeviceToRoom = async (id, deviceMac) => {
   try {
+    const room = await roomDocument.findById(id);
+    if (!room) return 'Room not found';
 
-    const room = await roomDocument.findOne({ userId, roomName });
-    if (!room) throw new Error('Room not found');
+    const deviceExists = room.devices.includes(deviceMac);
+    if (deviceExists) return 'Device already added';
 
     room.devices.push(deviceMac);
     await room.save();
 
-    return room;
+    return "addedd successfully";
   } catch (err) {
     return { error: err.message };
   }
 };
+
 // Function to remove a device from the devices array field of the room document with the provided id
 const removeDeviceFromRoom = async (id, deviceToRemove) => {
   try {
