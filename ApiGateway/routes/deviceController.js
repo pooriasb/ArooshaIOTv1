@@ -75,17 +75,17 @@ function sendDeleteRequestToService(mac) {
 }
 /************************************************************ */
 /*********************************Room Management */
-router.get('/GetMyRoomList/:userId',async (req, res) => {
-   
-    var response =await sendGetMyRoomListToservice(req.params.userId);
+router.get('/GetMyRoomList/:userId', async (req, res) => {
+
+    var response = await sendGetMyRoomListToservice(req.params.userId);
     res.send(JSON.stringify(response));
 });
 
 async function sendGetMyRoomListToservice(userId) {
     try {
-       
+
         const response = await axios.get(config.DeviceServiceAddress + '/api/room/list/' + userId);
-     
+
         return response.data;
     } catch (error) {
         return "-1";
@@ -103,7 +103,7 @@ router.post('/CreateRoom', (req, res) => {
             .catch(error => {
                 // handle error
                 console.log(error);
-        res.status(500).send('request to device service faild');
+                res.status(500).send('request to device service faild');
 
             });
     } catch (error) {
@@ -111,23 +111,40 @@ router.post('/CreateRoom', (req, res) => {
         console.error(error);
         res.status(500).send('Failed to create room');
     }
-  
+
 });
-router.get('/DeleteRoom/:roomId',async (req, res) => {
+router.get('/DeleteRoom/:roomId', async (req, res) => {
     const response = await axios.get(config.DeviceServiceAddress + '/api/room/delete/' + req.params.roomId);
-   
+
     res.status(200).send(response.data);
 });
 router.get('/updateRoom', (req, res) => {
     res.sendStatus(200);
 });
+router.post('/updateRoomName', async (req, res) => {
+  try {
+    let roomName = req.body.roomName;
+    let roomId = req.body.roomId;
+    const response = await axios.post(config.DeviceServiceAddress + '/api/room/updateName/', {
+      roomName,
+      roomId
+    });
+    res.status(200).send('updated');
+  } catch (error) {
+    console.log(`Error: ${error.message}`);
+    res.status(500).send('Error updating room name');
+  }
+});
+
+
+
 router.get('/DeviceListInRoom', (req, res) => {
     res.sendStatus(200);
 });
 router.post('/AddDevicetoRoom', (req, res) => {
     try {
         const { roomName, deviceMac } = req.body;
-     
+
         axios.get(config.DeviceServiceAddress + '/api/room/addDeviceToRoom/' + roomName + '/' + deviceMac)
             .then(response => {
                 res.sendStatus(200);
