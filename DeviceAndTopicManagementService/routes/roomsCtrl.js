@@ -4,10 +4,11 @@ router.use(express.json());
 const rooms = require('../models/room');
 
 router.get('/list/:userId', (req, res) => {
-   
-    rooms.getRooms(req.params.userId).then(value => { 
-        
-        res.send(value) });
+
+    rooms.getRooms(req.params.userId).then(value => {
+
+        res.send(value)
+    });
 });
 
 router.get('/getSingle/:roomId', (req, res) => {
@@ -41,11 +42,11 @@ router.post('/update/:id', async (req, res) => {
 });
 
 router.post('/updateName/', async (req, res) => {
-  
-    const {roomName, roomId} = req.body;
+
+    const { roomName, roomId } = req.body;
 
     try {
-        const updatedRoom = await rooms.updateRoomName(roomId,roomName);
+        const updatedRoom = await rooms.updateRoomName(roomId, roomName);
         res.send(updatedRoom);
     } catch (error) {
         // Replace with appropriate error handling mechanism
@@ -53,6 +54,8 @@ router.post('/updateName/', async (req, res) => {
         res.status(500).send('Failed to update room ');
     }
 });
+
+
 router.get('/delete/:id', async (req, res) => {
     const roomId = req.params.id;
 
@@ -69,14 +72,25 @@ router.get('/addDeviceToRoom/:roomName/:deviceMac', async (req, res) => {
     const roomName = req.params.roomName;
 
     try {
-       
-      
-      var result =  await rooms.addDeviceToRoom('Sajad', roomName, req.params.deviceMac);
+
+
+        var result = await rooms.addDeviceToRoom('Sajad', roomName, req.params.deviceMac);
         res.send(result);
     } catch (error) {
         // Replace with appropriate error handling mechanism
         console.error(error);
         res.status(500).send('Failed to delete room by ID');
+    }
+});
+router.get('/removeDeviceFromRoom/:roomId/:deviceMac', async (req, res) => {
+    const roomId = req.params.roomId;
+    try {
+        var result = await rooms.removeDeviceFromRoom(roomId, req.params.deviceMac);
+        res.send(result);
+    } catch (error) {
+        // Replace with appropriate error handling mechanism
+        console.error(error);
+        res.status(500).send('Failed to delete device from room by ID');
     }
 });
 

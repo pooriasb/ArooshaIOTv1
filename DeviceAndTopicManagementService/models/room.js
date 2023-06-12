@@ -127,5 +127,6 @@ module.exports = {
   updateRoomById,
   deleteRoomById,
   addDeviceToRoom,
-  updateRoomName
+  updateRoomName,
+  removeDeviceFromRoom
 };
