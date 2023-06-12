@@ -69,15 +69,18 @@ const updateRoomById = async (id, updates) => {
 
 const updateRoomName = async (id, newRoomName) => {
   try {
-    await roomDocument.updateOne({ _id: id }, { roomName: newRoomName });
-    return 'Room name updated successfully!';
+  
+    const room = await roomDocument.findOne({ _id: id });
+    if (room) {
+      const result = await roomDocument.updateOne({ _id: id }, { roomName: newRoomName });
+      return result;
+    } else {
+      return `Error: Room with id ${id} does not exist`;
+    }
   } catch (error) {
     return `Error: ${error.message}`;
   }
 };
-
-
-
 // Delete a room document by ID
 const deleteRoomById = async (id) => {
   try {

@@ -115,11 +115,12 @@ router.post('/updateRoomName', async (req, res) => {
     try {
         let roomName = req.body.roomName;
         let roomId = req.body.roomId;
+      
         const response = await axios.post(config.DeviceServiceAddress + '/api/room/updateName/', {
             roomName,
             roomId
         });
-        res.status(200).send('updated');
+        res.status(200).send(response.data);
     } catch (error) {
         console.log(`Error: ${error.message}`);
         res.status(500).send('Error updating room name');
