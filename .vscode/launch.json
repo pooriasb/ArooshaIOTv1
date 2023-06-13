@@ -1,6 +1,5 @@
 {
     "configurations": [
-        
         {
             "name": "Docker Node.js Launch",
             "type": "docker",
