@@ -9,6 +9,7 @@
 5. SocketService {port : 3004}
 6. InfluxdbService {port: 3005}
 7. EnergyManagementService {port:3006}
+7. healthService {port:3007}
 ------------------------------------------------
 Socket Coding
 A : alive signal

@@ -21,7 +21,7 @@ app.use('/mqtt',mqttRouter);
 
 
 // run server
-const { PORT = 3000 } = process.env;
+const { PORT = 3007 } = process.env;
 app.listen(PORT, () => {
   console.log(`Api Gateway is listening on port ${PORT}`);
 });
