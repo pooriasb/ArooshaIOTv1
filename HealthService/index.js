@@ -17,6 +17,7 @@ app.use('/energy',energyRouter);
 app.use('/scheduler',schedulerRouter);
 app.use('/scheduler',schedulerRouter);
 app.use('/socket',socketRouter);
+app.use('/mqtt',mqttRouter);
 
 
 // run server
