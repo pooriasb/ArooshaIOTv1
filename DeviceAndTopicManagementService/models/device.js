@@ -108,11 +108,12 @@ async function getDeviceByMac(mac) {
     console.log(err);
   }
 }
-
-module.exports.getDeviceByMac = getDeviceByMac;
-module.exports.getMyRoolList = getMyRoolList;
-module.exports.deleteDevice = deleteDevice;
-module.exports.createDevice = createDevice;
-module.exports.getDeviceMac = getDeviceMac;
-module.exports.getUserDeviceList = getUserDeviceList;
-module.exports.getDeviceTopic = getDeviceTopic;
+module.exports = {
+  getDeviceByMac,
+  getMyRoolList,
+  deleteDevice,
+  createDevice,
+  getDeviceMac,
+  getUserDeviceList,
+  getDeviceTopic
+};

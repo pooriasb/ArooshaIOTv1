@@ -14,3 +14,31 @@ const messageLogSchema = new mongoose.Schema({
     message: String
 });
 const MessageLog = mongoose.model('messageLog', deviceSchema);
+
+
+
+const createMessageLog = async (data) => {
+  try {
+    const newMessageLog = new MessageLog(data);
+    await newMessageLog.save();
+   return 200;
+  } catch (err) {
+    return 500;
+  }
+};
+
+
+
+const readLastMessageLogByMac = async (mac) => {
+  try {
+    const lastMessageLog = await MessageLog.findOne({ mac }).sort({ _id: -1 }).exec();
+    return  lastMessageLog.message;
+  } catch (err) {
+    console.error(`Error reading last message by ${mac}:`, err);
+    return "";
+  }
+};
+
+
+module.exports.readLastMessageLogByMac =readLastMessageLogByMac;
+module.exports.createMessageLog =createMessageLog;
