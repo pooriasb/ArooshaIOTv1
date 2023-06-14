@@ -4,7 +4,15 @@ const config = require('config');
 const http = require('http');
 const axios = require('axios');
 router.use(express.json());
-router.get('/sendMessage', (req, res) => {
+router.post('/sendMessage', (req, res) => {
+    console.log(req.body);
+
+    
+    res.sendStatus(200);
+});
+
+router.get('/getLastMessage/:mac', (req, res) => {
+    
     res.sendStatus(200);
 });
 /***************************************************Device Management  */
