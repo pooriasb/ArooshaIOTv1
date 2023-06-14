@@ -17,9 +17,9 @@ const MessageLog = mongoose.model('messageLog', deviceSchema);
 
 
 
-const createMessageLog = async (data) => {
+const createMessageLog = async (mac,message) => {
     try {
-        const newMessageLog = new MessageLog(data);
+        const newMessageLog = new MessageLog({mac, message});
         await newMessageLog.save();
         return 200;
     } catch (err) {

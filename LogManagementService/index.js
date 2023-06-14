@@ -1,9 +1,9 @@
 const express = require('express');
 const app = express();
 const server = require('http').Server(app);
+const messageLogRouter = require('./routes/messageLogRouter');
 
-
-
+app.use('/api/log/',messageLogRouter);
 
 
 
