@@ -3,6 +3,7 @@
     "DeviceServiceAddress" : "http://127.0.0.1:3003",
     "MQTTServiceAddress" : "http://127.0.0.1:3001",
     "SocketAddress" : "http://localhost:3004",
-    "InfluxAddress" : "http://localhost:3005"
+    "InfluxAddress" : "http://localhost:3005",
+    "LogAddress" : "http://localhost:3008"
 
 }

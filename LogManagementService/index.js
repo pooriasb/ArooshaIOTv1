@@ -10,7 +10,7 @@ app.use('/api/log/',messageLogRouter);
 
 
 
-const { PORT = 3004 } = process.env;
+const { PORT = 3008 } = process.env;
 server.listen(PORT, () => {
-  console.log(`SocketService is listening on port ${PORT}`);
+  console.log(`Log Service is listening on port ${PORT}`);
 });
