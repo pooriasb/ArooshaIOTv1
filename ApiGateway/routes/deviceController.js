@@ -12,8 +12,9 @@ router.post('/sendMessage',async (req, res) => {
 });
 
 router.get('/getLastMessage/:mac', (req, res) => {
+    var response = axios.post(config.LogAddress + '/api/log//getLastMessage/'+req.params.mac);
 
-    res.sendStatus(200);
+    res.send(response.data);
 });
 /***************************************************Device Management  */
 //TODO: it needs to select specific filds to return in the device micro service
