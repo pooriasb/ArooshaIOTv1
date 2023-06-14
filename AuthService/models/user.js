@@ -18,3 +18,13 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User', deviceSchema);
 
 
+const login = (phone)=>{
+
+
+
+
+};
+
+module.exports={
+    login
+};

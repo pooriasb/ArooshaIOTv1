@@ -5,7 +5,7 @@ const io = require('socket.io')(server, { cors: { origin: '*' } });
 const helper = require('./models/helper');
 const axios = require('axios');
 const apiGatewayRouter = require('./routes/gateway');
-
+const configfile = require('config');
 app.use('/api', apiGatewayRouter);
 const cors = require('cors');
 const { config } = require('process');
@@ -93,12 +93,13 @@ io.on('connection', (socket) => {
 app.post('/sendMessage',async (req, res) => {
   try {
     io.to(req.mac).emit('response', req.message);
-   var response =  await axios.post(config.LogAddress + '/api/log/logMessage',{mac: req.mac , message:req.message });
+   var response =  await axios.post(configfile.LogAddress + '/api/log/logMessage',{mac: req.mac , message:req.message });
  console.log('log service respons: '+response.data);
    res.sendStatus(200);
   } catch (err) {
     console.error(err);
-    res.sendStatus(500);
+    res.status(500).send({ error: 'Internal Server Error' });
+
   }
 });
 

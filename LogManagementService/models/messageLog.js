@@ -13,7 +13,7 @@ const messageLogSchema = new mongoose.Schema({
     mac: String,
     message: String
 });
-const MessageLog = mongoose.model('messageLog', deviceSchema);
+const MessageLog = mongoose.model('messageLog', messageLogSchema);
 
 
 

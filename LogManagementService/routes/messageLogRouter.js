@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const MessageLog = require('../models/messageLog');
 
-
+router.use(express.json());
 router.post('/logMessage',async (req, res) => {
     var data = req.body;
  var result =  await  MessageLog.createMessageLog(data.mac,data.message);

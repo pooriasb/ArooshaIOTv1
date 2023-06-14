@@ -4,12 +4,17 @@ const config = require('config');
 const http = require('http');
 const axios = require('axios');
 router.use(express.json());
-router.post('/sendMessage',async (req, res) => {
-    console.log(req.body);
-    var message = req.body;
- var response = axios.post(config.SocketAddress + '/sendMessage', {message});
-    res.sendStatus(response.status);
+router.post('/sendMessage', async (req, res) => {
+  try {
+    const message = req.body;
+    const response = await axios.post(`${config.SocketAddress}/sendMessage`, { message });
+    res.sendStatus(200);
+  } catch (error) {
+ //   console.error(error);
+    res.status(500).send({ error: 'Internal Server Error' });
+  }
 });
+
 
 router.get('/getLastMessage/:mac', (req, res) => {
     var response = axios.post(config.LogAddress + '/api/log//getLastMessage/'+req.params.mac);

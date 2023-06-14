@@ -4,6 +4,6 @@
     "MQTTServiceAddress" : "http://127.0.0.1:3001",
     "SocketAddress" : "http://localhost:3004",
     "InfluxAddress" : "http://localhost:3005",
-    "LogAddress" : "http://localhost:3008"
+    "LogAddress" : "http://127.0.0.1:3008"
 
 }
