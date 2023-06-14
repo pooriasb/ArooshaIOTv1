@@ -89,6 +89,15 @@ io.on('connection', (socket) => {
   }
 });
 
+app.post('/sendMessage', (req, res) => {
+  try {
+    io.to(req.mac).emit('response', req.message);
+    res.sendStatus(200);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
+});
 
 
 // function processAliveSignal(mac, message) {
