@@ -4,15 +4,15 @@ const config = require('config');
 const http = require('http');
 const axios = require('axios');
 router.use(express.json());
-router.post('/sendMessage', (req, res) => {
+router.post('/sendMessage',async (req, res) => {
     console.log(req.body);
-
-    
-    res.sendStatus(200);
+    var message = req.body;
+ var response = axios.post(config.SocketAddress + '/sendMessage', {message});
+    res.sendStatus(response.status);
 });
 
 router.get('/getLastMessage/:mac', (req, res) => {
-    
+
     res.sendStatus(200);
 });
 /***************************************************Device Management  */
@@ -34,13 +34,13 @@ router.get('/getMyDeviceList/:userId', async (req, res) => {
 
 });
 async function getMyDeviceListFromService(userId) {
-  try {
-    var response = await axios.get(config.DeviceServiceAddress + '/api/ctrl/list/' + userId);
-    return response.data;
-  } catch (error) {
-    console.log(`Error: ${error.message}`);
-   return 'error';
-  }
+    try {
+        var response = await axios.get(config.DeviceServiceAddress + '/api/ctrl/list/' + userId);
+        return response.data;
+    } catch (error) {
+        console.log(`Error: ${error.message}`);
+        return 'error';
+    }
 }
 
 router.get('/CreateDevice/:userId/:deviceName/:deviceModel/:Topic/:MacAddress', (req, res) => {
@@ -123,7 +123,7 @@ router.post('/updateRoomName', async (req, res) => {
     try {
         let roomName = req.body.roomName;
         let roomId = req.body.roomId;
-      
+
         const response = await axios.post(config.DeviceServiceAddress + '/api/room/updateName/', {
             roomName,
             roomId
