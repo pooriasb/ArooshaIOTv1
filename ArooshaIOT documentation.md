@@ -11,6 +11,7 @@
 7. EnergyManagementService {port:3006}
 7. healthService {port:3007}
 8. logManagementService {port : 3008}
+9. AuthService {port : 3009}
 ------------------------------------------------
 Socket Coding
 A : alive signal
