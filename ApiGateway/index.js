@@ -24,7 +24,10 @@ app.use(cors(corsOptions));
  app.use('/api/schedule',scheduleRouter);
 
 
+app.get('/pinger',(req,res)=>{
 
+  res.sendStatus(200);
+});
 
 // run server
 const { PORT = 3000 } = process.env;
