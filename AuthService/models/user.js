@@ -58,6 +58,33 @@ const createUserAndSendCode = async (phone) => {
 
 
 
+const authenticateUser = async (phone, activationCode) => {
+  try {
+    // Step 1: find user by phone
+    const user = await User.findOne({ phone });
+
+    if (!user) {
+      // User doesn't exist
+      return { status: 401, message: 'Invalid activation code or TTL' };
+    }
+
+    // Step 2: check activation code and TTL
+    if (user.activationCode !== activationCode || new Date() > user.activationTTL) {
+      return { status: 401, message: 'Invalid activation code or TTL' };
+    }
+
+    // Step 3: generate JWT
+    const payload = { userId: user._id, phone };
+    const token = jwt.sign(payload, 'process.env.JWT_SECRET');
+
+    return { status: 200, message: 'Success', token };
+  } catch (err) {
+    console.error(err);
+    return { status: 500, message: 'Internal server error' };
+  }
+};
+
+
 
 const sendSms = (message, phone) => {
 
@@ -85,5 +112,6 @@ const sendSms = (message, phone) => {
     });
 }
 module.exports = {
-    createUserAndSendCode
+    createUserAndSendCode,
+    authenticateUser
 };
