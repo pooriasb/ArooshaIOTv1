@@ -1,6 +1,8 @@
 const express = require('express');
 const deviceControllrouter = require('./routes/deviceController');
 const scheduleRouter = require('./routes/schedule');
+const authRouter = require('./routes/auth');
+
 const config = require('config');
 const app = express();
 
@@ -22,6 +24,7 @@ app.use(cors(corsOptions));
 
  app.use('/api/device',deviceControllrouter);
  app.use('/api/schedule',scheduleRouter);
+ app.use('/api/auth',authRouter);
 
 
 app.get('/pinger',(req,res)=>{
