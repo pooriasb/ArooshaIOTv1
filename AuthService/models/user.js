@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     activationCode: String,
     activationTTL: Date
 });
-const User = mongoose.model('User', deviceSchema);
+const User = mongoose.model('User', userSchema);
 
 
 const createUserAndSendCode = async (phone) => {
