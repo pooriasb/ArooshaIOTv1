@@ -1,0 +1,13 @@
+{
+    "dbAddress" : "mongodb://127.0.0.1:27017/ArooshaIOT",
+    "DeviceServiceAddress" : "http://127.0.0.1:3003",
+    "MQTTServiceAddress" : "http://127.0.0.1:3001",
+    "SocketAddress" : "http://localhost:3004",
+    "LogAddress" : "http://localhost:3008",
+    "ApiGatewayAddress" : "http://localhost:3000",
+    "EnergyAddress" : "http://localhost:3006",
+    "notificationAddress" : "http://localhost:3008",
+    "schedulerAddress" : "http://localhost:3008"
+
+
+}
