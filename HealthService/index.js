@@ -23,7 +23,7 @@ app.use('/mqtt',mqttRouter);
 
 
 pinger.pingRequest('http://localhost:3000/pinger').then((value)=>{
-console.log(value);
+console.log(value.data);
 });
 
 
