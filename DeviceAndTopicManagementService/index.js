@@ -35,6 +35,3 @@ app.get('/GetDeviceMac/:deviceID',(req,res)=>{
 
 const port = process.env.port || 3003;
 app.listen(port, () => console.log(`Device Service is listening on port ${port}`));
-
-
-
