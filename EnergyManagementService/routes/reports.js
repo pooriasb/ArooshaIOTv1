@@ -130,6 +130,7 @@ router.get('energyUsageByRoom/:roomId', (req, res) => {
 
 
 
+
 function calculateEnergyUsage(temperature, w, brightness) {
   let percentofwatoftempeture = w * (temperature / 100);
   return percentofwatoftempeture;

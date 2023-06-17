@@ -10,7 +10,7 @@ const bucket = 'Aroosha'
 function saveAliveSignal(userId, mac, hue, rgbBrightness, colorTemperature, brightness, dance) {
 
 
-    const client = new InfluxDB({ url: 'http://154.211.2.176:8086', token: token })
+    const client = new InfluxDB({ url: 'http://127.0.0.1:8086', token: token })
 
 
     const { Point } = require('@influxdata/influxdb-client')
@@ -39,7 +39,7 @@ function saveAliveSignal(userId, mac, hue, rgbBrightness, colorTemperature, brig
 
 function getData() {
 
-    const queryApi = new InfluxDB({ url: 'http://154.211.2.176:8086', token: token }).getQueryApi(org)
+    const queryApi = new InfluxDB({ url: 'http://127.0.0.1:8086', token: token }).getQueryApi(org)
 
     const fluxQuery = `from(bucket:"Aroosha") |> range(start: -20m) |> filter(fn: (r) => r._measurement == "Sajad")`
 
@@ -58,7 +58,7 @@ function getData() {
 }
 
 async function getSignalByMac(mac, start) {
-const queryApi = new InfluxDB({ url: 'http://154.211.2.176:8086', token: token }).getQueryApi(org)
+const queryApi = new InfluxDB({ url: 'http://127.0.0.1:8086', token: token }).getQueryApi(org)
 const fluxQuery = `from(bucket: "Aroosha")
     |> range(start: ${start})
     |> filter(fn: (r) => r._value == "${mac}")
