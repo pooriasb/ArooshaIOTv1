@@ -22,6 +22,8 @@ app.use(express.static('Public'))
 app.use('/api/device',deviceControllrouter);
 app.use('/api/schedule',scheduleRouter);
 app.use('/api/auth',authRouter);
-
+app.get('/',(req,res)=>{
+  res.send('Hellow From Aoosha');
+});
 // Export the app instance
 module.exports = app;
