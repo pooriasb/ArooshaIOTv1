@@ -1,39 +1,16 @@
-const express = require('express');
-const deviceControllrouter = require('./routes/deviceController');
-const scheduleRouter = require('./routes/schedule');
-const authRouter = require('./routes/auth');
+const app = require('./app');
+const cluster = require('cluster');
+const os = require('os');
 
-const config = require('config');
-const app = express();
+if (cluster.isMaster) {
+  const cpuCount = os.cpus().length;
 
-
-const cors = require('cors');
-// CORS configuration
-const corsOptions = {
-  origin: '*',
-  methods: ['GET', 'POST']
-};
-app.use(cors(corsOptions));
-
-
-
-// app.use(express.json());
-// app.use(express.urlencoded({extended:true}));
- app.use(express.static('Public'))
-// app.use('/api/schedule',schedule);
-
- app.use('/api/device',deviceControllrouter);
- app.use('/api/schedule',scheduleRouter);
- app.use('/api/auth',authRouter);
-
-
-app.get('/pinger',(req,res)=>{
-
-  res.sendStatus(200);
-});
-
-// run server
-const { PORT = 3000 } = process.env;
-app.listen(PORT, () => {
-  console.log(`Api Gateway is listening on port ${PORT}`);
-});
+  for (let i = 0; i < cpuCount; i++) {
+    cluster.fork();
+  }
+} else {
+  const { PORT = 3000 } = process.env;
+  app.listen(PORT, () => {
+    console.log(`Api Gateway is listening on port ${PORT}`);
+  });
+}
