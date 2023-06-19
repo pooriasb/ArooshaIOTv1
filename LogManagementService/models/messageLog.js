@@ -23,6 +23,7 @@ const createMessageLog = async (mac,message) => {
         await newMessageLog.save();
         return 200;
     } catch (err) {
+        console.log(err);
         return 500;
     }
 };
