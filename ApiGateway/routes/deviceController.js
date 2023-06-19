@@ -6,22 +6,44 @@ const axios = require('axios');
 router.use(express.json());
 router.post('/sendMessage', async (req, res) => {
     try {
-        const message = req.body;
-        console.log(message);
+        const mac = req.body.MacAddress;
+        const newMessage = req.body;
+      
+        // get last message saved in database 
+        const logResponse = await axios.get(`${config.LogAddress}/api/log/getLastMessage/${mac}`);
+        const lastMessage = logResponse.data;
+console.log(newMessage);
+        // complete new message with missing parameters using last message's parameters
+        const lastCustomization = lastMessage.deviceCustomization;
+        const newCustomization = newMessage.deviceCustomizatoin ;
+        console.log('last:');
+        console.log(lastCustomization);
+        console.log('newMessage:');
+        console.log(newCustomization);
+        const completedMessage = {
+          MacAddress: mac,
+          protocol: newMessage.protocol || lastMessage.protocol,
+          deviceCustomization: {
+            ...lastCustomization,
+            ...newCustomization
+          }
+        };
+
         const response = await axios.post(`${config.SocketAddress}/sendMessage`, {
-            mac:req.body.MacAddress,
-            message: message
-         });
-        res.sendStatus(200);
+            mac: mac,
+            message: completedMessage
+        });
+
+        res.status(200).send(completedMessage);
     } catch (error) {
-        //   console.error(error);
+        console.error(error);
         res.status(500).send({ error: 'Internal Server Error' });
     }
 });
 
 
 router.get('/getLastMessage/:mac', (req, res) => {
-    var response = axios.post(config.LogAddress + '/api/log//getLastMessage/' + req.params.mac);
+    var response = axios.get(config.LogAddress + '/api/log//getLastMessage/' + req.params.mac);
 
     res.send(response.data);
 });
@@ -33,7 +55,7 @@ router.get('/getMyDeviceList/:userId', async (req, res) => {
             getMyDeviceListFromService(req.params.userId),
             sendGetMyRoomListToservice(req.params.userId)
         ]);
-        res.json({ deviceList , roomList });
+        res.json({ deviceList, roomList });
     } catch (error) {
         console.log('Error:  ' + error);
         res.status(500).json({ error: error.message });

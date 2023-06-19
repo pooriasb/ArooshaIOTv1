@@ -19,8 +19,10 @@ router.post('/logMessage', async (req, res) => {
 
 
 router.get('/getLastMessage/:mac', async (req, res) => {
+  
     var result = await MessageLog.readLastMessageLogByMac(req.params.mac);
-    res.send(result);
+
+    res.send(result.message);
 });
 
 
