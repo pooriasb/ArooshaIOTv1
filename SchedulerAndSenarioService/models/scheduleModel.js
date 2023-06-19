@@ -60,10 +60,9 @@ async function updateSchedule(userId, scheduleId, eventData) {
 const readSchedules = async (userId) => {
   try {
     const schedules = await ScheduleDocument.find({userId: userId}).exec();
-    return schedules;
+    return JSON.stringify( schedules);
   } catch (err) {
-    console.error(err);
-    throw new Error('Error getting schedules');
+    return 500;
   }
 };
 
