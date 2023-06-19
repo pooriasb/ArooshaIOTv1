@@ -6,6 +6,7 @@ router.use(express.json());
 router.post('/logMessage',async (req, res) => {
     var data = req.body;
  var result =  await  MessageLog.createMessageLog(data.mac,data.message);
+ console.log('A logMessage saved:'+result);
     res.sendStatus(result);
 });
 

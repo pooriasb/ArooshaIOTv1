@@ -7,6 +7,7 @@ router.use(express.json());
 router.post('/sendMessage', async (req, res) => {
   try {
     const message = req.body;
+    console.log(message);
     const response = await axios.post(`${config.SocketAddress}/sendMessage`, { message });
     res.sendStatus(200);
   } catch (error) {
