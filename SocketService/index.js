@@ -93,7 +93,7 @@ io.on('connection', (socket) => {
 app.post('/sendMessage',async (req, res) => {
   try {
 
-
+console.log('body : '+ req.body);
 
 
     io.to(req.body.mac).emit('response', req.body.message);
