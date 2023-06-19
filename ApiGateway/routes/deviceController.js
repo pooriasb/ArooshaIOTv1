@@ -151,9 +151,8 @@ router.get('/updateRoom', (req, res) => {
 });
 router.post('/updateRoomName', async (req, res) => {
     try {
-        let roomName = req.body.roomName;
-        let roomId = req.body.roomId;
 
+        const { roomName, roomId } = req.body
         const response = await axios.post(config.DeviceServiceAddress + '/api/room/updateName/', {
             roomName,
             roomId

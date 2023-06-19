@@ -29,6 +29,34 @@ const ScheduleDocument = mongoose.model('ScheduleDocument',ScheduleDocumentChema
 // create test device
 
 
+/**
+ * a schedule document in the database
+ * @param {string} userId - The user ID associated with the schedule
+ * @param {string} scheduleId - The ID of the schedule to update
+ * @param {Object} eventData - The event data to add to the schedule (deviceId, eventId)
+ * @returns {Promise<Object>} - The updated schedule document
+ */
+async function updateSchedule(userId, scheduleId, eventData) {
+  // Retrieve the existing schedule document from the database
+  const schedule = await ScheduleDocument.findOne({ userId, _id: scheduleId });
+  
+  // If the schedule doesn't exist, return an error
+  if (!schedule) {
+    return 404
+  }
+  
+  // Add the new event data to the schedule's eventList
+  schedule.eventList.push(eventData);
+  
+  // Save the updated schedule document to the database
+  const updatedSchedule = await schedule.save();
+  
+  // Return the updated schedule document
+  return 200
+}
+
+
+
 const readSchedules = async (userId) => {
   try {
     const schedules = await ScheduleDocument.find({userId: userId}).exec();
@@ -97,7 +125,8 @@ const setScheduleActivation = async (scheduleId, isScheduled) => {
     createScheduler,
     readSchedules,
     setScheduleActivation,
-    deleteSchedule
+    deleteSchedule,
+    updateSchedule
  }
 
 module.exports.scheduleModel = mongoose.model('ScheduleDocument', ScheduleDocumentChema);

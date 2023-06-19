@@ -4,15 +4,16 @@ const router = express.Router();
 const _ = require('lodash');
 const helper = require('../models/schedulerHelper');
 const scheduleModel = require('../models/scheduleModel');
+const { Schema } = require('mongoose');
 
 router.use(express.json());
 /***********************************Create Scheduler */
 router.post('/CreateScheduler', (req, res) => {
     const { isOnce, weekDays, hour, minute, events } = req.body;
     var data = {
-        isOnce, weekDays, hour, minute, events 
+        isOnce, weekDays, hour, minute, events
     }
-   var result =  scheduleModel.scheduleModel.CreateScheduler(data);
+    var result = scheduleModel.scheduleModel.CreateScheduler(data);
     res.send(result);
 });
 
@@ -25,6 +26,10 @@ router.get('/deleteSchedule/:scheduleId', (req, res) => {
     scheduleModel.deleteSchedule(req.params.scheduleId).then((value) => {
         return value;
     });
+});
+router.post('/updateSchedule', (req, res) => {
+    scheduleModel.updateSchedule();
+    res.send('');
 });
 /******************************End create scheduler */
 router.post('/setActivation', (req, res) => {

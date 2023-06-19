@@ -24,8 +24,12 @@ router.post('/setScheduleStatus', async (req, res) => {
     });
     res.send(response.data);
 });
-router.post('/updateShedule', (req, res) => {
-    res.sendStatus(200);
+router.post('/updateShedule',async (req, res) => {
+    const { isOnce, weekDays, hour, minute, events, scheduleId } = req.body;
+    var response = await axios.post(config.SchedulerAddress + '/api/scheduler/CreateScheduler', {
+        isOnce, weekDays, hour, minute, events ,scheduleId
+    });
+    res.send(response.data);
 });
 router.post('/deleteSchedule/:scheduleId', (req, res) => {
     res.sendStatus(200);
