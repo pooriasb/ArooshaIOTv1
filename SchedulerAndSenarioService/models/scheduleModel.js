@@ -56,20 +56,27 @@ function deleteSchedule(scheduleId){
 }
 
 async function createScheduler(data) {
-    const { userId, isOnce, weekDays, hour, minute, events } = data; // destructuring the input object
-    const scheduleTime = JSON.stringify({ isOnce, weekDays, hour, minute });
-    const eventList = events.map((event) => ({
-      deviceId: event.deviceId,
-      eventId: event.eventId,
-    }));
+  const {  isOnce, weekDays, hour, minute, events } = data; // destructuring the input object
+  const scheduleTime = JSON.stringify({ isOnce, weekDays, hour, minute });
+  const eventList = events.map((event) => ({
+    deviceId: event.deviceId,
+    eventId: event.eventId,
+  }));
+  
+  try {
     const newSchedule = await ScheduleDocument.create({
-      userId,
+      userId:'sajad' ,
       scheduleDateTime: Date.now(),
       eventList,
       isScheduled: true,
       scheduleTime,
     });
+    return { status: 200, schedule: newSchedule };
+  } catch (error) {
+    console.error(error);
+    return { status: 500, message: 'Error creating new schedule' };
   }
+}
 
 const setScheduleActivation = async (scheduleId, isScheduled) => {
   try {

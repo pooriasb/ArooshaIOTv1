@@ -93,7 +93,7 @@ io.on('connection', (socket) => {
 app.post('/sendMessage',async (req, res) => {
   try {
     io.to(req.mac).emit('response', req.message);
-   var response =  await axios.post(configfile.LogAddress + '/api/log/logMessage',{mac: req.mac , message:req.message });
+   var response =  await axios.post(configfile.LogAddress + '/api/log/logMessage',{mac:req.mac, message:req.message });
  console.log('log service respons: '+response.data);
    res.sendStatus(200);
   } catch (err) {
