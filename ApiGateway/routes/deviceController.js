@@ -30,7 +30,7 @@ router.get('/getMyDeviceList/:userId', async (req, res) => {
             getMyDeviceListFromService(req.params.userId),
             sendGetMyRoomListToservice(req.params.userId)
         ]);
-        res.json({ deviceList });
+        res.json({ deviceList , roomList });
     } catch (error) {
         console.log('Error:  ' + error);
         res.status(500).json({ error: error.message });
