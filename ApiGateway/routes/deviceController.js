@@ -1,54 +1,52 @@
 const express = require('express');
 const router = express.Router();
 const config = require('config');
-const http = require('http');
+
 const axios = require('axios');
 router.use(express.json());
 router.post('/sendMessage', async (req, res) => {
-  try {
-    const message = req.body;
-    console.log(message);
-    const response = await axios.post(`${config.SocketAddress}/sendMessage`, { message });
-    res.sendStatus(200);
-  } catch (error) {
- //   console.error(error);
-    res.status(500).send({ error: 'Internal Server Error' });
-  }
+    try {
+        const message = req.body;
+        console.log(message);
+        const response = await axios.post(`${config.SocketAddress}/sendMessage`, { message });
+        res.sendStatus(200);
+    } catch (error) {
+        //   console.error(error);
+        res.status(500).send({ error: 'Internal Server Error' });
+    }
 });
 
 
 router.get('/getLastMessage/:mac', (req, res) => {
-    var response = axios.post(config.LogAddress + '/api/log//getLastMessage/'+req.params.mac);
+    var response = axios.post(config.LogAddress + '/api/log//getLastMessage/' + req.params.mac);
 
     res.send(response.data);
 });
 /***************************************************Device Management  */
-//TODO: it needs to select specific filds to return in the device micro service
+
 router.get('/getMyDeviceList/:userId', async (req, res) => {
-    //http://127.0.0.1:3003/api/ctrl/list/sajad
-
     try {
-        const deviceList = await getMyDeviceListFromService(req.params.userId);
-        const roomList = await sendGetMyRoomListToservice(req.params.userId);
-        const data = {
-            deviceList,
-            roomList
-        };
-        res.send(JSON.stringify(data));
+        const [deviceList, roomList] = await Promise.all([
+            getMyDeviceListFromService(req.params.userId),
+            sendGetMyRoomListToservice(req.params.userId)
+        ]);
+        res.json({ deviceList, roomList });
     } catch (error) {
-        console.log('Error:  ' + error)
+        console.log('Error:  ' + error);
+        res.status(500).json({ error: error.message });
     }
-
 });
+
 async function getMyDeviceListFromService(userId) {
     try {
-        var response = await axios.get(config.DeviceServiceAddress + '/api/ctrl/list/' + userId);
+        const response = await axios.get(`${config.DeviceServiceAddress}/api/ctrl/list/${userId}`);
         return response.data;
     } catch (error) {
         console.log(`Error: ${error.message}`);
         return 'error';
     }
 }
+
 
 router.get('/CreateDevice/:userId/:deviceName/:deviceModel/:Topic/:MacAddress', (req, res) => {
     //TODO: validation 
