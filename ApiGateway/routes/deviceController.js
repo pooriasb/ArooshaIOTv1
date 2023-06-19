@@ -8,7 +8,10 @@ router.post('/sendMessage', async (req, res) => {
     try {
         const message = req.body;
         console.log(message);
-        const response = await axios.post(`${config.SocketAddress}/sendMessage`, {mac:req.body.MacAddress,message: message });
+        const response = await axios.post(`${config.SocketAddress}/sendMessage`, {
+            mac:req.body.MacAddress,
+            message: message
+         });
         res.sendStatus(200);
     } catch (error) {
         //   console.error(error);

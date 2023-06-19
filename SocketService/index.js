@@ -17,7 +17,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 
-
+app.use(express.json());
 
 io.use((socket, next) => {
   const macValue = socket.handshake.headers['mac'];
@@ -90,17 +90,17 @@ io.on('connection', (socket) => {
   }
 });
 
-app.post('/sendMessage',async (req, res) => {
+app.post('/sendMessage', async (req, res) => {
   try {
 
-console.log('body : '+ req.body);
+    console.log('body : ' + req.body);
 
 
-    io.to(req.body.mac).emit('response', req.body.message);
-    console.log('send Message mac :' + req.body.mac);
-   var response =  await axios.post(configfile.LogAddress + '/api/log/logMessage',{mac:req.body.mac, message:req.body.message });
- console.log(`message : ${req.body.message} log service respons: ${response.data}`);
-   res.sendStatus(200);
+    //     io.to(req.body.mac).emit('response', req.body.message);
+    //     console.log('send Message mac :' + req.body.mac);
+    //    var response =  await axios.post(configfile.LogAddress + '/api/log/logMessage',{mac:req.body.mac, message:req.body.message });
+    //  console.log(`message : ${req.body.message} log service respons: ${response.data}`);
+    res.sendStatus(200);
   } catch (err) {
     console.error(err);
     res.status(500).send({ error: 'Internal Server Error' });
@@ -126,7 +126,7 @@ function processAliveSignal(macAddress, data) {
   const { hue, rgbBrightness, colorTemperature, brightness, dance } = data;
   const userId = 'Sajad';
   const mac = macAddress;
- helper.sendAliveSignalToInfluxService({ userId, mac, hue,rgbBrightness, colorTemperature, brightness, dance });
+  helper.sendAliveSignalToInfluxService({ userId, mac, hue, rgbBrightness, colorTemperature, brightness, dance });
 }
 
 
