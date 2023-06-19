@@ -8,25 +8,25 @@ router.post('/sendMessage', async (req, res) => {
     try {
         const mac = req.body.MacAddress;
         const newMessage = req.body;
-      
+
         // get last message saved in database 
         const logResponse = await axios.get(`${config.LogAddress}/api/log/getLastMessage/${mac}`);
         const lastMessage = logResponse.data;
-console.log(newMessage);
+        console.log(newMessage);
         // complete new message with missing parameters using last message's parameters
         const lastCustomization = lastMessage.deviceCustomization;
-        const newCustomization = newMessage.deviceCustomizatoin ;
+        const newCustomization = newMessage.deviceCustomizatoin;
         console.log('last:');
         console.log(lastCustomization);
         console.log('newMessage:');
         console.log(newCustomization);
         const completedMessage = {
-          MacAddress: mac,
-          protocol: newMessage.protocol || lastMessage.protocol,
-          deviceCustomization: {
-            ...lastCustomization,
-            ...newCustomization
-          }
+            MacAddress: mac,
+            protocol: newMessage.protocol || lastMessage.protocol,
+            deviceCustomization: {
+                ...lastCustomization,
+                ...newCustomization
+            }
         };
 
         const response = await axios.post(`${config.SocketAddress}/sendMessage`, {
