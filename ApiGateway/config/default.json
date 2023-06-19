@@ -4,6 +4,7 @@
     "MQTTServiceAddress" : "http://127.0.0.1:3001",
     "SocketAddress" : "http://localhost:3004",
     "LogAddress" : "http://localhost:3008",
-    "AuthAddress" : "http://localhost:3009"
+    "AuthAddress" : "http://localhost:3009",
+    "SchedulerAddress" : "http://localhost:3002"
 
 }

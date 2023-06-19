@@ -8,8 +8,12 @@ const scheduleModel = require('../models/scheduleModel');
 router.use(express.json());
 /***********************************Create Scheduler */
 router.post('/CreateScheduler', (req, res) => {
-    scheduleModel.scheduleModel.CreateScheduler();
-    res.sendStatus(200);
+    const { isOnce, weekDays, hour, minute, events } = req.body;
+    var data = {
+        isOnce, weekDays, hour, minute, events 
+    }
+   var result =  scheduleModel.scheduleModel.CreateScheduler(data);
+    res.send(result);
 });
 
 router.get('/mySchedules/:userId', (req, res) => {

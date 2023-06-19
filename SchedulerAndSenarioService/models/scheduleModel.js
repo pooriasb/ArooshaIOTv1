@@ -2,9 +2,6 @@ const express = require('express');
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const config = require('config');
-
-
-
 /************************Config database */
 mongoose.connect(config.dbAddress)
     .then(() => console.log('Connected to database'))
