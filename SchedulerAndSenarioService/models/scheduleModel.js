@@ -56,6 +56,18 @@ async function updateSchedule(userId, scheduleId, eventData) {
 }
 
 
+const getScheduleById = async (scheduleId) => {
+  try {
+    const schedule = await ScheduleDocument.findById(scheduleId);
+    return schedule;
+  } catch (error) {
+    console.error(error);
+    // handle error
+  }
+};
+
+
+
 
 const readSchedules = async (userId) => {
   try {
@@ -125,7 +137,8 @@ const setScheduleActivation = async (scheduleId, isScheduled) => {
     readSchedules,
     setScheduleActivation,
     deleteSchedule,
-    updateSchedule
+    updateSchedule,
+    getScheduleById
  }
 
 module.exports.scheduleModel = mongoose.model('ScheduleDocument', ScheduleDocumentChema);

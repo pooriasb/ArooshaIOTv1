@@ -108,6 +108,27 @@ async function getDeviceByMac(mac) {
     console.log(err);
   }
 }
+
+async function updateDeviceRoom(oldRoom, userId, newRoom) {
+  try {
+    const regex = new RegExp(`${oldRoom}$`);
+    const devices = await DeviceDocument.find({userId: userId, Topic: { $regex: regex } }).lean().exec();
+    for (let i = 0; i < devices.length; i++) {
+        const device = devices[i];
+        const oldTopic = device.Topic;
+        const newTopic = oldTopic.replace(new RegExp(oldRoom, 'g'), newRoom);
+        device.Topic = newTopic;
+        await device.save();
+    }
+    return 200;
+  } catch(error) {
+    return 500;
+  }
+}
+
+  
+
+
 module.exports = {
   getDeviceByMac,
   getMyRoolList,
@@ -115,5 +136,6 @@ module.exports = {
   createDevice,
   getDeviceMac,
   getUserDeviceList,
-  getDeviceTopic
+  getDeviceTopic,
+ updateDeviceRoom
 };

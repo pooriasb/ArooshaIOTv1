@@ -39,7 +39,12 @@ router.post('/setActivation', (req, res) => {
     });
 });
 
+router.get('/getSchedule/:scheduleId', async (req, res) => {
+    var result = await scheduleModel.getScheduleById(req.params.scheduleId);
+    if (result) return res.status(200).send(result);
+    return res.status(404).send('not found')
 
+});
 /**********************************Start Schedule and Connect to mqtt Service */
 
 

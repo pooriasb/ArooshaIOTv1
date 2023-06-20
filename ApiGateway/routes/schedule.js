@@ -5,6 +5,13 @@ const axios = require('axios');
 //127.0.0.1:3002/api/scheduler
 //mySchedules
 //setActivation
+
+
+router.get('/getSchedule/:scheduleId', (req, res) => {
+
+    var response = axios.get(config.SchedulerAddress + '/api/scheduler/getSchedule/' + req.params.scheduleId);
+    res.send(response.data);
+});
 router.get('/getMyScheduleList/:userId', async (req, res) => {
     var response = await axios.get(config.SchedulerAddress + '/api/scheduler/mySchedules/' + req.params.userId);
     res.json(response.data);

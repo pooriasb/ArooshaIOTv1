@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 router.use(express.json());
 const rooms = require('../models/room');
-
+const device = require('../models/device');
 router.get('/list/:userId', (req, res) => {
 
     rooms.getRooms(req.params.userId).then(value => {
@@ -46,14 +46,24 @@ router.post('/updateName/', async (req, res) => {
     const { roomName, roomId } = req.body;
 
     try {
-        const updatedRoom = await rooms.updateRoomName(roomId, roomName);
-        res.send(updatedRoom);
+        const oldRoom = await rooms.getRoomById(roomId)
+        if (oldRoom) {
+            const updateDeviceRoomNameResult = rooms.updateDeviceRoom(oldRoom.roomName, 'sajad', roomName);
+            if (updateDeviceRoomNameResult == 200) {
+                const updatedRoom = await rooms.updateRoomName(roomId, roomName);
+            } else if (updateDeviceRoomNameResult == 500) return res.status(500).send('Error on rename device room name')
+            return res.send(updatedRoom);
+        }
+        return res.status(404).send('room not found')
     } catch (error) {
         // Replace with appropriate error handling mechanism
         console.error(error);
         res.status(500).send('Failed to update room ');
     }
 });
+
+
+
 
 
 router.get('/delete/:id', async (req, res) => {
@@ -70,8 +80,8 @@ router.get('/delete/:id', async (req, res) => {
 });
 router.get('/addDeviceToRoom/:roomId/:deviceMac', async (req, res) => {
     const roomId = req.params.roomId;
-    console.log(roomId );
-    console.log(req.params.deviceMac );
+    console.log(roomId);
+    console.log(req.params.deviceMac);
     try {
         var result = await rooms.addDeviceToRoom(roomId, req.params.deviceMac);
         res.send(result);
