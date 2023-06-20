@@ -30,16 +30,14 @@ const createMessageLog = async (mac,message) => {
 
 
 const readLastMessageLogByMac = async (mac) => {
-    try {
-        console.log(mac);
-        
-        const lastMessageLog = await MessageLog.findOne({ mac }).sort({ _id: -1 }).exec();
-        if(!lastMessageLog) return {};
-        return lastMessageLog;
-    } catch (err) {
-        console.error(`Error reading last message by ${mac}:`);
-        return "";
-    }
+  try {
+    const lastMessageLog = await MessageLog.findOne({ mac }).sort('_id').lean().exec();
+    if(!lastMessageLog) return {};
+    return lastMessageLog;
+  } catch(error) {
+    console.error(`Error reading last message by ${mac}:`);
+    return "";
+  }
 };
 
 

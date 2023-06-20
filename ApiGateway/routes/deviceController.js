@@ -36,17 +36,27 @@ router.post('/sendMessage', async (req, res) => {
 
         res.status(200).send(completedMessage);
     } catch (error) {
-        console.error(error);
-        res.status(500).send({ error: 'Internal Server Error' });
+        console.error('error in send message ');
+        res.status(500).send({ error: 'send message Internal Server Error' });
     }
 });
 
 
-router.get('/getLastMessage/:mac', (req, res) => {
-    var response = axios.get(config.LogAddress + '/api/log//getLastMessage/' + req.params.mac);
-
-    res.send(response.data);
+router.get('/getLastMessage/:mac', async (req, res) => {
+  try {
+    const { mac } = req.params;
+    const lastMessageLog = await MessageLog.findOne({ mac }).sort('_id').lean().exec();
+    
+    if(!lastMessageLog) return res.send({});
+    
+    return res.send(lastMessageLog.message);
+    
+  } catch(error) {
+    console.error(`APIGATEWAY-Error reading last message by ${mac}:`);
+    return res.status(500).send("APIGATEWAY-Error occurred while retrieving last message");
+  }
 });
+
 /***************************************************Device Management  */
 
 router.get('/getMyDeviceList/:userId', async (req, res) => {
