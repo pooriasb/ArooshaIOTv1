@@ -52,7 +52,7 @@ router.post('/updateName/', async (req, res) => {
             if (updateDeviceRoomNameResult == 200) {
                 const updatedRoom = await rooms.updateRoomName(roomId, roomName);
             } else if (updateDeviceRoomNameResult == 500) return res.status(500).send('Error on rename device room name')
-            return res.send(updatedRoom);
+            return res.status(200).send('updated');
         }
         return res.status(404).send('room not found')
     } catch (error) {
