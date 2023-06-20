@@ -44,7 +44,7 @@ router.post('/sendMessage', async (req, res) => {
 
 router.get('/getLastMessage/:mac', async (req, res) => {
     try {
-        const logResponse = await axios.get(`${config.LogAddress}/api/log/getLastMessage/${mac}`);
+        const logResponse = await axios.get(`${config.LogAddress}/api/log/getLastMessage/${req.params.mac}`);
         return res.send(logResponse.data);
     } catch (error) {
         console.error(`APIGATEWAY-Error reading last message by ${mac}:`);
