@@ -13,6 +13,13 @@ const deviceSchema = new mongoose.Schema({
     Topic: String,
     MacAddress: String
 });
+deviceSchema.methods.saveDevice = async function () {
+    try {
+      return await this.save();
+    } catch (error) {
+      throw error;
+    }
+  };
 const DeviceDocument = mongoose.model('DeviceDocument', deviceSchema);
 
 
@@ -111,14 +118,16 @@ async function getDeviceByMac(mac) {
 
 async function updateDeviceRoom(oldRoom, userId, newRoom) {
   try {
-    const regex = new RegExp(`${oldRoom}$`);
+    const regex = new RegExp(`${oldRoom}`);
+    // Specifying collection name and using proper arguments for the find statement using lean() and exec().
     const devices = await DeviceDocument.find({userId: userId, Topic: { $regex: regex } }).lean().exec();
     for (let i = 0; i < devices.length; i++) {
-        const device = devices[i];
-        const oldTopic = device.Topic;
+        const oldTopic = devices[i].Topic;
         const newTopic = oldTopic.replace(new RegExp(oldRoom, 'g'), newRoom);
-        device.Topic = newTopic;
-        await device.save();
+        devices[i].Topic = newTopic;
+
+        // The function should update the records using findByIdAndUpdate instead of save, since `devices` object is an array.
+        await DeviceDocument.findByIdAndUpdate(devices[i]._id, devices[i]);
     }
     return 200;
   } catch(error) {
