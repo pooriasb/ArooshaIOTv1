@@ -83,7 +83,7 @@ router.get('/addDeviceToRoom/:roomId/:deviceMac', async (req, res) => {
     console.log(roomId);
     console.log(req.params.deviceMac);
     try {
-        var result = await rooms.addDeviceToRoom(roomId, req.params.deviceMac);
+        var result = await rooms.addDeviceToRoom(roomId, req.params.deviceMac, 'sajad');
         res.send(result);
     } catch (error) {
         // Replace with appropriate error handling mechanism

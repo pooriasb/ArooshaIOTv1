@@ -15,11 +15,11 @@ const deviceSchema = new mongoose.Schema({
 });
 deviceSchema.methods.saveDevice = async function () {
     try {
-      return await this.save();
+        return await this.save();
     } catch (error) {
-      throw error;
+        throw error;
     }
-  };
+};
 const DeviceDocument = mongoose.model('DeviceDocument', deviceSchema);
 
 
@@ -57,7 +57,7 @@ async function getUserDeviceList(userId) {
     console.log('userID:' + userId);
     try {
         const documents = await DeviceDocument.find({ userId: userId })
-        .select('-_id deviceName deviceModel Topic MacAddress');
+            .select('-_id deviceName deviceModel Topic MacAddress');
         if (documents && documents.length > 0) {
             return documents;
         } else {
@@ -94,7 +94,7 @@ async function getMyRoolList(userId) {
     //list devices >> topics
     // topics Splited by /
     var Topics = [];
-    
+
     const devices = await DeviceDocument.find({ userId: userId });
     devices.forEach(device => {
         //  console.log(`User ID: ${device.userId}, Topic: ${device.Topic}`);
@@ -108,43 +108,53 @@ async function getMyRoolList(userId) {
 
 
 async function getDeviceByMac(mac) {
-  try {
-    const device = await DeviceDocument.findOne({ MacAddress: mac });
-    return device;
-  } catch (err) {
-    console.log(err);
-  }
+    try {
+        const device = await DeviceDocument.findOne({ MacAddress: mac });
+        return device;
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 async function updateDeviceRoom(oldRoom, userId, newRoom) {
-  try {
-    const regex = new RegExp(`${oldRoom}`);
-    // Specifying collection name and using proper arguments for the find statement using lean() and exec().
-    const devices = await DeviceDocument.find({userId: userId, Topic: { $regex: regex } }).lean().exec();
-    for (let i = 0; i < devices.length; i++) {
-        const oldTopic = devices[i].Topic;
-        const newTopic = oldTopic.replace(new RegExp(oldRoom, 'g'), newRoom);
-        devices[i].Topic = newTopic;
+    try {
+        const regex = new RegExp(`${oldRoom}`);
+        // Specifying collection name and using proper arguments for the find statement using lean() and exec().
+        const devices = await DeviceDocument.find({ userId: userId, Topic: { $regex: regex } }).lean().exec();
+        for (let i = 0; i < devices.length; i++) {
+            const oldTopic = devices[i].Topic;
+            const newTopic = oldTopic.replace(new RegExp(oldRoom, 'g'), newRoom);
+            devices[i].Topic = newTopic;
 
-        // The function should update the records using findByIdAndUpdate instead of save, since `devices` object is an array.
-        await DeviceDocument.findByIdAndUpdate(devices[i]._id, devices[i]);
+            // The function should update the records using findByIdAndUpdate instead of save, since `devices` object is an array.
+            await DeviceDocument.findByIdAndUpdate(devices[i]._id, devices[i]);
+        }
+        return 200;
+    } catch (error) {
+        return 500;
     }
-    return 200;
-  } catch(error) {
-    return 500;
-  }
 }
 
-  
 
+async function getDevicesInRoom(roomName, userId) {
+    try {
+        const regex = new RegExp(`${roomName}`);
+        const devices = await DeviceDocument.find({ userId: userId, Topic: { $regex: regex } }).lean().exec();
+        return devices;
+    } catch (error) {
+        console.log(error.message);
+        return [];
+    }
+}
 
 module.exports = {
-  getDeviceByMac,
-  getMyRoolList,
-  deleteDevice,
-  createDevice,
-  getDeviceMac,
-  getUserDeviceList,
-  getDeviceTopic,
- updateDeviceRoom
+    getDeviceByMac,
+    getMyRoolList,
+    deleteDevice,
+    createDevice,
+    getDeviceMac,
+    getUserDeviceList,
+    getDeviceTopic,
+    updateDeviceRoom,
+    getDevicesInRoom
 };

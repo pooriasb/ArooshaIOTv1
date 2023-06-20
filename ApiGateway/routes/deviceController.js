@@ -43,18 +43,15 @@ router.post('/sendMessage', async (req, res) => {
 
 
 router.get('/getLastMessage/:mac', async (req, res) => {
-  try {
-    const { mac } = req.params;
-    const lastMessageLog = await MessageLog.findOne({ mac }).sort('_id').lean().exec();
-    
-    if(!lastMessageLog) return res.send({});
-    
-    return res.send(lastMessageLog.message);
-    
-  } catch(error) {
-    console.error(`APIGATEWAY-Error reading last message by ${mac}:`);
-    return res.status(500).send("APIGATEWAY-Error occurred while retrieving last message");
-  }
+    try {
+        const { mac } = req.params;
+        const lastMessageLog = await MessageLog.findOne({ mac }).sort('_id').lean().exec();
+        if (!lastMessageLog) return res.send({});
+        return res.send(lastMessageLog.message);
+    } catch (error) {
+        console.error(`APIGATEWAY-Error reading last message by ${mac}:`);
+        return res.status(500).send("APIGATEWAY-Error occurred while retrieving last message");
+    }
 });
 
 /***************************************************Device Management  */
@@ -111,6 +108,18 @@ function sendDeleteRequestToService(mac) {
             return "-1";
         });
 }
+
+router.get('/GetDevicesInRoom/:roomName', async (req, res) => {
+    try {
+        const response = await axios.get(config.DeviceServiceAddress + '/api/ctrl/getDevicesInRoom/' + req.params.roomName);
+        res.status(200).send(response.data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send([]);
+    }
+});
+
+
 /************************************************************ */
 /*********************************Room Management */
 router.get('/GetMyRoomList/:userId', async (req, res) => {

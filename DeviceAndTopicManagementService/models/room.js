@@ -69,7 +69,7 @@ const updateRoomById = async (id, updates) => {
 
 const updateRoomName = async (id, newRoomName) => {
   try {
-  
+
     const room = await roomDocument.findOne({ _id: id });
     if (room) {
       const result = await roomDocument.updateOne({ _id: id }, { roomName: newRoomName });
@@ -92,18 +92,30 @@ const deleteRoomById = async (id) => {
     return 'Failed to delete room by ID';
   }
 }
-const addDeviceToRoom = async (id, deviceMac) => {
+const addDeviceToRoom = async (id, deviceMac, userId) => {
   try {
     const room = await roomDocument.findById(id);
     if (!room) return 'Room not found';
 
     const deviceExists = room.devices.includes(deviceMac);
     if (deviceExists) return 'Device already added';
+    
+    const allRooms = await roomDocument.find({ userId: userId });
+
+    for (let i = 0; i < allRooms.length; i++) {
+      const otherRoom = allRooms[i];
+      const otherRoomDeviceIndex = otherRoom.devices.indexOf(deviceMac);
+      if (otherRoomDeviceIndex !== -1) {
+        // remove device from other room
+        otherRoom.devices.splice(otherRoomDeviceIndex, 1);
+        await otherRoom.save();
+      }
+    }
 
     room.devices.push(deviceMac);
     await room.save();
 
-    return "addedd successfully";
+    return 'Added successfully';
   } catch (err) {
     return { error: err.message };
   }

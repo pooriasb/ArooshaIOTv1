@@ -6,26 +6,26 @@ const deviceinfo = require('../models/deviceinfo');
 
 
 router.get('/list/:userId', (req, res) => {
-    device.getUserDeviceList(req.params.userId).then(value => { res.send(value) });
+  device.getUserDeviceList(req.params.userId).then(value => { res.send(value) });
 });
 
 router.post('/create', (req, res) => {
-    const { userId, deviceName, deviceModel, Topic, MacAddress } = req.body;
-    const recivedDevice = { userId, deviceName, deviceModel, Topic, MacAddress };
-    //TODO: do proper validation 
-    device.createDevice(recivedDevice)
-        .then((value) => res.send(value))
-        .catch((error) => res.status(400).send(error));
+  const { userId, deviceName, deviceModel, Topic, MacAddress } = req.body;
+  const recivedDevice = { userId, deviceName, deviceModel, Topic, MacAddress };
+  //TODO: do proper validation 
+  device.createDevice(recivedDevice)
+    .then((value) => res.send(value))
+    .catch((error) => res.status(400).send(error));
 });
 
 router.get('/delete/:mac', (req, res) => {
-    device.deleteDevice(req.params.mac).then((value) => {
-        res.send(value);
-    });
+  device.deleteDevice(req.params.mac).then((value) => {
+    res.send(value);
+  });
 });
 
 router.get('/RoomList/:userId', async (req, res) => {
-  
+
   const value = await device.getMyRoolList(req.params.userId);
   res.send(value);
 });
@@ -43,23 +43,32 @@ router.get('/GetdeviceinfoByModel/:model', (req, res) => {
 
 router.get('/getDeviceByMac/:mac', async (req, res) => {
   try {
-    const deviceobj = await  device.getDeviceByMac(req.params.mac);
+    const deviceobj = await device.getDeviceByMac(req.params.mac);
     res.send(deviceobj);
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     res.status(500).json({ errorMessage: 'Error getting device by MAC address' });
   }
 });
 router.get('/getDeviceInfoByModel/:deviceModel', async (req, res) => {
   try {
-    const deviceobj = await  deviceinfo.getDeviceByModel(req.params.deviceModel);
+    const deviceobj = await deviceinfo.getDeviceByModel(req.params.deviceModel);
     res.send(deviceobj);
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     res.status(500).json({ errorMessage: 'Error getting device by MAC address' });
   }
 });
 
+router.get('/getDevicesInRoom/:roomName', async (req, res) => {
+  try {
+    const result = await device.getDevicesInRoom(req.params.roomName, 'sajad');
+    res.status(200).send(result);
+  } catch(error) {
+    console.error(error);
+    res.status(500).send([]);
+  }
+});
 
 
 module.exports = router;
