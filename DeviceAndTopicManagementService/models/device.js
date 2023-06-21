@@ -136,7 +136,7 @@ async function updateDeviceRoom(oldRoom, userId, newRoom) {
 }
 
 
-async function getDevicesInRoom(roomName, userId) {
+async function getDevicesInRoomByRoomName(roomName, userId) {
     try {
         const regex = new RegExp(`${roomName}`);
         const devices = await DeviceDocument.find({ userId: userId, Topic: { $regex: regex } }).lean().exec();
@@ -149,16 +149,16 @@ async function getDevicesInRoom(roomName, userId) {
 
 // Define the function to find and update the device
 async function updateDeviceName(userId, deviceId, newDeviceName) {
-  try {
-    const device = await DeviceDocument.findOne({ _id: deviceId, userId: userId });
-    if (!device) {
-      throw new Error(`Device with id ${deviceId} not found for user ${userId}`);
+    try {
+        const device = await DeviceDocument.findOne({ _id: deviceId, userId: userId });
+        if (!device) {
+            throw new Error(`Device with id ${deviceId} not found for user ${userId}`);
+        }
+        device.deviceName = newDeviceName;
+        return await device.save();
+    } catch (error) {
+        throw error;
     }
-    device.deviceName = newDeviceName;
-    return await device.save();
-  } catch (error) {
-    throw error;
-  }
 }
 
 
@@ -172,6 +172,6 @@ module.exports = {
     getUserDeviceList,
     getDeviceTopic,
     updateDeviceRoom,
-    getDevicesInRoom,
+    getDevicesInRoomByRoomName,
     updateDeviceName
 };

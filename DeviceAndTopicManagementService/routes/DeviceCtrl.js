@@ -60,7 +60,17 @@ router.get('/getDeviceInfoByModel/:deviceModel', async (req, res) => {
   }
 });
 
-router.get('/getDevicesInRoom/:roomName', async (req, res) => {
+router.get('/getDevicesInRoomByRoomName/:roomName', async (req, res) => {
+  try {
+    const result = await device.getDevicesInRoomByRoomName(req.params.roomName, 'sajad');
+    res.status(200).send(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send([]);
+  }
+});
+
+router.get('/getDevicesInRoomByRoomId/:roomId', async (req, res) => {
   try {
     const result = await device.getDevicesInRoom(req.params.roomName, 'sajad');
     res.status(200).send(result);
@@ -69,6 +79,7 @@ router.get('/getDevicesInRoom/:roomName', async (req, res) => {
     res.status(500).send([]);
   }
 });
+
 
 
 router.post('/updateDeviceName', async (req, res) => {
