@@ -7,7 +7,7 @@ router.post('/logMessage', async (req, res) => {
     try {
         const data = req.body;
         console.log(data);
-        const result = await MessageLog.createMessageLog(data.mac, JSON.stringify(data.message));
+        const result = await MessageLog.createOrUpdateMessageLog(data.mac, JSON.stringify(data.message));
         console.log(`A logMessage saved: ${result} mac: ${data.mac}`);
         res.sendStatus(result);
     } catch (error) {
