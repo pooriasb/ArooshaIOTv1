@@ -15,7 +15,7 @@ router.post('/sendMessage', async (req, res) => {
         console.log(newMessage);
         // complete new message with missing parameters using last message's parameters
         const lastCustomization = lastMessage.deviceCustomization;
-        const newCustomization = newMessage.deviceCustomizatoin;
+        const newCustomization = newMessage.deviceCustomization;
         console.log('last:');
         console.log(lastCustomization);
         console.log('newMessage:');
