@@ -81,7 +81,7 @@ router.post('/updateSenario', async (req, res) => {
   }
 });
 
-router.post('/deleteSenario/:senarioId',async (req, res) => {
+router.get('/deleteSenario/:senarioId',async (req, res) => {
  
   const response = await axios.get(config.SchedulerAddress + '/api/senario/deleteSenario' + req.params.senarioId);
   if (response.data) {
@@ -89,8 +89,6 @@ router.post('/deleteSenario/:senarioId',async (req, res) => {
   } else {
     return res.status(500).send('deleteSenario-Response data is empty.');
   }
- 
-  res.sendStatus(200);
 });
 
 

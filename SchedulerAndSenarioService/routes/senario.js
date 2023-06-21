@@ -40,9 +40,9 @@ router.post('/createSenario', async (req, res) => {
     }
 });
 
-router.get('/deleteSenario/:userId', async (req, res) => {
+router.get('/deleteSenario/:senarioId', async (req, res) => {
     try {
-        const result = await senario.deleteSenario(req.params.userId); // assuming the user id is passed as a param in the URL
+        const result = await senario.deleteSenario(req.params.senarioId);
         if (result === "1") {
             res.status(200).send('Senario deleted successfully');
         } else {
