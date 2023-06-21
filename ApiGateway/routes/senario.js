@@ -63,9 +63,24 @@ router.post('/startSenario', async (req, res) => {
   }
 });
 
-router.post('/updateSenario', (req, res) => {
-  res.sendStatus(200);
+router.post('/updateSenario', async (req, res) => {
+  const { name, eventList, senarioId } = req.body;
+  try {
+    const response = await axios.post(
+      `${config.SchedulerAddress}/api/senario/startSenario`,
+      { name, eventList, senarioId }
+    );
+    if (response.data) {
+      return res.status(200).send(response.data);
+    } else {
+      return res.status(500).send('updateSenario-Response data is empty.');
+    }
+  } catch (error) {
+    console.log('Error updating senario:', error.message);
+    return res.status(500).send('An error occurred while updating the senario.');
+  }
 });
+
 router.post('/deleteSenario/:senarioId', (req, res) => {
   res.sendStatus(200);
 });

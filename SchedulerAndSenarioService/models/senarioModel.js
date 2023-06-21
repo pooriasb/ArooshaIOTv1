@@ -63,10 +63,24 @@ async function deleteScenario(userId, scenarioName) {
     return "0"
   }
 }
+
+
+async function updateSenario(senarioId, updates) {
+  try {
+    const senario = await Senario.findByIdAndUpdate(senarioId, updates, { new: true }).exec();
+    return senario;
+  } catch (error) {
+    console.error('Error updating senario:', error.message);
+    throw new Error('An error occurred while updating the senario.');
+    return 500;
+  }
+}
+
 module.exports = {
     deleteScenario,
     readScenarios,
     readScenario,
-    createSenario
+    createSenario,
+    updateSenario
  }
 module.exports.senarioSchema = Senario;

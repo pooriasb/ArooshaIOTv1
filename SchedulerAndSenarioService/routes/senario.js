@@ -7,6 +7,23 @@ const io = require('socket.io-client');
 const socket = io(config.SocketAddress);//SocketAddress
 const _ = require('lodash');
 const http = require('http');
+
+
+
+router.post('/updateSenario', async (req, res) => {
+  const { name, eventList, senarioId } = req.body;
+  try {
+    const updatedSenario = await updateSenario(senarioId, { name: name, eventList: eventList });
+    return res.send(updatedSenario);
+  } catch (error) {
+    console.error('Error updating senario:', error.message);
+    return res.status(500).send('An error occurred while updating the senario.');
+  }
+});
+
+
+
+
 router.post('/createSenario', async (req, res) => {
     try {
         const {userId,name,eventList} = req.body;
@@ -83,6 +100,9 @@ app.post('/startSenario', async (req, res) => {
     return res.status(500).send('An error occurred while sending messages.');
   }
 });
+
+
+
 
 function sendToSocketService(messageList) {
   try {
