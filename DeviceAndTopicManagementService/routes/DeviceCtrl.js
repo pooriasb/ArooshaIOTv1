@@ -64,9 +64,21 @@ router.get('/getDevicesInRoom/:roomName', async (req, res) => {
   try {
     const result = await device.getDevicesInRoom(req.params.roomName, 'sajad');
     res.status(200).send(result);
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     res.status(500).send([]);
+  }
+});
+
+
+router.post('/updateDeviceName', async (req, res) => {
+  try {
+    const { deviceId, newDeviceName } = req.body;
+    const result = await device.updateDeviceName('sajad', deviceId, newDeviceName);
+    return res.status(200).send(result);
+  } catch (error) {
+    console.error('Error updating device name');
+    return res.status(500).send('Error updating device name');
   }
 });
 

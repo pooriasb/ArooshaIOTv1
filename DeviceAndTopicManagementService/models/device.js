@@ -147,6 +147,22 @@ async function getDevicesInRoom(roomName, userId) {
     }
 }
 
+// Define the function to find and update the device
+async function updateDeviceName(userId, deviceId, newDeviceName) {
+  try {
+    const device = await DeviceDocument.findOne({ _id: deviceId, userId: userId });
+    if (!device) {
+      throw new Error(`Device with id ${deviceId} not found for user ${userId}`);
+    }
+    device.deviceName = newDeviceName;
+    return await device.save();
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+
 module.exports = {
     getDeviceByMac,
     getMyRoolList,
@@ -156,5 +172,6 @@ module.exports = {
     getUserDeviceList,
     getDeviceTopic,
     updateDeviceRoom,
-    getDevicesInRoom
+    getDevicesInRoom,
+    updateDeviceName
 };

@@ -94,6 +94,24 @@ function sendCreateRequestToService(device) {
     return axios.post(config.DeviceServiceAddress + '/api/ctrl/createDevice', data);
 }
 
+router.post('/updateDeviceName', async (req, res) => {
+  try {
+    const { deviceId, newDeviceName } = req.body;
+    
+    const response = await axios.post(config.DeviceServiceAddress + '/api/ctrl/updateDeviceName/', { deviceId, newDeviceName });
+    
+    if (response.data) {
+      return res.status(200).send(response.data);
+    } else {
+      throw new Error('Error updating device name');
+    }
+  } catch (error) {
+    console.error('Error updating device name:', error);
+    return res.status(500).send('Error updating device name');
+  }
+});
+
+
 router.get('/DeleteDevice/:mac', (req, res) => {
     res.send(sendDeleteRequestToService(req.params.mac));
 });
