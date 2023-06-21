@@ -28,20 +28,19 @@ const createMessageLog = async (mac,message) => {
         return 500;
     }
 };
+
 const createOrUpdateMessageLog = async (mac, message) => {
   try {
-    // Find the last message log for the given mac
-    const lastMessageLog = await MessageLog.findOne({ mac }).sort({ _id: -1 });
-    
-    if (lastMessageLog) {
-      // Update the last message log with new data
-      lastMessageLog.message = message;
-      await lastMessageLog.save();
-    } else {
-      // Create a new message log
-      const newMessageLog = new MessageLog({ mac, message });
-      await newMessageLog.save();
-    }
+    const updateQuery = { mac };
+    const update = { message };
+    const options = { upsert: true };
+  
+    // Update the last message log with new data or create a new one if it doesn't exist
+    await MessageLog.findOneAndUpdate(
+        updateQuery,
+        update,
+        options
+    );
 
     return 200;
   } catch (err) {
@@ -51,13 +50,14 @@ const createOrUpdateMessageLog = async (mac, message) => {
 };
 
 
+
 const readLastMessageLogByMac = async (mac) => {
   try {
-    const lastMessageLog = await MessageLog.findOne({ mac }).sort('_id').lean().exec();
-    if(!lastMessageLog) return {};
+    const lastMessageLog = await MessageLog.findOne({ mac }).sort({ _id: -1 }).lean();
+    if (!lastMessageLog) return {};
     return lastMessageLog;
-  } catch(error) {
-    console.error(`Error reading last message by ${mac}:`);
+  } catch (err) {
+    console.error(`Error reading last message `, err.message);
     return "";
   }
 };
