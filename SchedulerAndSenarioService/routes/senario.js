@@ -61,31 +61,45 @@ app.get('/scenario/:senarioId', async (req, res) => {
 let messageList = [];
 
 app.post('/startSenario', async (req, res) => {
+  try {
     const { senarioId } = req.body;
-     await senario.readScenario(senarioId).then((value)=>{
-        // we have to send senario into socket service
-        var eventListIndb = value.eventList;
-        eventListIndb.forEach(async (element) => {
-            await createMessage(element).then(singleMessageCreated => {
-                addToMEssageList(singleMessageCreated)
-            });
-        });
-        if (messageList.length !== 0) {
-       
-            //sendToMqttService(messageList);
-            sendToSocketService(messageList);
-        }
-        messageList = [];
-     });
+    const scenario = await senario.readScenario(senarioId);
+    const eventListIndb = scenario.eventList;
+    const messageList = [];
 
+    for (const event of eventListIndb) {
+      const singleMessageCreated = await createMessage(event);
+      messageList.push(singleMessageCreated);
+    }
+
+    if (messageList.length !== 0) {
+      const result = await sendToSocketService(messageList);
+      return res.status(result).send('Message sent successfully.');
+    } else {
+      return res.status(400).send('No messages to send.');
+    }
+  } catch (error) {
+    console.error('Error sending message to socket service:', error.message);
+    return res.status(500).send('An error occurred while sending messages.');
+  }
 });
-function sendToSocketService(messageList){
-    var grouped = _.mapValues(_.groupBy(messageList, 'deviceTopic'), mList => mList.map(message => _.omit(message, 'deviceTopic')));
+
+function sendToSocketService(messageList) {
+  try {
+    var grouped = _.mapValues(_.groupBy(messageList, 'deviceTopic'), mList =>
+      mList.map(message => _.omit(message, 'deviceTopic'))
+    );
     socket.on('connect', () => {
-        console.log('Connected to socket server!');
-      });
-      socket.emit('request', {message:grouped,type :'S'});
+      console.log('Connected to socket server!');
+    });
+    socket.emit('request', { message: grouped, type: 'S' });
+    return 200
+  } catch (error) {
+    console.error('Error sending message to socket service:', error.message);
+    return 500
+  }
 }
+
 function addToMEssageList(message) {
     messageList.push(message);
 }

@@ -26,14 +26,14 @@ router.get('/getSenario/:senarioId', async (req, res) => {
 
 router.post('/createSenario', async (req, res) => {
   const { userId, name, eventList } = req.body;
-  
+
   try {
     const response = await axios.post(
       `${config.SchedulerAddress}/api/senario/createSenario`,
-      { userId:'sajad', name, eventList }
+      { userId: 'sajad', name, eventList }
     );
     const { data } = response;
-    
+
     if (data) {
       return res.status(200).send(data);
     } else {
@@ -45,9 +45,24 @@ router.post('/createSenario', async (req, res) => {
   }
 });
 
-router.post('/startSenario', (req, res) => {
-  res.sendStatus(200);
+router.post('/startSenario', async (req, res) => {
+  try {
+    const { senarioId } = req.body;
+    const response = await axios.post(
+      `${config.SchedulerAddress}/api/senario/startSenario`,
+      { senarioId }
+    );
+    if (response.data) {
+      return res.status(200).send(response.data);
+    } else {
+      return res.status(500).send('Response data is empty.');
+    }
+  } catch (error) {
+    console.error('Error starting senario:', error.message);
+    return res.status(500).send('An error occurred while starting the senario.');
+  }
 });
+
 router.post('/updateSenario', (req, res) => {
   res.sendStatus(200);
 });
