@@ -1,11 +1,30 @@
 const express = require('express');
 const router = express.Router();
-
-router.get('/getMySenarioList/:userId', (req, res) => {
-    res.sendStatus(200);
+const config = require('config');
+const axios = require('axios');
+///api/senario
+router.get('/getMySenarioList/:userId', async (req, res) => {
+  try {
+    const response = await axios.get(config.SchedulerAddress + '/api/senario/scenarios' + req.params.userId);
+    if (response.data) return res.status(200).send(response.data);
+    return res.status(500).send('no response from schedule service')
+  } catch (error) {
+    console.error("Error getting scenario list " );
+    res.sendStatus(500);
+  }
 });
-router.get('/getSenario/:senarioId', (req, res) => {
-    res.sendStatus(200);
+
+
+
+router.get('/getSenario/:senarioId',async (req, res) => {
+    try {
+        const response = await axios.get(config.SchedulerAddress + '/api/senario/scenario' + req.params.senarioId);
+        if (response.data) return res.status(200).send(response.data);
+        return res.status(500).send('no response from schedule service')
+      } catch (error) {
+        console.error("Error getting scenario list " );
+        res.sendStatus(500);
+      }
 });
 
 
