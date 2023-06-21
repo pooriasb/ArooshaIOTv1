@@ -20,14 +20,14 @@ router.post('/logMessage', async (req, res) => {
 router.get('/getLastMessage/:mac', async (req, res) => {
   try {
     const { mac } = req.params;
-    const lastMessageLog = await MessageLog.findOne({ mac }).sort('_id').lean().exec();
+    const lastMessageLog = await MessageLog.readLastMessageLogByMac(mac);
     
     if(!lastMessageLog) return res.send({});
     
     return res.send(lastMessageLog.message);
     
   } catch(error) {
-    console.error(`Error reading last message by ${mac}:`);
+    console.error(`Error reading last message:`+ error.message);
     return res.status(500).send("Error occurred while retrieving last message");
   }
 });
