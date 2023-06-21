@@ -11,10 +11,10 @@ const senarioSchema = new mongoose.Schema({
     userId: String,
     name: String,
     scheduleCreateDateTime: Date,
-    eventList: {
+    eventList: [{
         deviceId: String,
         eventId: String
-    }
+    }]
 });
 
 const Senario = mongoose.model('EventList', senarioSchema);
@@ -24,10 +24,7 @@ async function createSenario(data) {
     userId: data.userId,
     name: data.name,
     scheduleCreateDateTime: new Date(),
-    eventList: {
-      deviceId: data.deviceId,
-      eventId: data.eventId
-    }
+    eventList:data.eventList
   });
 
   try {

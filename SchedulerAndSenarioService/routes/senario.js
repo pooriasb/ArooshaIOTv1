@@ -9,7 +9,9 @@ const _ = require('lodash');
 const http = require('http');
 router.post('/createSenario', async (req, res) => {
     try {
-        const result = await senario.createSenario(req.body); // assuming the request body contains the necessary data
+        const {userId,name,eventList} = req.body;
+        var data = {userId,name,eventList}
+        const result = await senario.createSenario(data); 
         if (result === "1") {
             res.status(200).send('Senario created successfully');
         } else {
