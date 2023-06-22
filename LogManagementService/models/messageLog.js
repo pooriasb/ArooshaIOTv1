@@ -10,29 +10,16 @@ mongoose.connect(config.dbAddress)
 
 
 const messageLogSchema = new mongoose.Schema({
+  lastUpdate:Date,
     mac: String,
     message: String
 });
 const MessageLog = mongoose.model('messageLog', messageLogSchema);
 
-
-
-const createMessageLog = async (mac,message) => {
-    try {
-
-        const newMessageLog = new MessageLog({mac, message});
-        await newMessageLog.save();
-        return 200;
-    } catch (err) {
-        console.log(err);
-        return 500;
-    }
-};
-
 const createOrUpdateMessageLog = async (mac, message) => {
   try {
     const updateQuery = { mac };
-    const update = { message };
+    const update = { message, lastUpdate: Date.now()  };
     const options = { upsert: true };
   
     // Update the last message log with new data or create a new one if it doesn't exist
@@ -48,6 +35,20 @@ const createOrUpdateMessageLog = async (mac, message) => {
     return 500;
   }
 };
+
+
+const createMessageLog = async (mac,message) => {
+    try {
+
+        const newMessageLog = new MessageLog({lastUpdate:new Date(),mac, message});
+        await newMessageLog.save();
+        return 200;
+    } catch (err) {
+        console.log(err);
+        return 500;
+    }
+};
+
 
 
 

@@ -9,6 +9,7 @@ router.post('/sendMessage', async (req, res) => {
         const mac = req.body.MacAddress;
         const newMessage = req.body;
 
+console.log(req.body);
         // get last message saved in database 
         const logResponse = await axios.get(`${config.LogAddress}/api/log/getLastMessage/${mac}`);
         const lastMessage = logResponse.data;
@@ -47,7 +48,7 @@ router.get('/getLastMessage/:mac', async (req, res) => {
         const logResponse = await axios.get(`${config.LogAddress}/api/log/getLastMessage/${req.params.mac}`);
         return res.send(logResponse.data);
     } catch (error) {
-        console.error(`APIGATEWAY-Error reading last message by ${mac}:`);
+        console.error(`APIGATEWAY-Error reading last message`);
         return res.status(500).send("APIGATEWAY-Error occurred while retrieving last message");
     }
 });
