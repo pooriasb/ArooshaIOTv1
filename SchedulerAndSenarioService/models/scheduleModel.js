@@ -104,8 +104,8 @@ async function createScheduler(data) {
     });
     return "Created";
   } catch (error) {
-    console.error(error);
-    return { status: 500, message: 'Error creating new schedule' };
+    console.error(error.message);
+    return "error : "+error.message;
   }
 }
 

@@ -8,12 +8,12 @@ const { Schema } = require('mongoose');
 
 router.use(express.json());
 /***********************************Create Scheduler */
-router.post('/CreateScheduler', (req, res) => {
+router.post('/CreateScheduler',async (req, res) => {
     const { isOnce, weekDays, hour, minute, events } = req.body;
     var data = {
         isOnce, weekDays, hour, minute, events
     }
-    var result = scheduleModel.createScheduler(data);
+    var result = await scheduleModel.createScheduler(data);
     res.send(result);
 });
 
