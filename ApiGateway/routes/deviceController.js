@@ -6,6 +6,7 @@ const axios = require('axios');
 router.use(express.json());
 router.post('/sendMessage', async (req, res) => {
     try {
+        console.clear();
         const mac = req.body.MacAddress;
         const powerstatus = req.body.powerStatus;
         if (!mac || !powerstatus) return res.status(400).send('Mac or power status not valid');
