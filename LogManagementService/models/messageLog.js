@@ -12,14 +12,15 @@ mongoose.connect(config.dbAddress)
 const messageLogSchema = new mongoose.Schema({
   lastUpdate:Date,
     mac: String,
+    powerStatus :String ,
     message: String
 });
 const MessageLog = mongoose.model('messageLog', messageLogSchema);
 
-const createOrUpdateMessageLog = async (mac, message) => {
+const createOrUpdateMessageLog = async (mac, powerStatus, message) => {
   try {
     const updateQuery = { mac };
-    const update = { message, lastUpdate: Date.now()  };
+    const update = { message, lastUpdate: Date.now() , powerStatus };
     const options = { upsert: true };
   
     // Update the last message log with new data or create a new one if it doesn't exist

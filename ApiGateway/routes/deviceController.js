@@ -7,22 +7,21 @@ router.use(express.json());
 router.post('/sendMessage', async (req, res) => {
     try {
         const mac = req.body.MacAddress;
+        const powerstatus = req.body.powerStatus;
+        if (!mac || !powerstatus) return res.status(400).send('Mac or power status not valid');
         const newMessage = req.body;
-
-console.log(req.body);
         // get last message saved in database 
         const logResponse = await axios.get(`${config.LogAddress}/api/log/getLastMessage/${mac}`);
         const lastMessage = logResponse.data;
+        console.log('new message recived:');
         console.log(newMessage);
         // complete new message with missing parameters using last message's parameters
         const lastCustomization = lastMessage.deviceCustomization;
         const newCustomization = newMessage.deviceCustomization;
-        console.log('last:');
-        console.log(lastCustomization);
-        console.log('newMessage:');
-        console.log(newCustomization);
+
         const completedMessage = {
             MacAddress: mac,
+            powerStatus: powerstatus,
             protocol: newMessage.protocol || lastMessage.protocol,
             deviceCustomization: {
                 ...lastCustomization,
@@ -32,9 +31,10 @@ console.log(req.body);
 
         const response = await axios.post(`${config.SocketAddress}/sendMessage`, {
             mac: mac,
+            powerStatus: powerstatus,
             message: completedMessage
         });
-
+        console.log('socket Response : ' + response.data);
         res.status(200).send(completedMessage);
     } catch (error) {
         console.error('error in send message ');
@@ -96,20 +96,20 @@ function sendCreateRequestToService(device) {
 }
 
 router.post('/updateDeviceName', async (req, res) => {
-  try {
-    const { deviceId, newDeviceName } = req.body;
-    
-    const response = await axios.post(config.DeviceServiceAddress + '/api/ctrl/updateDeviceName/', { deviceId, newDeviceName });
-    
-    if (response.data) {
-      return res.status(200).send(response.data);
-    } else {
-      throw new Error('Error updating device name');
+    try {
+        const { deviceId, newDeviceName } = req.body;
+
+        const response = await axios.post(config.DeviceServiceAddress + '/api/ctrl/updateDeviceName/', { deviceId, newDeviceName });
+
+        if (response.data) {
+            return res.status(200).send(response.data);
+        } else {
+            throw new Error('Error updating device name');
+        }
+    } catch (error) {
+        console.error('Error updating device name:', error);
+        return res.status(500).send('Error updating device name');
     }
-  } catch (error) {
-    console.error('Error updating device name:', error);
-    return res.status(500).send('Error updating device name');
-  }
 });
 
 

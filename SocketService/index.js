@@ -94,7 +94,7 @@ app.post('/sendMessage', async (req, res) => {
   try {
     console.log(req.body);
     io.to(req.body.mac).emit('response', req.body.message);
-    var response = await axios.post(configfile.LogAddress + '/api/log/logMessage', { mac: req.body.mac, message: req.body.message });
+    var response = await axios.post(configfile.LogAddress + '/api/log/logMessage', { mac: req.body.mac, powerStatus : req.body.powerstatus, message: req.body.message });
   
     res.sendStatus(200);
   } catch (err) {
