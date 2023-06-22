@@ -5,7 +5,7 @@ const axios = require('axios');
 //127.0.0.1:3002/api/scheduler
 //mySchedules
 //setActivation
-
+router.use(express.json());
 
 router.get('/getSchedule/:scheduleId', (req, res) => {
 
@@ -18,10 +18,12 @@ router.get('/getMyScheduleList/:userId', async (req, res) => {
 });
 router.post('/createSchedule', async (req, res) => {
     const { isOnce, weekDays, hour, minute, events } = req.body;
+    console.log(req.body);
     var response = await axios.post(config.SchedulerAddress + '/api/scheduler/CreateScheduler', {
         isOnce, weekDays, hour, minute, events
     });
-    res.send(response.data);
+   return res.send(response.data);
+   
 });
 router.post('/setScheduleStatus', async (req, res) => {
     const { status, token, scheduleId } = req.body;
