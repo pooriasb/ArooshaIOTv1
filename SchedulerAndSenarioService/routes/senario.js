@@ -9,6 +9,7 @@ const _ = require('lodash');
 const http = require('http');
 
 
+router.use(express.json());
 
 router.post('/updateSenario', async (req, res) => {
   const { name, eventList, senarioId } = req.body;
@@ -20,14 +21,11 @@ router.post('/updateSenario', async (req, res) => {
     return res.status(500).send('An error occurred while updating the senario.');
   }
 });
-
-
-
-
 router.post('/createSenario', async (req, res) => {
     try {
-        const {userId,name,eventList} = req.body;
-        var data = {userId,name,eventList}
+
+        const {name,eventList} = req.body;
+        var data = {userId : 'sajad',name,eventList}
         const result = await senario.createSenario(data); 
         if (result === "1") {
             res.status(200).send('Senario created successfully');

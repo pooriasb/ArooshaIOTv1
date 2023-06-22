@@ -22,7 +22,7 @@ router.post('/createSchedule', async (req, res) => {
     var response = await axios.post(config.SchedulerAddress + '/api/scheduler/CreateScheduler', {
         isOnce, weekDays, hour, minute, events
     });
-   return res.send(response.data);
+   return res.send(response);
    
 });
 router.post('/setScheduleStatus', async (req, res) => {

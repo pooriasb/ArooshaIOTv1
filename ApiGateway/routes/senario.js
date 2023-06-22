@@ -2,7 +2,11 @@ const express = require('express');
 const router = express.Router();
 const config = require('config');
 const axios = require('axios');
+router.use(express.json());
 ///api/senario
+
+
+
 router.get('/getMySenarioList/:userId', async (req, res) => {
   try {
     const response = await axios.get(config.SchedulerAddress + '/api/senario/scenarios' + req.params.userId);
@@ -26,19 +30,21 @@ router.get('/getSenario/:senarioId', async (req, res) => {
 
 router.post('/createSenario', async (req, res) => {
   const { name, eventList } = req.body;
-
   try {
     const response = await axios.post(
       `${config.SchedulerAddress}/api/senario/createSenario`,
-      { userId: 'sajad', name, eventList }
+      { name, eventList }
     );
     const { data } = response;
 
     if (data) {
       return res.status(200).send(data);
     } else {
-      throw new Error('No data from senario service');
+
+      return res.status(500).send('No data from senario service');
+
     }
+
   } catch (error) {
     console.error('Error creating senario:', error.message);
     res.status(500).send('Error creating senario');
@@ -81,8 +87,8 @@ router.post('/updateSenario', async (req, res) => {
   }
 });
 
-router.get('/deleteSenario/:senarioId',async (req, res) => {
- 
+router.get('/deleteSenario/:senarioId', async (req, res) => {
+
   const response = await axios.get(config.SchedulerAddress + '/api/senario/deleteSenario' + req.params.senarioId);
   if (response.data) {
     return res.status(200).send(response.data);
