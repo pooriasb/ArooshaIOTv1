@@ -129,6 +129,8 @@ function processAliveSignal(macAddress, data) {
 
 
 const { PORT = 3004 } = process.env;
+app.get('/pinger',(req,res)=>{res.send(`Socket is ok`)});
+
 server.listen(PORT, () => {
   console.log(`SocketService is listening on port ${PORT}`);
 });

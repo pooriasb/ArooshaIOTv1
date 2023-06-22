@@ -34,4 +34,6 @@ app.get('/GetDeviceMac/:deviceID',(req,res)=>{
 
 
 const port = process.env.port || 3003;
+app.get('/pinger',(req,res)=>{res.send(`Device Service is ok `)});
+
 app.listen(port, () => console.log(`Device Service is listening on port ${port}`));

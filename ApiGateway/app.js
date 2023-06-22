@@ -29,5 +29,7 @@ app.use('/api/energy',energyRouter);
 app.get('/',(req,res)=>{
   res.send('Hellow From Aoosha');
 });
+
+
 // Export the app instance
 module.exports = app;

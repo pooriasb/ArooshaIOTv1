@@ -10,7 +10,9 @@ if (cluster.isMaster) {
   }
 } else {
   const { PORT = 3000 } = process.env;
+app.get('/pinger',(req,res)=>{res.send(`ApiGateWay is ok `)});
+
   app.listen(PORT, () => {
-    console.log(`Api Gateway is listening on port ${PORT}`);
+    console.log(`Api Gateway is listening on port: ${PORT}`);
   });
 }

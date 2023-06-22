@@ -7,4 +7,6 @@ app.use('/api/senario', senarioRouter);
 
 
 const port = process.env.port || 3002;
+app.get('/pinger',(req,res)=>{res.send(`Schedule is ok`)});
+
 app.listen(port, () => console.log(`SS Service is listening on port ${port}`));

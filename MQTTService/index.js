@@ -73,6 +73,8 @@ app.get('/subTopic', (req, res) => {
    res.send('subscribed');
 });
 const port = process.env.port || 3001;
+app.get('/pinger',(req,res)=>{res.send(`MQTT is ok `)});
+
 app.listen(port, () => console.log(`MQTT Service is listening on port ${port}`));
 
 

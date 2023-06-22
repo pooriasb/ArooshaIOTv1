@@ -28,4 +28,6 @@ app.get('/getSignalsByMac/:mac/:start', async (req, res) => {
 //dbManager.getData();
 
 const port = process.env.port || 3005;
+app.get('/pinger',(req,res)=>{res.send(`Influx is ok `)});
+
 app.listen(port, () => console.log(`influx Service is listening on port ${port}`));
