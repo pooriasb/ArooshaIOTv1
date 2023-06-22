@@ -13,7 +13,7 @@ router.post('/CreateScheduler', (req, res) => {
     var data = {
         isOnce, weekDays, hour, minute, events
     }
-    var result = scheduleModel.scheduleModel.CreateScheduler(data);
+    var result = scheduleModel.createScheduler(data);
     res.send(result);
 });
 
