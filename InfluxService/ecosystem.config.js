@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "Influx Service",
+      name: "Influx",
       script: "./index.js",
       watch: true,
       instances: "max",

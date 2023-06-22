@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "Device Service",
+      name: "Device",
       script: "./index.js",
       watch: true,
       instances: "max",

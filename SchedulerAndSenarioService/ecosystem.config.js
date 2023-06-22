@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "Scheduler Service",
+      name: "Scheduler",
       script: "./index.js",
       watch: true,
       instances: "max",

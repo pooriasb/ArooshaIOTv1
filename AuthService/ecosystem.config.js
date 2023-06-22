@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "Auth Service",
+      name: "Auth",
       script: "./index.js",
       watch: true,
       instances: "max",

@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "Log Service",
+      name: "Log",
       script: "./index.js",
       watch: true,
       instances: "max",

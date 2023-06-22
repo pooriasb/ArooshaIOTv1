@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "Energy Service",
+      name: "Energy",
       script: "./index.js",
       watch: true,
       instances: "max",
