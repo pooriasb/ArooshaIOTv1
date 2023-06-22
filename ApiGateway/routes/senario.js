@@ -25,7 +25,7 @@ router.get('/getSenario/:senarioId', async (req, res) => {
 });
 
 router.post('/createSenario', async (req, res) => {
-  const { userId, name, eventList } = req.body;
+  const { name, eventList } = req.body;
 
   try {
     const response = await axios.post(
