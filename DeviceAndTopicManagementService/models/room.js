@@ -139,25 +139,21 @@ const removeDeviceFromRoom = async (id, deviceToRemove) => {
 };
 
 const getDevicesInRoomByRoomId = async (roomId, userId) => {
-  var room =await roomDocument.findById(roomId);
-  if (!room) return 'Room not found';
-  console.log(room.devices);
-  var devicesInfo = [];
-  if (room.devices) {
-    room.devices.forEach(async element => {
-        console.log('element : ' + element);
-        const elementData = await device.getDeviceByMac(element);
-        console.log('element data: ' + elementData);
-        devicesInfo.push(elementData);
-      });
-    var result = {
-      roomId : room._id,
-      roomName : room.roomName,
-      devices : devicesInfo
-    }
-    return result;
+  try {
+    const room = await roomDocument.findById(roomId);
+    if (!room) return 'Room not found';
+    const devices = await Promise.all(room.devices.map(element => device.getDeviceByMac(element)));
+    return {
+      roomId: room._id,
+      roomName: room.roomName,
+      devices: devices
+    };
+  } catch (error) {
+    console.error(error);
+    return error.message; // You may change the return value to suit your needs
   }
-}
+};
+
 
 module.exports = {
   createRoom,

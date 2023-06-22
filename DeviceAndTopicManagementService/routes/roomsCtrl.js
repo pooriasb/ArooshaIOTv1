@@ -67,10 +67,10 @@ router.post('/updateName/', async (req, res) => {
 router.get('/getDevicesInRoomByRoomId/:roomId', async (req, res) => {
     try {
       const result = await rooms.getDevicesInRoomByRoomId(req.params.roomId, 'sajad');
-      res.status(200).json(result);
+      res.status(200).send(result);
     } catch (error) {
       console.error(error);
-      res.status(500).json([]);
+      res.status(500).send([]);
     }
   });
   
