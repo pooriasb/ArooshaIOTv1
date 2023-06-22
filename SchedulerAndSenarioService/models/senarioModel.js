@@ -17,7 +17,7 @@ const senarioSchema = new mongoose.Schema({
     }]
 });
 
-const Senario = mongoose.model('EventList', senarioSchema);
+const Senario = mongoose.model('senario', senarioSchema);
 
 async function createSenario(data) {
   const newSenario = new Senario({

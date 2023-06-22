@@ -63,7 +63,7 @@ router.get('/scenarios/:userId', async (req, res) => {
         res.status(500).send('Error getting scenarios');
     }
 });
-app.get('/scenario/:senarioId', async (req, res) => {
+router.get('/scenario/:senarioId', async (req, res) => {
     try {
         const senarioId = req.params.senarioId;
         const result = await senario.readScenario(senarioId);
@@ -77,7 +77,7 @@ app.get('/scenario/:senarioId', async (req, res) => {
 
 let messageList = [];
 
-app.post('/startSenario', async (req, res) => {
+router.post('/startSenario', async (req, res) => {
   try {
     const { senarioId } = req.body;
     const scenario = await senario.readScenario(senarioId);
