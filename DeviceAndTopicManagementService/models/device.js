@@ -54,11 +54,15 @@ async function getDeviceMac(deviceId) {
 }
 
 async function getUserDeviceList(userId) {
-    console.log('userID:' + userId);
+    console.log('Device List userID:' + userId);
     try {
         const documents = await DeviceDocument.find({ userId: userId })
             .select('-_id deviceName deviceModel Topic MacAddress');
         if (documents && documents.length > 0) {
+            documents.forEach(doc => {
+                doc.MacAddress
+
+            });
             return documents;
         } else {
             console.log("No documents found");
@@ -147,6 +151,8 @@ async function getDevicesInRoomByRoomName(roomName, userId) {
     }
 }
 
+
+
 // Define the function to find and update the device
 async function updateDeviceName(userId, deviceId, newDeviceName) {
     try {
@@ -173,5 +179,6 @@ module.exports = {
     getDeviceTopic,
     updateDeviceRoom,
     getDevicesInRoomByRoomName,
-    updateDeviceName
+    updateDeviceName,
+
 };

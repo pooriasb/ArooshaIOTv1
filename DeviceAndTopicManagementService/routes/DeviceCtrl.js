@@ -70,15 +70,6 @@ router.get('/getDevicesInRoomByRoomName/:roomName', async (req, res) => {
   }
 });
 
-router.get('/getDevicesInRoomByRoomId/:roomId', async (req, res) => {
-  try {
-    const result = await device.getDevicesInRoom(req.params.roomName, 'sajad');
-    res.status(200).send(result);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send([]);
-  }
-});
 
 
 

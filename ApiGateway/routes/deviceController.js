@@ -34,6 +34,8 @@ router.post('/sendMessage', async (req, res) => {
             powerStatus: powerstatus,
             message: completedMessage
         });
+        console.log('completeMessage: ' +completedMessage);
+
         console.log('socket Response : ' + response.data);
         res.status(200).send(completedMessage);
     } catch (error) {
@@ -202,9 +204,14 @@ router.post('/updateRoomName', async (req, res) => {
 
 //removeDeviceFromRoom
 
-router.get('/DeviceListInRoom', (req, res) => {
-    res.sendStatus(200);
+router.get('/getDevicesInRoomByRoomName/:roomName', (req, res) => {
+  var response =   axios.get(config.DeviceServiceAddress +'/api/ctrl/getDevicesInRoomByRoomName/'+req.params.roomName);
+    res.status(200).json(response.data);
 });
+router.get('/getDevicesInRoomByRoomId/:roomId', (req, res) => {
+    var response =   axios.get(config.DeviceServiceAddress +'/api/room/getDevicesInRoomByRoomId/'+req.params.roomId);
+      res.status(200).json(response.data);
+  });
 router.post('/AddDevicetoRoom', (req, res) => {
     try {
         const { roomId, deviceMac } = req.body;

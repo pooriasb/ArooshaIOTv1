@@ -2,7 +2,7 @@ const express = require('express');
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const config = require('config');
-
+const device = require('./device');
 mongoose.connect(config.dbAddress)
   .then(() => console.log('Connected to database'))
   .catch(err => console.log('Error ' + err));
@@ -99,7 +99,7 @@ const addDeviceToRoom = async (id, deviceMac, userId) => {
 
     const deviceExists = room.devices.includes(deviceMac);
     if (deviceExists) return 'Device already added';
-    
+
     const allRooms = await roomDocument.find({ userId: userId });
 
     for (let i = 0; i < allRooms.length; i++) {
@@ -138,6 +138,27 @@ const removeDeviceFromRoom = async (id, deviceToRemove) => {
   }
 };
 
+const getDevicesInRoomByRoomId = async (roomId, userId) => {
+  var room =await roomDocument.findById(roomId);
+  if (!room) return 'Room not found';
+  console.log(room.devices);
+  var devicesInfo = [];
+  if (room.devices) {
+    room.devices.forEach(async element => {
+        console.log('element : ' + element);
+        const elementData = await device.getDeviceByMac(element);
+        console.log('element data: ' + elementData);
+        devicesInfo.push(elementData);
+      });
+    var result = {
+      roomId : room._id,
+      roomName : room.roomName,
+      devices : devicesInfo
+    }
+    return result;
+  }
+}
+
 module.exports = {
   createRoom,
   getRooms,
@@ -146,5 +167,6 @@ module.exports = {
   deleteRoomById,
   addDeviceToRoom,
   updateRoomName,
-  removeDeviceFromRoom
+  removeDeviceFromRoom,
+  getDevicesInRoomByRoomId
 };
