@@ -82,6 +82,15 @@ async function deleteLimitById(id) {
     return error;
   }
 }
+async function setLimitActive(id, isActive) {
+  try {
+    const result = await Limits.findByIdAndUpdate(id, {isActive}, {new: true});
+    return result;
+  } catch (error) {
+    console.error(error.message);
+    return error;
+  }
+}
 
 
 
@@ -90,5 +99,6 @@ module.exports = {
     getAllLimits,
     getLimitById,
     updateLimitById,
-    deleteLimitById
+    deleteLimitById,
+    setLimitActive
 }
