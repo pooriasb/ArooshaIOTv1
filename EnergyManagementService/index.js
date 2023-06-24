@@ -3,8 +3,9 @@ const config = require('config');
 const app = express();
 const reportsRouter= require('./routes/reports');
 
-
+const limitRouter = require('./routes/limitReport');
 app.use('/api/report',reportsRouter);
+app.use('/api/limit',limitRouter);
 
 
 const { PORT = 3006 } = process.env;

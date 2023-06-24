@@ -6,7 +6,7 @@ const config = require('config');
 const limit = require('../models/limit');
 router.post('/createLimit', async (req, res) => {
     const { deviceMac, deviceName, maxUsePower, dimmer } = req.body;
-    var result = await limit.createLimit({ 'sajad', deviceMac, deviceName, maxUsePower, dimmer });
+    var result = await limit.createLimit({ userId: 'sajad', deviceMac, deviceName, maxUsePower, dimmer });
     res.send(result);
 });
 
