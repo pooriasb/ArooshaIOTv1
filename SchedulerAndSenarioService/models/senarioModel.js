@@ -13,6 +13,7 @@ const senarioSchema = new mongoose.Schema({
     scheduleCreateDateTime: Date,
     eventList: [{
         deviceId: String,
+        deviceName:String,
         eventId: String
     }]
 });
