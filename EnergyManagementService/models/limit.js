@@ -110,7 +110,8 @@ async function LimitCheck(id) {
       timeFromNow -= value * ms;
     }
   }
-  report.energyUsageByDevice(limit.deviceMac, timeString);
+  console.log('time : ' + timeString);
+ // report.energyUsageByDevice(limit.deviceMac, timeString);
 }
 
 
@@ -120,5 +121,6 @@ module.exports = {
     getLimitById,
     updateLimitById,
     deleteLimitById,
-    setLimitActive
+    setLimitActive,
+    LimitCheck
 }
