@@ -6,24 +6,23 @@ router.use(express.json());
 ///api/senario
 
 
-
 router.get('/getMySenarioList/:userId', async (req, res) => {
   try {
-    const response = await axios.get(config.SchedulerAddress + '/api/senario/scenarios' + req.params.userId);
+    const response = await axios.get(config.SchedulerAddress + '/api/senario/Senarios/' + req.params.userId);
     if (response.data) return res.status(200).send(response.data);
     return res.status(500).send('no response from schedule service')
   } catch (error) {
-    console.error("Error getting scenario list ");
+    console.error("Error getting Senario list ");
     res.sendStatus(500);
   }
 });
 router.get('/getSenario/:senarioId', async (req, res) => {
   try {
-    const response = await axios.get(config.SchedulerAddress + '/api/senario/scenario' + req.params.senarioId);
+    const response = await axios.get(config.SchedulerAddress + '/api/senario/Senario/' + req.params.senarioId);
     if (response.data) return res.status(200).send(response.data);
     return res.status(500).send('no response from schedule service')
   } catch (error) {
-    console.error("Error getting scenario list ");
+    console.error("Error getting Senario list ");
     res.sendStatus(500);
   }
 });

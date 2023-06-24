@@ -52,24 +52,24 @@ router.get('/deleteSenario/:senarioId', async (req, res) => {
     }
 });
 
-router.get('/scenarios/:userId', async (req, res) => {
+router.get('/Senarios/:userId', async (req, res) => {
     try {
-        const result = await senario.readScenarios(req.params.userId); // assuming the user id is passed as a param in the URL
+        const result = await senario.readSenarios(req.params.userId); // assuming the user id is passed as a param in the URL
         res.status(200).json(result);
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error getting scenarios');
+        res.status(500).send('Error getting Senarios');
     }
 });
-router.get('/scenario/:senarioId', async (req, res) => {
+router.get('/Senario/:senarioId', async (req, res) => {
     try {
         const senarioId = req.params.senarioId;
-        const result = await senario.readScenario(senarioId);
+        const result = await senario.readSenario(senarioId);
 
         res.status(200).json(result);
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error getting scenario');
+        res.status(500).send('Error getting Senario');
     }
 });
 
@@ -78,8 +78,8 @@ let messageList = [];
 router.post('/startSenario', async (req, res) => {
   try {
     const { senarioId } = req.body;
-    const scenario = await senario.readScenario(senarioId);
-    const eventListIndb = scenario.eventList;
+    const Senario = await senario.readSenario(senarioId);
+    const eventListIndb = Senario.eventList;
     const messageList = [];
 
     for (const event of eventListIndb) {
