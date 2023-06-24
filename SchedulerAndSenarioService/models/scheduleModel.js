@@ -8,14 +8,17 @@ mongoose.connect(config.dbAddress)
     .catch(err => console.log('Error ' + err));
 
 const eventListSchema = new mongoose.Schema({
-    deviceId: String,
-    eventId: String
+   
 });
 
 const ScheduleDocumentChema = new mongoose.Schema({
     userId: String,
     scheduleCreateDateTime: Date,
-    eventList: [eventListSchema],
+    eventList: { 
+      deviceId: String,
+      deviceName:String,
+      eventId: String
+    },
     isScheduled: Boolean,
     scheduleTime: {  isOnce: String,
        weekDays:String,
