@@ -72,7 +72,7 @@ router.post('/updateSenario', async (req, res) => {
   const { name, eventList, senarioId } = req.body;
   try {
     const response = await axios.post(
-      `${config.SchedulerAddress}/api/senario/startSenario`,
+      `${config.SchedulerAddress}/api/senario/updateSenario`,
       { name, eventList, senarioId }
     );
     if (response.data) {

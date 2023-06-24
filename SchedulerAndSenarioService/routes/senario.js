@@ -14,7 +14,7 @@ router.use(express.json());
 router.post('/updateSenario', async (req, res) => {
   const { name, eventList, senarioId } = req.body;
   try {
-    const updatedSenario = await updateSenario(senarioId, { name: name, eventList: eventList });
+    const updatedSenario = await senario.updateSenario(senarioId, { name: name, eventList: eventList });
     return res.send(updatedSenario);
   } catch (error) {
     console.error('Error updating senario:', error.message);
