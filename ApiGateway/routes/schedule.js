@@ -7,9 +7,9 @@ const axios = require('axios');
 //setActivation
 router.use(express.json());
 
-router.get('/getSchedule/:scheduleId', (req, res) => {
+router.get('/getSchedule/:scheduleId',async (req, res) => {
 
-    var response = axios.get(config.SchedulerAddress + '/api/scheduler/getSchedule/' + req.params.scheduleId);
+    var response =await axios.get(config.SchedulerAddress + '/api/scheduler/getSchedule/' + req.params.scheduleId);
     res.send(response.data);
 });
 router.get('/getMyScheduleList/:userId', async (req, res) => {

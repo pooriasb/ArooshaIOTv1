@@ -89,7 +89,7 @@ const getScheduleById = async (scheduleId) => {
     return schedule;
   } catch (error) {
     console.error(error);
-    // handle error
+    return "Error : " + error.message;
   }
 };
 
