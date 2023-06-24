@@ -17,11 +17,11 @@ router.post('/CreateScheduler',async (req, res) => {
     res.send(result);
 });
 
-router.get('/mySchedules/:userId', (req, res) => {
-    scheduleModel.readSchedules(req.params.userId).then((value) => {
-        res.send(value);
-    });
+router.get('/mySchedules/:userId', async (req, res) => {
+  const schedules = await scheduleModel.readSchedules(req.params.userId);
+  res.send(schedules);
 });
+
 router.get('/deleteSchedule/:scheduleId', (req, res) => {
     scheduleModel.deleteSchedule(req.params.scheduleId).then((value) => {
         return value;

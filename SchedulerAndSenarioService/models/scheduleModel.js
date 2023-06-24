@@ -72,7 +72,7 @@ const getScheduleById = async (scheduleId) => {
 const readSchedules = async (userId) => {
   try {
     const schedules = await ScheduleDocument.find({userId: userId}).exec();
-    return JSON.stringify( schedules);
+    return JSON.parse(JSON.stringify(schedules));
   } catch (err) {
     return 500;
   }
