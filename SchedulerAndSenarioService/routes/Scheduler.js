@@ -8,7 +8,7 @@ const { Schema } = require('mongoose');
 
 router.use(express.json());
 /***********************************Create Scheduler */
-router.post('/CreateScheduler',async (req, res) => {
+router.post('/CreateScheduler', async (req, res) => {
     const { isOnce, weekDays, hour, minute, events } = req.body;
     var data = {
         isOnce, weekDays, hour, minute, events
@@ -18,8 +18,8 @@ router.post('/CreateScheduler',async (req, res) => {
 });
 
 router.get('/mySchedules/:userId', async (req, res) => {
-  const schedules = await scheduleModel.readSchedules(req.params.userId);
-  res.send(schedules);
+    const schedules = await scheduleModel.readSchedules(req.params.userId);
+    res.send(schedules);
 });
 
 router.get('/deleteSchedule/:scheduleId', (req, res) => {
@@ -27,9 +27,10 @@ router.get('/deleteSchedule/:scheduleId', (req, res) => {
         return value;
     });
 });
-router.post('/updateSchedule', (req, res) => {
-    scheduleModel.updateSchedule();
-    res.send('');
+router.post('/updateSchedule', async (req, res) => {
+    const { isOnce, weekDays, hour, minute, events, scheduleId } = req.body;
+    var result = await scheduleModel.updateScheduleDocument( scheduleId, { isOnce, weekDays, hour, minute, events });
+    res.send(result);
 });
 /******************************End create scheduler */
 router.post('/setActivation', (req, res) => {

@@ -6,11 +6,6 @@ const config = require('config');
 mongoose.connect(config.dbAddress)
     .then(() => console.log('Connected to database'))
     .catch(err => console.log('Error ' + err));
-
-const eventListSchema = new mongoose.Schema({
-   
-});
-
 const ScheduleDocumentChema = new mongoose.Schema({
     userId: String,
     scheduleCreateDateTime: Date,
@@ -27,6 +22,10 @@ const ScheduleDocumentChema = new mongoose.Schema({
          }
     
 });
+const ScheduleDocument = mongoose.model('ScheduleDocument',ScheduleDocumentChema);
+
+// create test device
+
 async function createScheduler(data) {
   const {  isOnce, weekDays, hour, minute, events } = data; // destructuring the input object
   // const scheduleTime = { isOnce, weekDays, hour, minute };
@@ -48,39 +47,6 @@ async function createScheduler(data) {
     console.error(error.message);
     return "error : "+error.message;
   }
-}
-const EventList = mongoose.model('EventList', eventListSchema);
-
-
-const ScheduleDocument = mongoose.model('ScheduleDocument',ScheduleDocumentChema);
-
-// create test device
-
-
-/**
- * a schedule document in the database
- * @param {string} userId - The user ID associated with the schedule
- * @param {string} scheduleId - The ID of the schedule to update
- * @param {Object} eventData - The event data to add to the schedule (deviceId, eventId)
- * @returns {Promise<Object>} - The updated schedule document
- */
-async function updateSchedule(userId, scheduleId, eventData) {
-  // Retrieve the existing schedule document from the database
-  const schedule = await ScheduleDocument.findOne({ userId, _id: scheduleId });
-  
-  // If the schedule doesn't exist, return an error
-  if (!schedule) {
-    return 404
-  }
-  
-  // Add the new event data to the schedule's eventList
-  schedule.eventList.push(eventData);
-  
-  // Save the updated schedule document to the database
-  const updatedSchedule = await schedule.save();
-  
-  // Return the updated schedule document
-  return 200
 }
 
 const getScheduleById = async (scheduleId) => {
@@ -114,6 +80,34 @@ function deleteSchedule(scheduleId){
     });
 }
 
+// Define the update function
+async function updateScheduleDocument(scheduleId, updateData) {
+  try {
+    const {  isOnce, weekDays, hour, minute, events } = updateData;
+    // Find the schedule document by ID
+    const foundSchedule = await ScheduleDocument.findById(scheduleId);
+    if (!foundSchedule) {
+      return 'Schedule document not found.';
+    }
+    foundSchedule.scheduleTime =  {
+      isOnce:isOnce,
+      weekDays : weekDays,
+      hour : hour,
+      minute :minute
+    }
+    foundSchedule.eventList = events;
+    // Save the updated document
+    const updatedSchedule = await foundSchedule.save();
+    // Return the updated document
+    return updatedSchedule;
+  } catch (error) {
+    console.error(error);
+    return 'Unable to update schedule document.';
+  }
+}
+
+
+
 
 
 const setScheduleActivation = async (scheduleId, isScheduled) => {
@@ -139,7 +133,7 @@ const setScheduleActivation = async (scheduleId, isScheduled) => {
     readSchedules,
     setScheduleActivation,
     deleteSchedule,
-    updateSchedule,
+    updateScheduleDocument,
     getScheduleById
  }
 

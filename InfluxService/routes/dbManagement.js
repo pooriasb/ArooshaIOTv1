@@ -7,14 +7,17 @@ const bucket = 'Aroosha'
 
 
 
+// Try to connect to InfluxDB
+
+
+
 function saveAliveSignal(userId, mac, hue, rgbBrightness, colorTemperature, brightness, dance) {
 
+    const client = new InfluxDB({ url: 'http://154.211.2.176:8086', token: token })
 
-    const client = new InfluxDB({ url: 'http://127.0.0.1:8086', token: token })
 
-
-    const { Point } = require('@influxdata/influxdb-client')
-    const writeApi = client.getWriteApi(org, bucket)
+    const { Point } = require('@influxdata/influxdb-client');
+    const writeApi = client.getWriteApi(org, bucket);
     //writeApi.useDefaultTags({ host: 'host1' })
     const point = new Point(userId)
         .stringField('deviceID', mac)
