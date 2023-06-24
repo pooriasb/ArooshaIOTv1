@@ -93,7 +93,7 @@ function deleteSchedule(scheduleId){
 
 async function createScheduler(data) {
   const {  isOnce, weekDays, hour, minute, events } = data; // destructuring the input object
-  const scheduleTime = JSON.stringify({ isOnce, weekDays, hour, minute });
+  const scheduleTime = JSON.parse({ isOnce, weekDays, hour, minute });
   try {
     const newSchedule = await ScheduleDocument.create({
       userId:'sajad' ,
