@@ -17,10 +17,35 @@ const ScheduleDocumentChema = new mongoose.Schema({
     scheduleCreateDateTime: Date,
     eventList: [eventListSchema],
     isScheduled: Boolean,
-    scheduleTime: String
+    scheduleTime: {  isOnce: String,
+       weekDays:String,
+        hour:String,
+         minute:String,
+         }
     
 });
-
+async function createScheduler(data) {
+  const {  isOnce, weekDays, hour, minute, events } = data; // destructuring the input object
+  // const scheduleTime = { isOnce, weekDays, hour, minute };
+  try {
+    const newSchedule = await ScheduleDocument.create({
+      userId:'sajad' ,
+      scheduleDateTime: Date.now(),
+      eventList:events,
+      isScheduled: true,
+      scheduleTime: {
+        isOnce:isOnce,
+        weekDays : weekDays,
+        hour : hour,
+        minute :minute
+      }
+    });
+    return "Created";
+  } catch (error) {
+    console.error(error.message);
+    return "error : "+error.message;
+  }
+}
 const EventList = mongoose.model('EventList', eventListSchema);
 
 
@@ -55,7 +80,6 @@ async function updateSchedule(userId, scheduleId, eventData) {
   return 200
 }
 
-
 const getScheduleById = async (scheduleId) => {
   try {
     const schedule = await ScheduleDocument.findById(scheduleId);
@@ -66,18 +90,14 @@ const getScheduleById = async (scheduleId) => {
   }
 };
 
-
-
-
 const readSchedules = async (userId) => {
   try {
     const schedules = await ScheduleDocument.find({userId: userId}).exec();
-    return JSON.parse(JSON.stringify(schedules));
+    return schedules;
   } catch (err) {
     return 500;
   }
 };
-
 
 function deleteSchedule(scheduleId){
   return ScheduleDocument.deleteOne({ _id: scheduleId })
@@ -91,23 +111,7 @@ function deleteSchedule(scheduleId){
     });
 }
 
-async function createScheduler(data) {
-  const {  isOnce, weekDays, hour, minute, events } = data; // destructuring the input object
-  const scheduleTime = JSON.parse({ isOnce, weekDays, hour, minute });
-  try {
-    const newSchedule = await ScheduleDocument.create({
-      userId:'sajad' ,
-      scheduleDateTime: Date.now(),
-      eventList:events,
-      isScheduled: true,
-      scheduleTime,
-    });
-    return "Created";
-  } catch (error) {
-    console.error(error.message);
-    return "error : "+error.message;
-  }
-}
+
 
 const setScheduleActivation = async (scheduleId, isScheduled) => {
   try {
