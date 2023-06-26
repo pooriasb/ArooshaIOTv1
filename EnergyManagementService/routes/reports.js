@@ -117,8 +117,9 @@ router.get('energyUsageByRoom/:roomId', (req, res) => {
   //1. get devices macs in room
   //2. use energyUsageByDevice for each devices
   //3. concat results and return
-
-
+////api/room/getDevicesInRoomByRoomId/:roomId
+var response = axios.get (config.DeviceServiceAddress + '/api/room/getDevicesInRoomByRoomId/'+req.params.roomId);
+console.log(response.data);
   res.sendStatus(200);
 });
 

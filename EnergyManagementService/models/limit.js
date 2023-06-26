@@ -3,8 +3,8 @@ const _ = require('lodash');
 const mongoose = require('mongoose');
 const config = require('config');
 const report = require('../routes/reports');
-const request = require('request');
 
+const axios = require('axios');
 
 mongoose.connect(config.dbAddress)
     .then(() => console.log('Connected to database'))
@@ -33,6 +33,7 @@ async function createLimit({ userId, deviceMac, deviceName, maxUsePower, dimmer 
         return error;
     }
 }
+
 
 // Retrieve all limit entries
 async function getAllLimits(userId) {
@@ -122,10 +123,11 @@ async function LimitCheck(id) {
         var isLimitStarted = sumAll >= limit.maxUsePower ? true : false
 
         if (isLimitStarted) {
+            console.log('limit Reached')
             //limit is started
             //sendSms('','');
-            var message = "";
-            sendMessageToDevice(limi.deviceMac,message);
+            var message = limit.dimmer;
+            sendMessageToDevice(limit.deviceMac, message);
         }
 
 
@@ -142,7 +144,7 @@ async function LimitCheck(id) {
     }
 }
 
-const sendSms = (phone , message)=>{
+const sendSms = (phone, message) => {
 
     request.post({
         url: 'http://ippanel.com/api/select',
@@ -167,11 +169,40 @@ const sendSms = (phone , message)=>{
         }
     });
 }
-const sendMessageToDevice = (mac , message)=>{
+const sendMessageToDevice = async (mac, message) => {
+    try {
+        const sendMessageResponse = await axios.post(`${config.ApiGateway}/api/device/sendMessage`, {
+            MacAddress: mac,
+            powerStatus: 'on',
+            deviceCustomization: {
+                isLimited: true,
+                limitDimmer: message
+            }
+        });
+        console.log('send Message Response : ');
+        console.log(sendMessageResponse.data);
 
+    } catch (error) {
+        console.error('Error in sendMessageToDevice:', error.message);
+
+    }
 }
 
-
+const setDeviceLimitOff = async (mac)=>{
+    try {
+        const sendMessageResponse = await axios.post(`${config.ApiGateway}/api/device/sendMessage`, {
+            MacAddress: mac,
+            powerStatus: 'on',
+            deviceCustomization: {
+                isLimited: false,
+            }
+        });
+        console.log('send Message Response : ');
+        console.log(sendMessageResponse.data);
+    } catch (error) {
+        console.error('Error in sendMessageToDevice:', error.message);
+    }
+}
 
 module.exports = {
     createLimit,
@@ -180,5 +211,6 @@ module.exports = {
     updateLimitById,
     deleteLimitById,
     setLimitActive,
-    LimitCheck
+    LimitCheck,
+    setDeviceLimitOff
 }

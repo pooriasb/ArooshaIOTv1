@@ -62,8 +62,6 @@ router.post('/updateName/', async (req, res) => {
     }
 });
 
-
-
 router.get('/getDevicesInRoomByRoomId/:roomId', async (req, res) => {
     try {
       const result = await rooms.getDevicesInRoomByRoomId(req.params.roomId, 'sajad');
