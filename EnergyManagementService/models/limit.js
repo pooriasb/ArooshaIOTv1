@@ -118,8 +118,20 @@ async function LimitCheck(id) {
         var result = await report.energyUsageByDevice(limit.deviceMac, '-' + timeStringWithoutSpaces);
 
         var sumAll = result.sumAll;
-        console.log('sum : ' + sumAll);
-        return result;
+        var isLimitStarted = sumAll >= limit.maxUsePower ? true : false
+
+        if (isLimitStarted) {
+            //limit is started
+        }
+
+
+
+        var limitResult = {
+            ...result,
+            maxuseage: limit.maxUsePower,
+            isLimitStarted
+        }
+        return limitResult;
     } catch (error) {
         console.error('Error in LimitCheck:', error);
         throw error;
