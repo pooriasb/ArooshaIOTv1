@@ -3,6 +3,7 @@ const _ = require('lodash');
 const mongoose = require('mongoose');
 const config = require('config');
 const report = require('../routes/reports');
+const request = require('request');
 
 
 mongoose.connect(config.dbAddress)
@@ -122,6 +123,7 @@ async function LimitCheck(id) {
 
         if (isLimitStarted) {
             //limit is started
+
         }
 
 
@@ -136,6 +138,35 @@ async function LimitCheck(id) {
         console.error('Error in LimitCheck:', error);
         throw error;
     }
+}
+
+const sendSms = (phone , message)=>{
+
+    request.post({
+        url: 'http://ippanel.com/api/select',
+        body: {
+            "op": "pattern",
+            "user": "09928966092",
+            "pass": "Faraz@2282094247",
+            "fromNum": "3000505",
+            "toNum": phone,
+            "patternCode": "kc6wd4eitrp9v5d",
+            "inputData": [
+                { "code": message }
+            ]
+        },
+        json: true,
+    }, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+            //YOU‌ CAN‌ CHECK‌ THE‌ RESPONSE‌ AND SEE‌ ERROR‌ OR‌ SUCCESS‌ MESSAGE
+            console.log(response.body);
+        } else {
+            console.log("whatever you want");
+        }
+    });
+}
+const sendMessageToDevice = (mac , message)=>{
+
 }
 
 
