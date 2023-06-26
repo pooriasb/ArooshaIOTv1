@@ -32,7 +32,7 @@ function saveAliveSignal(userId, mac, hue, rgbBrightness, colorTemperature, brig
     writeApi
         .close()
         .then(() => {
-            console.log('Alive Signal inserted')
+            console.log('Alive Signal inserted mac:'+mac)
         })
         .catch(e => {
             console.error(e)
@@ -42,7 +42,7 @@ function saveAliveSignal(userId, mac, hue, rgbBrightness, colorTemperature, brig
 
 function getData() {
 
-    const queryApi = new InfluxDB({ url: 'http://127.0.0.1:8086', token: token }).getQueryApi(org)
+    const queryApi = new InfluxDB({ url: 'http://154.211.2.176:8086', token: token }).getQueryApi(org)
 
     const fluxQuery = `from(bucket:"Aroosha") |> range(start: -20m) |> filter(fn: (r) => r._measurement == "Sajad")`
 
@@ -61,23 +61,29 @@ function getData() {
 }
 
 async function getSignalByMac(mac, start) {
-const queryApi = new InfluxDB({ url: 'http://127.0.0.1:8086', token: token }).getQueryApi(org)
-const fluxQuery = `from(bucket: "Aroosha")
-    |> range(start: ${start})
-    |> filter(fn: (r) => r._value == "${mac}")
-     |> group(columns: ["_measurement"], mode:"by")
-     |> keep(columns: ["_time", "_field", "rgbBrightness", "colorTemperature" , "brightness"])
-    `
+  try {
+    const queryApi = new InfluxDB({ url: 'http://154.211.2.176:8086', token: token }).getQueryApi(org);
+    const fluxQuery = `from(bucket: "Aroosha")
+        |> range(start: ${start})
+        |> filter(fn: (r) => r._value == "${mac}")
+        |> group(columns: ["_measurement"], mode:"by")
+        |> keep(columns: ["_time", "_field", "rgbBrightness", "colorTemperature" , "brightness"])
+      `;
 
-   
-    const resultArray = []
+    const resultArray = [];
 
     for await (const { values, tableMeta } of queryApi.iterateRows(fluxQuery)) {
-        const objectFromTableMeta = tableMeta.toObject(values)
-        resultArray.push(objectFromTableMeta)
+      const objectFromTableMeta = tableMeta.toObject(values);
+      resultArray.push(objectFromTableMeta);
     }
+
     return resultArray;
+  } catch (error) {
+    console.error(error.message);
+    return [];
+  }
 }
+
 
 module.exports.getSignalByMac = getSignalByMac;
 module.exports.saveAliveSignal = saveAliveSignal;

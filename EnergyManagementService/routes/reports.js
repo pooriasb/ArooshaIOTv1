@@ -71,30 +71,22 @@ async function energyUsageByDevice(mac, start) {
       });
     }
 
-    // console.log(`Device Model: ${device.deviceModel}`);
-    // console.log(`driver yellow power: ${deviceInfo.driverYellowPower}`);
-    // console.log(`driver white power: ${deviceInfo.driverWhitePower}`);
-    // console.log(`driver RGB power: ${deviceInfo.driverRGBPower}`);
-    // console.log(`signals count: ${signals.length}`);
-    // console.log(`sumColorWhiteTemperature: ${sumColorWhitePower} >len: ${ColorTemperaturelength} >Energy: ${whiteEnergyUsage}`);
-    // console.log(`sumColorYellowTemperature: ${sumColorYellowPower} >len: ${ColorTemperaturelength} >Energy: ${yellowEnergyUsage}`);
-    // console.log(`brightness: ${sumBrightness} >len: ${Brightnesslength}`);
-    // console.log(`RgbBrightness: ${sumRgbBrightness} >len: ${RgbBrightnesslength}`);
-
-
-    let whiteEnergyUsage = calculateEnergyUsage((sumColorWhitePower / ColorTemperaturelength), deviceInfo.driverWhitePower, 0);
-    let yellowEnergyUsage = calculateEnergyUsage((sumColorYellowPower / ColorTemperaturelength), deviceInfo.driverYellowPower, 0);
-    let rgbEnergyUsage = calculateEnergyUsage((sumRgbBrightness / RgbBrightnesslength), deviceInfo.driverRGBPower, 0);
+    let whiteEnergyUsageAVG = calculateEnergyUsage((sumColorWhitePower / ColorTemperaturelength), deviceInfo.driverWhitePower, 0);
+    let yellowEnergyUsageAVG = calculateEnergyUsage((sumColorYellowPower / ColorTemperaturelength), deviceInfo.driverYellowPower, 0);
+    let rgbEnergyUsageAVG = calculateEnergyUsage((sumRgbBrightness / RgbBrightnesslength), deviceInfo.driverRGBPower, 0);
     var energyResult = {
       deviceModel: device.deviceModel,
       driverYellowPower: deviceInfo.driverYellowPower,
       driverWhitePower: deviceInfo.driverWhitePower,
       driverRGBPower: deviceInfo.driverRGBPower,
       signalsCount: signals.length,
-      whiteEnergyUsage,
-      yellowEnergyUsage,
-      rgbEnergyUsage
-
+      whiteEnergyUsageAVG,
+      yellowEnergyUsageAVG,
+      rgbEnergyUsageAVG,
+      sumColorWhitePower,
+      sumColorYellowPower,
+      sumRgbBrightness,
+      sumAll : sumColorWhitePower + sumColorYellowPower +sumRgbBrightness
     }
     return energyResult;
   } catch (error) {

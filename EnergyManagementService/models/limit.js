@@ -93,26 +93,39 @@ async function setLimitActive(id, isActive) {
 }
 
 async function LimitCheck(id) {
-  var limit = await getLimitById(id);
-  var timeFromNow = Date.now() - new Date(limit.createDate);
-  var timeUnits = [
-    { unit: "d", ms: 86400000 }, // 24 hours in milliseconds
-    { unit: "h", ms: 3600000 }, // 60 minutes in milliseconds
-    { unit: "m", ms: 60000 }, // 60 seconds in milliseconds
-  ];
-  var timeString = "";
-  for (var i = 0; i < timeUnits.length; i++) {
-    var unit = timeUnits[i].unit;
-    var ms = timeUnits[i].ms;
-    var value = Math.floor(timeFromNow / ms);
-    if (value > 0) {
-      timeString += value + unit + " ";
-      timeFromNow -= value * ms;
+    try {
+        var limit = await getLimitById(id);
+        var timeFromNow = Date.now() - new Date(limit.createDate);
+        var timeUnits = [
+            { unit: "d", ms: 86400000 }, // 24 hours in milliseconds
+            { unit: "h", ms: 3600000 }, // 60 minutes in milliseconds
+            { unit: "m", ms: 60000 }, // 60 seconds in milliseconds
+        ];
+        var timeString = "";
+        for (var i = 0; i < timeUnits.length; i++) {
+            var unit = timeUnits[i].unit;
+            var ms = timeUnits[i].ms;
+            var value = Math.floor(timeFromNow / ms);
+            if (value > 0) {
+                timeString += value + unit + " ";
+                timeFromNow -= value * ms;
+            }
+        }
+
+        var timeStringWithoutSpaces = timeString.replace(/\s/g, '');
+        console.log('time : ' + timeStringWithoutSpaces);
+
+        var result = await report.energyUsageByDevice(limit.deviceMac, '-' + timeStringWithoutSpaces);
+
+        var sumAll = result.sumAll;
+        console.log('sum : ' + sumAll);
+        return result;
+    } catch (error) {
+        console.error('Error in LimitCheck:', error);
+        throw error;
     }
-  }
-  console.log('time : ' + timeString);
- // report.energyUsageByDevice(limit.deviceMac, timeString);
 }
+
 
 
 module.exports = {
