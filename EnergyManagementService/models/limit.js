@@ -123,7 +123,9 @@ async function LimitCheck(id) {
 
         if (isLimitStarted) {
             //limit is started
-
+            //sendSms('','');
+            var message = "";
+            sendMessageToDevice(limi.deviceMac,message);
         }
 
 
