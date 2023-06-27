@@ -5,6 +5,7 @@ const authRouter = require('./routes/auth');
 const senarioRouter = require('./routes/senario');
 const energyRouter = require('./routes/energyReports');
 const limitRouter = require('./routes/limit');
+const powerRouter = require('./routes/powerSupply');
 const cors = require('cors');
 
 const config = require('config');
@@ -28,6 +29,7 @@ app.use('/api/auth',authRouter);
 app.use('/api/senario',senarioRouter);
 app.use('/api/energy',energyRouter);
 app.use('/api/limit',limitRouter);
+app.use('/api/power',powerRouter);
 app.get('/',(req,res)=>{
   res.send('Hellow From Aoosha');
 });
