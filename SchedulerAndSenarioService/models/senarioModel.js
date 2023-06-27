@@ -54,10 +54,10 @@ async function readSenario(senarioId) {
       console.error(err);
     }
   }
-async function deleteSenario(userId, SenarioName) {
+async function deleteSenario(senarioId) {
   try {
-    await Senario.deleteOne({ userId, name: SenarioName });
-    console.log(`${SenarioName} deleted successfully`);
+    await Senario.deleteOne({ _id: senarioId });
+    
     return "1";
   } catch (err) {
     console.error(err);
