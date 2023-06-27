@@ -120,6 +120,7 @@ router.get('energyUsageByRoom/:roomId', (req, res) => {
 ////api/room/getDevicesInRoomByRoomId/:roomId
 var response = axios.get (config.DeviceServiceAddress + '/api/room/getDevicesInRoomByRoomId/'+req.params.roomId);
 console.log(response.data);
+ 
   res.sendStatus(200);
 });
 

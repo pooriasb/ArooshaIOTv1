@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const config = require('config');
 const axios = require('axios');
-const { route } = require('./powerSupply');
+
 
 
 

@@ -3,6 +3,7 @@ const router = express.Router();
 const config = require('config');
 
 const axios = require('axios');
+const { route } = require('./deviceController');
 router.use(express.json());
 router.post('/sendMessage', async (req, res) => {
     try {
@@ -60,16 +61,38 @@ router.get('/getLastMessage/:mac', async (req, res) => {
 
 router.get('/getMyDeviceList/:userId', async (req, res) => {
     try {
-        const [deviceList, roomList] = await Promise.all([
+        let [deviceList, roomList] = await Promise.all([
             getMyDeviceListFromService(req.params.userId),
-            sendGetMyRoomListToservice(req.params.userId)
+            sendGetMyRoomListToservice(req.params.userId),
+          
         ]);
+    
+        /// for each device in deviceList get mac and pass to getDeviceStatus
+        const deviceListWithStatus = await Promise.all(deviceList.map(async (device) => {
+            return {
+              ...device,
+                status:await getDeviceStatus(device.MacAddress)
+            };
+        }));
+        deviceList = deviceListWithStatus;
         res.json({ deviceList, roomList });
     } catch (error) {
         console.log('Error:  ' + error);
         res.status(500).json({ error: error.message });
     }
 });
+
+async function getDeviceStatus(macAddress) {
+    try {
+        const response = await axios.get(`${config.LogAddress}/api/log/getLastMessage/${macAddress}`);
+
+        return response.data.powerStatus;
+    } catch (error) {
+        console.log(`Error: ${error.message}`);
+        return 'error';
+    }
+}
+
 
 async function getMyDeviceListFromService(userId) {
     try {
@@ -80,6 +103,27 @@ async function getMyDeviceListFromService(userId) {
         return 'error';
     }
 }
+router.get('/getDeviceByMac/:mac', async (req, res) => {
+  try {
+    const result = await axios.get(config.DeviceServiceAddress + '/api/ctrl/getDeviceByMac/' + req.params.mac);
+    res.send(result.data);
+  } catch (error) {
+    res.status(error.response.status).send(error.response.data);
+  }
+});
+
+router.get('/isDeviceCreated/:mac', async (req, res) => {
+  try {
+    const result = await axios.get(config.DeviceServiceAddress + '/api/ctrl/getDeviceByMac/' + req.params.mac);
+    if (result.data) {
+      return res.sendStatus(200);
+    } else {
+      return res.sendStatus(404);
+    }
+  } catch (error) {
+    res.status(error.response.status).send(error.response.data);
+  }
+});
 
 
 router.get('/CreateDevice/:userId/:deviceName/:deviceModel/:Topic/:MacAddress', (req, res) => {
