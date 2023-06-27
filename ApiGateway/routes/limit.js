@@ -123,7 +123,8 @@ router.delete('/:id', async (req, res) => {
 // Endpoint to set a specific limit entry as active or inactive by ID
 router.post('/:id', async (req, res) => {
   try {
-    const result = await axios.post(config.EnergyAddress + '/api/limit/' + req.params.id);
+    const isActive = req.body.isActive;
+    const result = await axios.post(config.EnergyAddress + '/api/limit/' + req.params.id,{isActive});
     res.send(result.data);
   } catch (error) {
     if (error.response && (error.response.status === 500 || error.response.status === 400 || error.response.status === 404)) {
