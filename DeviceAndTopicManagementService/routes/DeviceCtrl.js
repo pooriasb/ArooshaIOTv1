@@ -10,7 +10,7 @@ router.get('/list/:userId', (req, res) => {
 });
 
 router.post('/create', (req, res) => {
-  const { userId, deviceName, deviceModel, Topic, MacAddress } = req.body;
+  const { userId, deviceName, deviceModel, Topic, MacAddress,powerStatus,deviceCustomization } = req.body;
   const recivedDevice = { userId, deviceName, deviceModel, Topic, MacAddress };
   //TODO: do proper validation 
   device.createDevice(recivedDevice)

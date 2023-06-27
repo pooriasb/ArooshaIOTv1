@@ -36,10 +36,6 @@ router.post('/create', async (req, res) => {
   }
 });
 
-
-// Import the functions
-const { getAllLimits, getLimitById, updateLimitById, deleteLimitById, setLimitActive } = require('./limits');
-
 // Endpoint to retrieve all limit entries
 router.get('/:userId', async (req, res) => {
   try {
