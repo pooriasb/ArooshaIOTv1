@@ -88,6 +88,7 @@ console.timeEnd('signalRequest');
       driverWhitePower: deviceInfo.driverWhitePower,
       driverRGBPower: deviceInfo.driverRGBPower,
       signalsCount: signals.length,
+      RgbBrightnesslength,
       whiteEnergyUsageAVG,
       yellowEnergyUsageAVG,
       rgbEnergyUsageAVG,
