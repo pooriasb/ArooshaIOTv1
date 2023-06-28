@@ -167,7 +167,15 @@ async function updateDeviceName(userId, deviceId, newDeviceName) {
     }
 }
 
-
+async function GetAllDevices() {
+    try {
+        const devices = await DeviceDocument.find().lean().exec();
+        return devices;
+    } catch (error) {
+        console.log(error.message);
+        return [];
+    }   
+}
 
 module.exports = {
     getDeviceByMac,
@@ -180,5 +188,6 @@ module.exports = {
     updateDeviceRoom,
     getDevicesInRoomByRoomName,
     updateDeviceName,
+    GetAllDevices
 
 };

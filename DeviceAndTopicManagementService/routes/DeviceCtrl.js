@@ -70,10 +70,6 @@ router.get('/getDevicesInRoomByRoomName/:roomName', async (req, res) => {
     res.status(500).send([]);
   }
 });
-
-
-
-
 router.post('/updateDeviceName', async (req, res) => {
   try {
     const { deviceId, newDeviceName } = req.body;
@@ -82,6 +78,17 @@ router.post('/updateDeviceName', async (req, res) => {
   } catch (error) {
     console.error('Error updating device name');
     return res.status(500).send('Error updating device name');
+  }
+});
+
+// Get all devices
+router.get('/GetAllDevices', async (req, res) => {
+  try {
+    const result = await device.GetAllDevices();
+    res.status(200).send(result);
+  } catch (error) {
+    console.error('Error getting all devices:', error);
+    res.status(500).json({ error: 'Failed to get all devices' });
   }
 });
 

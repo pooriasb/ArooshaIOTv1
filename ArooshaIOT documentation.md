@@ -13,6 +13,7 @@
 9. logManagementService {port : 3008}
 10. AuthService {port : 3009}
 11. NotificationService {port:3010}
+12. ReportService {port:3011}
 ------------------------------------------------
 Socket Coding
 A : alive signal
