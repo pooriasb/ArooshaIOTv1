@@ -1,0 +1,59 @@
+const mongoose = require('mongoose');
+const config = require('config');
+
+mongoose.connect(config.dbAddress)
+    .then(() => console.log('Connected to database'))
+    .catch(err => console.log('Error ' + err));
+
+
+
+const EnergyReportSchema = new mongoose.Schema({
+    userId: String,
+    CreateDateTime: { type: Date, default: Date.now },
+    mac: { type: String, required: true },
+    energy: {
+        type: Object,
+        required: true
+    }
+});
+
+const EnergyReport = mongoose.model('EnergyReport', EnergyReportSchema);
+
+async function readEnergyReports(mac, count) {
+  try {
+    const reports = await EnergyReport.find({ mac: mac }).sort({ CreateDateTime: -1 }).limit(count);
+    return reports;
+  } catch (error) {
+    console.error('Error retrieving energy reports:', error);
+  }
+}
+
+async function deleteEnergyReport(mac, date) {
+  try {
+    await EnergyReport.deleteMany({ mac: mac, CreateDateTime: { $lte: date } });
+    console.log('Energy reports deleted successfully');
+  } catch (error) {
+    console.error('Error deleting energy reports:', error);
+  }
+}
+async function createEnergyReport(userId, mac, energyData) {
+  try {
+    const energyReport = new EnergyReport({
+      userId: userId,
+      mac: mac,
+      energy: energyData
+    });
+
+    await energyReport.save();
+    console.log('Energy report saved successfully');
+  } catch (error) {
+    console.error('Error saving energy report:', error);
+  }
+}
+
+
+module.exports = {
+    readEnergyReports,
+    deleteEnergyReport,
+    createEnergyReport
+}
