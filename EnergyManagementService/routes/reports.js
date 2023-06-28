@@ -17,24 +17,25 @@ router.get('/energyUsageByDevice/:mac/:start', async (req, res) => {
 });
 async function energyUsageByDevice(mac, start) {
   try {
-  console.time('deviceRequest');
-const deviceResponse = await axios.get(`${config.DeviceServiceAddress}/api/ctrl/getDeviceByMac/${mac}`);
-const device = deviceResponse.data;
-console.timeEnd('deviceRequest');
+    console.time('deviceRequest');
+    const deviceResponse = await axios.get(`${config.DeviceServiceAddress}/api/ctrl/getDeviceByMac/${mac}`);
+    const device = deviceResponse.data;
+    console.timeEnd('deviceRequest');
 
-console.time('deviceInfoRequest');
-const deviceInfoResponse = await axios.get(`${config.DeviceServiceAddress}/api/ctrl/getDeviceInfoByModel/${device.deviceModel}`);
-const deviceInfo = deviceInfoResponse.data;
-console.timeEnd('deviceInfoRequest');
+    console.time('deviceInfoRequest');
+    const deviceInfoResponse = await axios.get(`${config.DeviceServiceAddress}/api/ctrl/getDeviceInfoByModel/${device.deviceModel}`);
+    const deviceInfo = deviceInfoResponse.data;
+    console.timeEnd('deviceInfoRequest');
 
-console.time('signalRequest');
-const signalResponse = await axios.get(`${config.InfluxServiceAddress}/getSignalsByMac/${mac}/${start}`);
-const signals = signalResponse.data;
-console.timeEnd('signalRequest');
+    console.time('signalRequest');
+    const signalResponse = await axios.get(`${config.InfluxServiceAddress}/getSignalsByMac/${mac}/${start}`);
+    const signals = signalResponse.data;
+    console.timeEnd('signalRequest');
 
     let signalLength = signals.length;
     let sumColorWhitePower = 0;
     let sumColorYellowPower = 0;
+    let sumRGBPower = 0;
     let sumRgbBrightness = 0;
     let sumBrightness = 0;
     let ColorTemperaturelength = 0;
@@ -43,6 +44,7 @@ console.timeEnd('signalRequest');
 
     if (signalLength > 0) {
       signals.forEach(signal => {
+        let rgbPower = 0;
         if (Number.isInteger(parseInt(signal.colorTemperature))) {
 
           let whiteTemp = 0;
@@ -69,7 +71,9 @@ console.timeEnd('signalRequest');
           ColorTemperaturelength++;
         }
         if (Number.isInteger(parseInt(signal.rgbBrightness))) {
-          sumRgbBrightness += parseInt(signal.rgbBrightness);
+          // sumRgbBrightness += parseInt(signal.rgbBrightness);
+          rgbPower = ((parseInt(signal.rgbBrightness) / 100) * deviceInfo.driverRGBPower);
+          sumRGBPower += rgbPower;
           RgbBrightnesslength++;
         }
         if (Number.isInteger(parseInt(signal.brightness))) {
@@ -94,7 +98,7 @@ console.timeEnd('signalRequest');
       rgbEnergyUsageAVG,
       sumColorWhitePower,
       sumColorYellowPower,
-      sumRgbBrightness,
+      sumRGBPower,
       sumAll: sumColorWhitePower + sumColorYellowPower + sumRgbBrightness
     }
     return energyResult;
