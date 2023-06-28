@@ -70,12 +70,7 @@ async function getSignalByMac(mac, start) {
         |> keep(columns: ["_time", "_field", "rgbBrightness", "colorTemperature" , "brightness"])
       `;
 
-    const resultArray = [];
-
-    for await (const { values, tableMeta } of queryApi.iterateRows(fluxQuery)) {
-      const objectFromTableMeta = tableMeta.toObject(values);
-      resultArray.push(objectFromTableMeta);
-    }
+    const resultArray = await queryApi.collectRows(fluxQuery);
 
     return resultArray;
   } catch (error) {
@@ -84,6 +79,48 @@ async function getSignalByMac(mac, start) {
   }
 }
 
+
+
+
+
+
+
+
+
+
+
+// async function getSignalByMac(mac, start) {
+//   try {
+//     const queryApi = new InfluxDB({ url: 'http://154.211.2.176:8086', token: token }).getQueryApi(org);
+//     const pageSize = 1000; // Adjust the page size as per your requirement
+//     let pageNumber = 1;
+//     let resultArray = [];
+    
+//     while (true) {
+//       const fluxQuery = `from(bucket: "Aroosha")
+//         |> range(start: ${start})
+//         |> filter(fn: (r) => r._value == "${mac}")
+//         |> group(columns: ["_measurement"], mode:"by")
+//         |> keep(columns: ["_time", "_field", "rgbBrightness", "colorTemperature", "brightness"])
+//         |> limit(n: ${pageSize})
+//         |> offset(n: ${(pageNumber - 1) * pageSize})
+//       `;
+
+//       const rows = await queryApi.collectRows(fluxQuery);
+//       if (rows.length === 0) {
+//         break; // Exit loop if no more rows are returned
+//       }
+//       resultArray = resultArray.concat(rows);
+
+//       pageNumber++;
+//     }
+
+//     return resultArray;
+//   } catch (error) {
+//     console.error(error.message);
+//     return [];
+//   }
+// }
 
 module.exports.getSignalByMac = getSignalByMac;
 module.exports.saveAliveSignal = saveAliveSignal;

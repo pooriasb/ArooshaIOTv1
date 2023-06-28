@@ -19,18 +19,30 @@ router.get('/energyUsageByDevice/:mac/:start', async (req, res) => {
 });
 
 
-router.get('/energyUsageByUser/:userId/:start',async (req,res)=>{
-    try {
-        const response = await axios.get(config.EnergyAddress + '/api/report/energyUsageByUser/' + req.params.userId + '/' + req.params.start);
-        if (response.data) {
-          return res.status(200).send(response.data);
-        } else {
-          return res.status(500).send('Something went wrong when trying to get energy by device');
-        }
-      } catch (error) {
-        console.error(error);
-        return res.status(500).send('An error occurred while processing your request.');
-      }
+router.get('/energyUsageByUser/:userId/:start', async (req, res) => {
+  try {
+    const response = await axios.get(config.EnergyAddress + '/api/report/energyUsageByUser/' + req.params.userId + '/' + req.params.start);
+    if (response.data) {
+      return res.status(200).send(response.data);
+    } else {
+      return res.status(500).send('Something went wrong when trying to get energy by device');
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('An error occurred while processing your request.');
+  }
+});
+
+router.get('/energyUsageByRoom/:roomId/:start', async (req, res) => {
+  try {
+    const roomId = req.params.roomId;
+    const start = req.params.start;
+    const response = await axios.get(`${config.EnergyAddress}/api/report/energyUsageByRoom/${roomId}/${start}`);
+    res.send(response.data);
+  } catch(error) {
+    console.log('Error: ' + error);
+    return res.status(500).send(error.message);
+  }
 });
 
 

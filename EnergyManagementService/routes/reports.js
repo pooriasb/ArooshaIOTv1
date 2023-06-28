@@ -17,12 +17,20 @@ router.get('/energyUsageByDevice/:mac/:start', async (req, res) => {
 });
 async function energyUsageByDevice(mac, start) {
   try {
-    const deviceResponse = await axios.get(`${config.DeviceServiceAddress}/api/ctrl/getDeviceByMac/${mac}`);
-    const device = deviceResponse.data;
-    const deviceInfoResponse = await axios.get(`${config.DeviceServiceAddress}/api/ctrl/getDeviceInfoByModel/${device.deviceModel}`);
-    const deviceInfo = deviceInfoResponse.data;
-    const signalResponse = await axios.get(`${config.InfluxServiceAddress}/getSignalsByMac/${mac}/${start}`);
-    const signals = signalResponse.data;
+  console.time('deviceRequest');
+const deviceResponse = await axios.get(`${config.DeviceServiceAddress}/api/ctrl/getDeviceByMac/${mac}`);
+const device = deviceResponse.data;
+console.timeEnd('deviceRequest');
+
+console.time('deviceInfoRequest');
+const deviceInfoResponse = await axios.get(`${config.DeviceServiceAddress}/api/ctrl/getDeviceInfoByModel/${device.deviceModel}`);
+const deviceInfo = deviceInfoResponse.data;
+console.timeEnd('deviceInfoRequest');
+
+console.time('signalRequest');
+const signalResponse = await axios.get(`${config.InfluxServiceAddress}/getSignalsByMac/${mac}/${start}`);
+const signals = signalResponse.data;
+console.timeEnd('signalRequest');
 
     let signalLength = signals.length;
     let sumColorWhitePower = 0;
@@ -86,7 +94,7 @@ async function energyUsageByDevice(mac, start) {
       sumColorWhitePower,
       sumColorYellowPower,
       sumRgbBrightness,
-      sumAll : sumColorWhitePower + sumColorYellowPower +sumRgbBrightness
+      sumAll: sumColorWhitePower + sumColorYellowPower + sumRgbBrightness
     }
     return energyResult;
   } catch (error) {
@@ -103,27 +111,30 @@ router.get('/energyUsageByUser/:userId/:start', async (req, res) => {
   devices.forEach(device => {
     macs.push(device.MacAddress);
   });
-let energyResult = [];
+  let energyResult = [];
   await Promise.all(macs.map(async mac => {
     let singleEnergy = await energyUsageByDevice(mac, req.params.start);
     energyResult.push(singleEnergy);
   }));
 
-  //2. use energyUsageByDevice for each devices
-  //3. concat results and return
   res.send(energyResult);
 });
-router.get('energyUsageByRoom/:roomId', (req, res) => {
-  //1. get devices macs in room
-  //2. use energyUsageByDevice for each devices
-  //3. concat results and return
-////api/room/getDevicesInRoomByRoomId/:roomId
-var response = axios.get (config.DeviceServiceAddress + '/api/room/getDevicesInRoomByRoomId/'+req.params.roomId);
-console.log(response.data);
- 
-  res.sendStatus(200);
-});
+router.get('/energyUsageByRoom/:roomId/:start', async (req, res) => {
+  try {
+    const response = await axios.get(config.DeviceServiceAddress + '/api/room/getDevicesInRoomByRoomId/' + req.params.roomId);
+    const devices = response.data.devices.map(device => device.MacAddress);
 
+    const energyResult = await Promise.all(devices.map(async mac => {
+      return energyUsageByDevice(mac, req.params.start);
+    }));
+
+    res.status(200).send(energyResult);
+
+  } catch (error) {
+    console.log('Error: ' + error);
+    return res.status(500).send(error.message);
+  }
+});
 
 
 
