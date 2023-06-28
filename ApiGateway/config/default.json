@@ -6,6 +6,7 @@
     "LogAddress" : "http://localhost:3008",
     "AuthAddress" : "http://localhost:3009",
     "SchedulerAddress" : "http://localhost:3002",
-    "EnergyAddress" : "http://localhost:3006"
+    "EnergyAddress" : "http://localhost:3006",
+    "reportAddress" : "http://localhost:3011"
 
 }
