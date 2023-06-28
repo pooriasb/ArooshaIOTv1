@@ -71,7 +71,7 @@ async function energyUsageByDevice(mac, start) {
           ColorTemperaturelength++;
         }
         if (Number.isInteger(parseInt(signal.rgbBrightness))) {
-          // sumRgbBrightness += parseInt(signal.rgbBrightness);
+           sumRgbBrightness += parseInt(signal.rgbBrightness);
           rgbPower = ((parseInt(signal.rgbBrightness) / 100) * deviceInfo.driverRGBPower);
           sumRGBPower += rgbPower;
           RgbBrightnesslength++;
