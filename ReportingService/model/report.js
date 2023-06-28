@@ -2,19 +2,19 @@ const mongoose = require('mongoose');
 const config = require('config');
 
 mongoose.connect(config.dbAddress)
-    .then(() => console.log('Connected to database'))
-    .catch(err => console.log('Error ' + err));
+  .then(() => console.log('Connected to database'))
+  .catch(err => console.log('Error ' + err));
 
 
 
 const EnergyReportSchema = new mongoose.Schema({
-    userId: String,
-    CreateDateTime: { type: Date, default: Date.now },
-    mac: { type: String, required: true },
-    energy: {
-        type: Object,
-        required: true
-    }
+  userId: String,
+  CreateDateTime: { type: Date, default: Date.now },
+  mac: { type: String, required: true },
+  energy: {
+    type: Object,
+    required: true
+  }
 });
 
 const EnergyReport = mongoose.model('EnergyReport', EnergyReportSchema);
@@ -37,24 +37,26 @@ async function deleteEnergyReport(id) {
   }
 }
 
-async function createEnergyReport(userId, mac, energyData) {
+async function createEnergyReport(mac, energyData) {
   try {
     const energyReport = new EnergyReport({
-      userId: userId,
+      userId: 'sajad',
       mac: mac,
       energy: energyData
     });
 
     await energyReport.save();
     console.log('Energy report saved successfully');
+    return energyReport;
   } catch (error) {
-    console.error('Error saving energy report:', error);
+    console.error('Error saving energy report:', error.message);
+    return error.message;
   }
 }
 
 
 module.exports = {
-    readEnergyReports,
-    deleteEnergyReport,
-    createEnergyReport
+  readEnergyReports,
+  deleteEnergyReport,
+  createEnergyReport
 }
