@@ -28,14 +28,15 @@ async function readEnergyReports(mac, count) {
   }
 }
 
-async function deleteEnergyReport(mac, date) {
+async function deleteEnergyReport(id) {
   try {
-    await EnergyReport.deleteMany({ mac: mac, CreateDateTime: { $lte: date } });
-    console.log('Energy reports deleted successfully');
+    await EnergyReport.findByIdAndDelete(id);
+    console.log('Energy report deleted successfully');
   } catch (error) {
-    console.error('Error deleting energy reports:', error);
+    console.error('Error deleting energy report:', error);
   }
 }
+
 async function createEnergyReport(userId, mac, energyData) {
   try {
     const energyReport = new EnergyReport({
