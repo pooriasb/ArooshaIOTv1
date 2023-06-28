@@ -33,6 +33,7 @@ router.get('/energyUsageByUser/:userId/:start', async (req, res) => {
   }
 });
 
+
 router.get('/energyUsageByRoom/:roomId/:start', async (req, res) => {
   try {
     const roomId = req.params.roomId;
