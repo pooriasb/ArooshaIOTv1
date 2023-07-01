@@ -22,7 +22,6 @@ const limitSchema = new mongoose.Schema({
 const Limits = mongoose.model('Limits', limitSchema);
 
 
-// Create a new limit entry
 async function createLimit({ userId, deviceMac, deviceName, maxUsePower, dimmer }) {
     try {
         const limit = new Limits({ userId, isActive: true, createDate: Date.now(), deviceMac, deviceName, maxUsePower, dimmer });

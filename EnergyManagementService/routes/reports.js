@@ -71,7 +71,7 @@ async function energyUsageByDevice(mac, start) {
           ColorTemperaturelength++;
         }
         if (Number.isInteger(parseInt(signal.rgbBrightness))) {
-           sumRgbBrightness += parseInt(signal.rgbBrightness);
+          sumRgbBrightness += parseInt(signal.rgbBrightness);
           rgbPower = ((parseInt(signal.rgbBrightness) / 100) * deviceInfo.driverRGBPower);
           sumRGBPower += rgbPower;
           RgbBrightnesslength++;
@@ -83,24 +83,26 @@ async function energyUsageByDevice(mac, start) {
       });
     }
 
-    let whiteEnergyUsageAVG = calculateEnergyUsage((sumColorWhitePower / ColorTemperaturelength), deviceInfo.driverWhitePower, 0);
-    let yellowEnergyUsageAVG = calculateEnergyUsage((sumColorYellowPower / ColorTemperaturelength), deviceInfo.driverYellowPower, 0);
-    let rgbEnergyUsageAVG = calculateEnergyUsage((sumRgbBrightness / RgbBrightnesslength), deviceInfo.driverRGBPower, 0);
+    let whiteEnergyUsageAVG = calculateEnergyUsage(sumColorWhitePower / ColorTemperaturelength, deviceInfo.driverWhitePower, 0);
+    let yellowEnergyUsageAVG = calculateEnergyUsage(sumColorYellowPower / ColorTemperaturelength, deviceInfo.driverYellowPower, 0);
+    let rgbEnergyUsageAVG = calculateEnergyUsage(sumRgbBrightness / RgbBrightnesslength, deviceInfo.driverRGBPower, 0);
+
     var energyResult = {
       deviceModel: device.deviceModel,
       driverYellowPower: deviceInfo.driverYellowPower,
       driverWhitePower: deviceInfo.driverWhitePower,
       driverRGBPower: deviceInfo.driverRGBPower,
       signalsCount: signals.length,
-      RgbBrightnesslength,
-      whiteEnergyUsageAVG,
-      yellowEnergyUsageAVG,
-      rgbEnergyUsageAVG,
-      sumColorWhitePower,
-      sumColorYellowPower,
-      sumRGBPower,
-      sumAll: sumColorWhitePower + sumColorYellowPower + sumRgbBrightness
+      RgbBrightnesslength: RgbBrightness.length,
+      whiteEnergyUsageAVG: whiteEnergyUsageAVG,
+      yellowEnergyUsageAVG: yellowEnergyUsageAVG,
+      rgbEnergyUsageAVG: rgbEnergyUsageAVG,
+      sumColorWhitePower: sumColorWhitePower,
+      sumColorYellowPower: sumColorYellowPower,
+      sumRGBPower: sumRGBPower,
+      sumAll: sumColorWhitePower + sumColorYellowPower + sumRGBPower
     }
+
     return energyResult;
   } catch (error) {
     console.error(error);

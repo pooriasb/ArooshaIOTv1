@@ -10,6 +10,7 @@ router.get('/login/:phone', async (req, res) => {
 
 router.get('/validatePhone/:phone/:code', async (req, res) => {
     var result = await User.authenticateUser(req.params.phone, req.params.code);
+
     res.send(result);
 });
 module.exports = router;

@@ -1,11 +1,13 @@
-
-
 const express = require('express');
 const app = express();
 const server = require('http').Server(app);
 const authRouter = require('./routes/auth');
+const config = require('config');
+require('dotenv').config();
 app.use('/api/auth',authRouter);
 
+
+console.log(`JWTSECKEY_Pooria : ${process.env.JWTSECKEY_Pooria}`)
 
 
 
