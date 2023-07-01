@@ -3,6 +3,7 @@ const _ = require('lodash');
 const mongoose = require('mongoose');
 const config = require('config');
 const request = require('request');
+require('dotenv').config();
 
 mongoose.connect(config.dbAddress)
     .then(() => console.log('Connected to database'))
@@ -75,7 +76,7 @@ const authenticateUser = async (phone, activationCode) => {
 
     // Step 3: generate JWT
     const payload = { userId: user._id, phone };
-    const token = jwt.sign(payload, 'process.env.JWT_SECRET');
+    const token = jwt.sign(payload, process.env.JWTSECKEY_Pooria);
 
     return { status: 200, message: 'Success', token };
   } catch (err) {
@@ -111,7 +112,45 @@ const sendSms = (message, phone) => {
         }
     });
 }
+
+
+
+
+
+
+function validateJwt(token) {
+  try {
+    // Verify the JWT token using the secret key
+    const decodedToken = jwt.verify(token, process.env.JWTSECKEY_Pooria);
+
+    // Add any additional validation logic here
+
+    // Return the decoded token
+    return true
+  } catch (err) {
+    // If the token is invalid or has expired
+    return false;
+  }
+}
+function decodeJwt(token) {
+    try {
+      // Verify the JWT token using the secret key
+      const decodedToken = jwt.verify(token, process.env.JWTSECKEY_Pooria);
+  
+      // Add any additional validation logic here
+  
+      // Return the decoded token
+      return decodedToken
+    } catch (err) {
+      // If the token is invalid or has expired
+      console.log(err.message);
+      return 0;
+    }
+  }
+
 module.exports = {
     createUserAndSendCode,
-    authenticateUser
+    authenticateUser,
+    validateJwt,
+    decodeJwt
 };

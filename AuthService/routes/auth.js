@@ -13,4 +13,20 @@ router.get('/validatePhone/:phone/:code', async (req, res) => {
 
     res.send(result);
 });
+
+router.post('/validateToken', async (req, res) => {
+    var result = await User.validateJwt(req.body.token);
+    res.send(result);
+});
+
+router.post('/decodeToken', async (req, res) => {
+    var result = await User.validateJwt(req.body.token);
+    if (result && result != 0) {
+        var decoded = await User.decodeJwt(req.body.token);
+        res.send(decoded);
+    }
+    res.send('Token is not valid');
+});
+
+
 module.exports = router;

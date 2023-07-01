@@ -7,7 +7,7 @@ require('dotenv').config();
 app.use('/api/auth',authRouter);
 
 
-console.log(`JWTSECKEY_Pooria : ${process.env.JWTSECKEY_Pooria}`)
+console.log(process.env.JWTSECKEY_Pooria);
 
 
 
