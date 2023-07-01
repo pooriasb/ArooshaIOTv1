@@ -3,7 +3,7 @@ const io = require('socket.io-client');
 // Connect to the server
 const socket = io('http://localhost:3004', {
   extraHeaders: {
-    mac: "9658sxfgf"
+    mac: "0253"
   }
 });
 

@@ -16,46 +16,115 @@ const userSchema = new mongoose.Schema({
     role: String,
     parentId: String,
     activationCode: String,
-    activationTTL: Date
+    activationTTL: Date,
+    settings: Object,
+    isChild : { type: Boolean, default: false },
+    parentId : { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 });
 const User = mongoose.model('User', userSchema);
 
 
+// const createUserAndSendCode = async (phone) => {
+//     try {
+//         // Step 1: find user by phone
+//         const user = await User.findOne({ phone });
+
+//         // Step 2 or 3: create activation code, send SMS, and save user
+//         const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
+//         const activationTTL = Date.now() + 5 * 60 * 1000; // 5 minutes in milliseconds
+
+//         if (!user) {
+//             // User doesn't exist, create new user
+//             const newUser = new User({
+//                 phone,
+//                 activationCode,
+//                 activationTTL,
+//             });
+//             await newUser.save();
+//             await sendSms(activationCode, phone);
+
+//             return { status: 404, message: 'User does not exist' };
+//         } else {
+//             // User exists, update activation code and TTL
+//             user.activationCode = activationCode;
+//             user.activationTTL = activationTTL;
+//             await user.save();
+//             await sendSms(activationCode, phone);
+
+//             return { status: 200, message: 'User exists' };
+//         }
+//     } catch (err) {
+//         console.error(err);
+//         return { status: 500, message: 'Internal server error' };
+//     }
+// };
+
 const createUserAndSendCode = async (phone) => {
-    try {
-        // Step 1: find user by phone
-        const user = await User.findOne({ phone });
+  try {
+    // Step 1: find user by phone
+    const user = await User.findOne({ phone });
 
-        // Step 2 or 3: create activation code, send SMS, and save user
-        const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
-        const activationTTL = Date.now() + 5 * 60 * 1000; // 5 minutes in milliseconds
+    // Step 2 or 3: create activation code, send SMS, and save user
+    const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
+    const activationTTL = Date.now() + 5 * 60 * 1000; // 5 minutes in milliseconds
 
-        if (!user) {
-            // User doesn't exist, create new user
-            const newUser = new User({
-                phone,
-                activationCode,
-                activationTTL,
-            });
-            await newUser.save();
-            await sendSms(activationCode, phone);
+    if (!user) {
+      // User doesn't exist, create new user
+      const newUser = new User({
+        phone,
+        activationCode,
+        activationTTL,
+        settings: {}, // Set empty settings object
+        parentId: null, // Set parent ID to null
+      });
+      await newUser.save();
+      await sendSms(activationCode, phone);
 
-            return { status: 404, message: 'User does not exist' };
-        } else {
-            // User exists, update activation code and TTL
-            user.activationCode = activationCode;
-            user.activationTTL = activationTTL;
-            await user.save();
-            await sendSms(activationCode, phone);
+      return { status: 404, message: 'User does not exist' };
+    } else {
+      // User exists, update activation code and TTL
+      user.activationCode = activationCode;
+      user.activationTTL = activationTTL;
+      await user.save();
+      await sendSms(activationCode, phone);
 
-            return { status: 200, message: 'User exists' };
-        }
-    } catch (err) {
-        console.error(err);
-        return { status: 500, message: 'Internal server error' };
+      return { status: 200, message: 'User exists' };
     }
+  } catch (err) {
+    console.error(err);
+    return { status: 500, message: 'Internal server error' };
+  }
 };
+const createChildUser = async (parentUserId, childPhone) => {
+  try {
+    // Find the parent user by their ID
+    const parentUser = await User.findById(parentUserId);
 
+    // If the parent user does not exist, throw an error
+    if (!parentUser) {
+      throw new Error('Parent user not found');
+    }
+
+    // Create the child user
+    const childUser = new User({
+      phone: childPhone,
+      settings: {}, // Set empty settings object
+      isChild: true,
+      parentId: parentUserId,
+    });
+
+    // Save the child user and assign it to the parent user
+    await childUser.save();
+    parentUser.children.push(childUser);
+    await parentUser.save();
+
+    // Return the created child user
+    return childUser;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
 
 
 
@@ -114,7 +183,30 @@ const sendSms = (message, phone) => {
 }
 
 
+async function createOrUpdateSettings(userId, settings) {
+  try {
+    // Find the user by their ID
+    const user = await User.findById(userId);
 
+    // If the user does not exist, throw an error
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Update the settings object with the new values
+    user.settings = settings;
+
+    // Save the updated user object
+    await user.save();
+
+    // Return the updated user object
+    return user;
+  } catch (err) {
+    // Handle any errors that occur during the process
+    console.error(err);
+    return null;
+  }
+}
 
 
 
@@ -152,5 +244,6 @@ module.exports = {
     createUserAndSendCode,
     authenticateUser,
     validateJwt,
-    decodeJwt
+    decodeJwt,
+    createOrUpdateSettings
 };
