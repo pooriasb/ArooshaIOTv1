@@ -30,7 +30,15 @@ app.get('/GetDeviceMac/:deviceID',(req,res)=>{
 });
 
 
+// const { exec } = require('child_process');
 
+// exec('cd ..', (error, stdout, stderr) => {
+//   if (error) {
+//     console.error(`Command execution error: ${error}`);
+//     return;
+//   }
+//   console.log(stdout);
+// });
 
 
 const port = process.env.port || 3003;

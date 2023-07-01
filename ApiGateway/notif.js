@@ -4,7 +4,6 @@
 // HTTP-Headers:
 // Content-Type: application/json
 // Authorization: Token "<YOUR_TOKEN>"
-
 // Body
 // {
 // "api_key": "<YOUR_API_KEY>",
