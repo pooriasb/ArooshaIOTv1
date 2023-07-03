@@ -14,6 +14,21 @@ router.get('/validatePhone/:phone/:code', async (req, res) => {
     res.send(result);
 });
 
+router.get('/addChild/:phone',async (req, res) => {
+    var result = await User.createChildUser(req.params.phone);
+
+    res.send(result);
+});
+router.post('/blockChild/:childId',async (req, res) => {
+    var result = await User.blockChild(req.params.childId);
+
+    res.send(result);
+});
+
+
+
+
+
 router.post('/validateToken', async (req, res) => {
     var result = await User.validateJwt(req.body.token);
     res.send(result);
