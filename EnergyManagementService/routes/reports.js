@@ -88,6 +88,7 @@ async function energyUsageByDevice(mac, start) {
     let rgbEnergyUsageAVG = calculateEnergyUsage(sumRgbBrightness / RgbBrightnesslength, deviceInfo.driverRGBPower, 0);
 
     var energyResult = {
+      MacAddress:mac,
       deviceModel: device.deviceModel,
       driverYellowPower: deviceInfo.driverYellowPower,
       driverWhitePower: deviceInfo.driverWhitePower,
