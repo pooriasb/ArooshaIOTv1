@@ -19,4 +19,9 @@ router.post('/blockChild/:childId',async (req, res) => {
     var response = await axios.post(config.AuthAddress + '/api/auth/blockChild/' + req.params.childId);
     res.send(response.data);
 });
+
+router.get('/getChildren',async (req, res) => {
+    var response = await axios.get(config.AuthAddress + '/api/auth/getChildren/' );
+    res.send(response.data);
+});
 module.exports = router;

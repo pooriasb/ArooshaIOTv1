@@ -24,42 +24,6 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', userSchema);
 
-
-// const createUserAndSendCode = async (phone) => {
-//     try {
-//         // Step 1: find user by phone
-//         const user = await User.findOne({ phone });
-
-//         // Step 2 or 3: create activation code, send SMS, and save user
-//         const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
-//         const activationTTL = Date.now() + 5 * 60 * 1000; // 5 minutes in milliseconds
-
-//         if (!user) {
-//             // User doesn't exist, create new user
-//             const newUser = new User({
-//                 phone,
-//                 activationCode,
-//                 activationTTL,
-//             });
-//             await newUser.save();
-//             await sendSms(activationCode, phone);
-
-//             return { status: 404, message: 'User does not exist' };
-//         } else {
-//             // User exists, update activation code and TTL
-//             user.activationCode = activationCode;
-//             user.activationTTL = activationTTL;
-//             await user.save();
-//             await sendSms(activationCode, phone);
-
-//             return { status: 200, message: 'User exists' };
-//         }
-//     } catch (err) {
-//         console.error(err);
-//         return { status: 500, message: 'Internal server error' };
-//     }
-// };
-
 const createUserAndSendCode = async (phone) => {
   try {
     // Step 1: find user by phone
@@ -133,6 +97,27 @@ const createChildUser = async (parentUserId, childPhone) => {
     return err.message;
   }
 };
+const getChildren = async (parentId) => {
+  try {
+    // Step 1: Find the parent user by its ID
+    const parentUser = await User.findById(parentId);
+
+    if (!parentUser) {
+      // Parent user not found
+      return { status: 404, message: 'Parent user not found' };
+    }
+
+    // Step 2: Find all the children of the parent user
+    const children = await User.find({ parentId: parentId, isChild: true });
+
+    return { status: 200, children };
+  } catch (err) {
+    console.error(err);
+    return { status: 500, message: 'Internal server error' };
+  }
+};
+
+
 
 
 
@@ -165,7 +150,7 @@ const authenticateUser = async (phone, activationCode) => {
   }
 };
 
-module.exports = authenticateUser;
+
 
 
 
@@ -265,5 +250,6 @@ module.exports = {
   decodeJwt,
   createOrUpdateSettings, 
   createChildUser,
-  blockChild
+  blockChild,
+  getChildren
 };
