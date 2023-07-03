@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+router.use(express.json());
 
 const mongoose = require('mongoose');
 const config = require('config');
@@ -20,7 +21,16 @@ const PowerSupply = mongoose.model('powerSupply', powerSchema);
 // Create a new powerSupply
 router.post('/', async (req, res) => {
     try {
-        const powerSupply = new PowerSupply(req.body);
+        const {
+            userId,
+            powerType,
+            senarioId,
+            maxPower
+          } = req.body;
+        const powerSupply = new PowerSupply({    userId,
+            powerType,
+            senarioId,
+            maxPower});
         await powerSupply.save();
         res.status(201).send(powerSupply);
     } catch (error) {

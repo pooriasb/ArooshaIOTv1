@@ -102,7 +102,6 @@ async function energyUsageByDevice(mac, start) {
       sumRGBPower: sumRGBPower,
       sumAll: sumColorWhitePower + sumColorYellowPower + sumRGBPower
     }
-
     return energyResult;
   } catch (error) {
     console.error(error);
