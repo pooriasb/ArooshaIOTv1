@@ -43,4 +43,10 @@ router.post('/decodeToken', async (req, res) => {
     res.send('Token is not valid');
 });
 
+router.post('/setSettings', async (req, res) => {
+    const {settings} = req.body;
+    var result = await User.setUserSettings('sajad',settings);
+    res.send(result);
+});
+
 module.exports = router;

@@ -64,6 +64,7 @@ const createUserAndSendCode = async (phone) => {
     return { status: 500, message: 'Internal server error' };
   }
 };
+
 const createChildUser = async (parentUserId, childPhone) => {
   try {
     // Find the parent user by their ID
@@ -97,6 +98,7 @@ const createChildUser = async (parentUserId, childPhone) => {
     return err.message;
   }
 };
+
 const getChildren = async (parentId) => {
   try {
     // Step 1: Find the parent user by its ID
@@ -116,10 +118,6 @@ const getChildren = async (parentId) => {
     return { status: 500, message: 'Internal server error' };
   }
 };
-
-
-
-
 
 const authenticateUser = async (phone, activationCode) => {
   try {
@@ -150,10 +148,6 @@ const authenticateUser = async (phone, activationCode) => {
   }
 };
 
-
-
-
-
 const sendSms = (message, phone) => {
 
   request.post({
@@ -180,7 +174,6 @@ const sendSms = (message, phone) => {
   });
 }
 
-
 async function createOrUpdateSettings(userId, settings) {
   try {
     // Find the user by their ID
@@ -206,12 +199,9 @@ async function createOrUpdateSettings(userId, settings) {
   }
 }
 
-
-
-async function blockChild(childId) {
+async function blockChild(childId) {8
   return User.findByIdAndUpdate(childId, { isBlocked: true });
 }
-
 
 function validateJwt(token) {
   try {
@@ -227,6 +217,7 @@ function validateJwt(token) {
     return false;
   }
 }
+
 function decodeJwt(token) {
   try {
     // Verify the JWT token using the secret key
@@ -243,6 +234,30 @@ function decodeJwt(token) {
   }
 }
 
+
+const setUserSettings = async (userId, settings) => {
+  try {
+    // Step 1: Find the user by its ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      // User not found
+      return { status: 404, message: 'User not found' };
+    }
+
+    // Step 2: Update the user's settings
+    user.settings = settings;
+    await user.save();
+
+    return { status: 200, message: 'User settings updated successfully' };
+  } catch (err) {
+    console.error(err);
+    return { status: 500, message: 'Internal server error' };
+  }
+};
+
+
+
 module.exports = {
   createUserAndSendCode,
   authenticateUser,
@@ -251,5 +266,6 @@ module.exports = {
   createOrUpdateSettings, 
   createChildUser,
   blockChild,
-  getChildren
+  getChildren,
+  setUserSettings
 };

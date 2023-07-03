@@ -3,7 +3,7 @@ const router = express.Router();
 const config = require('config');
 
 const axios = require('axios');
-const { route } = require('./deviceController');
+//const { route } = require('./deviceController');
 router.use(express.json());
 router.post('/sendMessage', async (req, res) => {
     try {

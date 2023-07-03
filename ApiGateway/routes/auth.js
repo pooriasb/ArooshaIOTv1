@@ -24,4 +24,10 @@ router.get('/getChildren',async (req, res) => {
     var response = await axios.get(config.AuthAddress + '/api/auth/getChildren/' );
     res.send(response.data);
 });
+
+router.post('/setSettings', async (req, res) => {
+    const {settings} = req.body;
+    var response = await axios.post(config.AuthAddress + '/api/auth/setSettings/',{settings});
+    res.send(response.data);
+});
 module.exports = router;
