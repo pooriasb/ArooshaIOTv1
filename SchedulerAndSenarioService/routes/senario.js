@@ -89,6 +89,7 @@ router.post('/startSenario', async (req, res) => {
 
     if (messageList.length !== 0) {
       const result = await sendToSocketService(messageList);
+      const increaseStartCount = await senario.increaseStartCount(senarioId);
       return res.status(result).send('Message sent successfully.');
     } else {
       return res.status(400).send('No messages to send.');
@@ -98,9 +99,6 @@ router.post('/startSenario', async (req, res) => {
     return res.status(500).send('An error occurred while sending messages.');
   }
 });
-
-
-
 
 function sendToSocketService(messageList) {
   try {

@@ -11,6 +11,7 @@ const senarioSchema = new mongoose.Schema({
     userId: String,
     name: String,
     scheduleCreateDateTime: Date,
+    startCount : {type:Number,default:0},
     eventList: [{
         deviceId: String,
         deviceName:String,
@@ -37,6 +38,32 @@ async function createSenario(data) {
     return "0";
   }
 }
+
+const increaseStartCount = async (senarioId) => {
+  try {
+    // Step 1: Find the senario by its ID
+    const senario = await Senario.findById(senarioId);
+
+    if (!senario) {
+      // Senario not found
+      return { status: 404, message: 'Senario not found' };
+    }
+
+    // Step 2: Increase the start count by 1
+    senario.startCount += 1;
+
+    // Step 3: Save the updated senario
+    await senario.save();
+
+    return { status: 200, message: 'Start count increased successfully' };
+  } catch (err) {
+    console.error(err);
+    return { status: 500, message: 'Internal server error' };
+  }
+};
+
+
+
 
 async function readSenarios(userId) {
   try {
@@ -82,6 +109,7 @@ module.exports = {
     readSenarios,
     readSenario,
     createSenario,
-    updateSenario
+    updateSenario,
+    increaseStartCount
  }
 module.exports.senarioSchema = Senario;
