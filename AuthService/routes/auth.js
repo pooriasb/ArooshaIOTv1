@@ -15,7 +15,7 @@ router.get('/validatePhone/:phone/:code', async (req, res) => {
 });
 
 router.get('/addChild/:phone',async (req, res) => {
-    var result = await User.createChildUser(req.params.phone);
+    var result = await User.createChildUser('sajad',req.params.phone);
 
     res.send(result);
 });
@@ -24,10 +24,6 @@ router.post('/blockChild/:childId',async (req, res) => {
 
     res.send(result);
 });
-
-
-
-
 
 router.post('/validateToken', async (req, res) => {
     var result = await User.validateJwt(req.body.token);
@@ -42,6 +38,5 @@ router.post('/decodeToken', async (req, res) => {
     }
     res.send('Token is not valid');
 });
-
 
 module.exports = router;

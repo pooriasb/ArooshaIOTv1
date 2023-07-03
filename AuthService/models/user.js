@@ -68,7 +68,7 @@ const createUserAndSendCode = async (phone) => {
     // Step 2 or 3: create activation code, send SMS, and save user
     const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
     const activationTTL = Date.now() + 5 * 60 * 1000; // 5 minutes in milliseconds
-
+//Step 3 : if user dont exist then create it and send activation code 
     if (!user) {
       // User doesn't exist, create new user
       const newUser = new User({
@@ -83,13 +83,17 @@ const createUserAndSendCode = async (phone) => {
 
       return { status: 200, message: 'Created and Send code' };
     } else {
+   
+        user.activationCode = activationCode;
+        user.activationTTL = activationTTL;
+        await user.save();
+        await sendSms(activationCode, phone);
+        return { status: 200, message: 'User exists sms sent to the phone To Login' };
+     
       // User exists, update activation code and TTL
-      user.activationCode = activationCode;
-      user.activationTTL = activationTTL;
-      await user.save();
-      await sendSms(activationCode, phone);
+    
 
-      return { status: 200, message: 'User exists' };
+     
     }
   } catch (err) {
     console.error(err);
