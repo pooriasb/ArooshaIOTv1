@@ -93,7 +93,7 @@ async function energyUsageByDevice(mac, start) {
       driverWhitePower: deviceInfo.driverWhitePower,
       driverRGBPower: deviceInfo.driverRGBPower,
       signalsCount: signals.length,
-      RgbBrightnesslength: RgbBrightness.length,
+      RgbBrightnesslength: RgbBrightnesslength,
       whiteEnergyUsageAVG: whiteEnergyUsageAVG,
       yellowEnergyUsageAVG: yellowEnergyUsageAVG,
       rgbEnergyUsageAVG: rgbEnergyUsageAVG,
