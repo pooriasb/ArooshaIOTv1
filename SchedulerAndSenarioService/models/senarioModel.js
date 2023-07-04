@@ -10,7 +10,7 @@ mongoose.connect(config.dbAddress)
 const senarioSchema = new mongoose.Schema({
     userId: String,
     name: String,
-    scheduleCreateDateTime: Date,
+    senarioCreateDateTime: Date,
     startCount : {type:Number,default:0},
     eventList: [{
         deviceId: String,
@@ -25,7 +25,7 @@ async function createSenario(data) {
   const newSenario = new Senario({
     userId: data.userId,
     name: data.name,
-    scheduleCreateDateTime: new Date(),
+    senarioCreateDateTime: new Date(),
     eventList:data.eventList
   });
 
