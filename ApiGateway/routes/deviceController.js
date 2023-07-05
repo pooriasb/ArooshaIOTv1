@@ -111,7 +111,7 @@ router.get('/getMyDeviceList/:userId', async (req, res) => {
         const deviceListWithStatus = await Promise.all(deviceList.map(async (device) => {
             return {
                 ...device,
-                status: await getDeviceStatus(device.MacAddress)
+                status: await getDeviceStatus(device.MacAddress) || 'off'
             };
         }));
         deviceList = deviceListWithStatus;
