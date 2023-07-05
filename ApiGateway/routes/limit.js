@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const config = require('config');
 const axios = require('axios');
+router.use(express.json());
 
 ///api/limit
 // Endpoint to check a limit entry by ID
