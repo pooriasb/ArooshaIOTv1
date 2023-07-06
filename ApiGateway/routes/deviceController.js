@@ -82,7 +82,7 @@ router.post('/sendMessageToRoom', async (req, res) => {
         }));
 
     } catch (error) {
-        console.error('error in send message ');
+        console.error('error in send message '+ error.message);
         res.status(500).send({ error: 'send message Internal Server Error' });
     }
 });
