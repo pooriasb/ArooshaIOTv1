@@ -87,22 +87,23 @@ async function energyUsageByDevice(mac, start) {
     let yellowEnergyUsageAVG = calculateEnergyUsage(sumColorYellowPower / ColorTemperaturelength, deviceInfo.driverYellowPower, 0);
     let rgbEnergyUsageAVG = calculateEnergyUsage(sumRgbBrightness / RgbBrightnesslength, deviceInfo.driverRGBPower, 0);
 
-    var energyResult = {
-      MacAddress:mac,
-      deviceModel: device.deviceModel,
-      driverYellowPower: deviceInfo.driverYellowPower,
-      driverWhitePower: deviceInfo.driverWhitePower,
-      driverRGBPower: deviceInfo.driverRGBPower,
-      signalsCount: signals.length,
-      RgbBrightnesslength: RgbBrightnesslength,
-      whiteEnergyUsageAVG: whiteEnergyUsageAVG,
-      yellowEnergyUsageAVG: yellowEnergyUsageAVG,
-      rgbEnergyUsageAVG: rgbEnergyUsageAVG,
-      sumColorWhitePower: sumColorWhitePower,
-      sumColorYellowPower: sumColorYellowPower,
-      sumRGBPower: sumRGBPower,
-      sumAll: sumColorWhitePower + sumColorYellowPower + sumRGBPower
-    }
+ var energyResult = {
+  MacAddress: mac || 0,
+  deviceModel: device.deviceModel || 0,
+  driverYellowPower: deviceInfo.driverYellowPower || 0,
+  driverWhitePower: deviceInfo.driverWhitePower || 0,
+  driverRGBPower: deviceInfo.driverRGBPower || 0,
+  signalsCount: signals.length || 0,
+  RgbBrightnesslength: RgbBrightnesslength || 0,
+  whiteEnergyUsageAVG: whiteEnergyUsageAVG || 0,
+  yellowEnergyUsageAVG: yellowEnergyUsageAVG || 0,
+  rgbEnergyUsageAVG: rgbEnergyUsageAVG || 0,
+  sumColorWhitePower: sumColorWhitePower || 0,
+  sumColorYellowPower: sumColorYellowPower || 0,
+  sumRGBPower: sumRGBPower || 0,
+  sumAll: (sumColorWhitePower || 0) + (sumColorYellowPower || 0) + (sumRGBPower || 0)
+}
+
     return energyResult;
   } catch (error) {
     console.error(error);
