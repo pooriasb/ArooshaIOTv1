@@ -50,7 +50,7 @@ router.post('/sendMessageToRoom', async (req, res) => {
         console.clear();
         const roomId = req.body.roomId;
         const powerstatus = req.body.powerStatus;
-        const newMessage = req.body.message;
+        const newMessage = req.body;
         const response = await axios.get(config.DeviceServiceAddress + '/api/room/getDevicesInRoomByRoomId/' +roomId);
         const devices = response.data.devices.map(device => device.MacAddress);
     
@@ -80,10 +80,11 @@ router.post('/sendMessageToRoom', async (req, res) => {
                 message: completedMessage
             });
         }));
+        res.status(200).send('sent');
 
     } catch (error) {
         console.error('error in send message '+ error.message);
-        res.status(500).send({ error: 'send message Internal Server Error' });
+        res.status(500).send({ error: 'send message Internal Server Error'+error.message });
     }
 });
 
