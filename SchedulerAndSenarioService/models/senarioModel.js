@@ -75,7 +75,7 @@ async function readSenarios(userId) {
 }
 async function readSenario(senarioId) {
     try {
-      const senario = await Senario.find({ _id: senarioId });
+      const senario = await Senario.findById( senarioId );
      return senario;
     } catch (err) {
       console.error(err);

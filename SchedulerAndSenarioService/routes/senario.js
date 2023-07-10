@@ -79,6 +79,8 @@ router.post('/startSenario', async (req, res) => {
   try {
     const { senarioId } = req.body;
     const Senario = await senario.readSenario(senarioId);
+    let senarioPooria = JSON.stringify(Senario);
+    let parsed = JSON.parse(senarioPooria);
     console.log(Senario);   // Check the value of Senario
     console.log(Senario.eventList);
 
