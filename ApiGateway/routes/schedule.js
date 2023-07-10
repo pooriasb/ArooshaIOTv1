@@ -7,16 +7,40 @@ const axios = require('axios');
 //setActivation
 router.use(express.json());
 
-router.get('/getSchedule/:scheduleId', async (req, res) => {
+const checkAuth = async (req, res, next) => {
+    const { token } = req.headers;
+    console.clear();
+    console.log('client IP : ' + req.ip);
+    if (!token) {
+        return res.status(401).json({ msg: 'No token, authorization denied' });
+    }
+    try {
+
+        var validateTokenResult = await axios.post(config.AuthAddress + `/api/auth/validateToken`, { token: token });
+        console.log('token validation result:' + validateTokenResult.data);
+        if (validateTokenResult.data == true) {
+            var decodedToken = await axios.post(config.AuthAddress + `/api/auth/decodeToken`, { token: token });
+            console.log(decodedToken.data);
+            req.userId = decodedToken.data.userId;
+            next();
+        } else {
+            res.status(401).json({ message: 'Invalid token' });
+        }
+    } catch (err) {
+        res.status(401).json({ message: 'Invalid token' });
+    }
+};
+
+router.get('/getSchedule/:scheduleId',checkAuth, async (req, res) => {
 
     var response = await axios.get(config.SchedulerAddress + '/api/scheduler/getSchedule/' + req.params.scheduleId);
     res.send(response.data);
 });
-router.get('/getMyScheduleList/:userId', async (req, res) => {
-    var response = await axios.get(config.SchedulerAddress + '/api/scheduler/mySchedules/' + req.params.userId);
+router.get('/getMyScheduleList/',checkAuth, async (req, res) => {
+    var response = await axios.get(config.SchedulerAddress + '/api/scheduler/mySchedules/' + req.userId);
     res.json(response.data);
 });
-router.post('/createSchedule', async (req, res) => {
+router.post('/createSchedule',checkAuth, async (req, res) => {
     const { isOnce, weekDays, hour, minute, events } = req.body;
 
     if (!isOnce || !weekDays || !hour || !minute || !events) {
@@ -30,7 +54,7 @@ router.post('/createSchedule', async (req, res) => {
     return res.send(response.data);
 });
 
-router.post('/setScheduleStatus', async (req, res) => {
+router.post('/setScheduleStatus',checkAuth, async (req, res) => {
     const { status, token, scheduleId } = req.body;
     var response = await axios.post(config.SchedulerAddress + '/api/scheduler/setActivation', {
         scheduleId,
@@ -38,7 +62,7 @@ router.post('/setScheduleStatus', async (req, res) => {
     });
     res.send(response.data);
 });
-router.post('/updateShedule', async (req, res) => {
+router.post('/updateShedule',checkAuth, async (req, res) => {
     const { isOnce, weekDays, hour, minute, events, scheduleId } = req.body;
     var response = await axios.post(config.SchedulerAddress + '/api/scheduler/updateSchedule', {
         isOnce, weekDays, hour, minute, events, scheduleId
@@ -46,7 +70,13 @@ router.post('/updateShedule', async (req, res) => {
     res.send(response.data);
 });
 router.post('/deleteSchedule/:scheduleId', async (req, res) => {
+  try {
     var response = await axios.get(config.SchedulerAddress + '/api/scheduler/deleteSchedule/' + req.params.scheduleId);
-    res.send(response.data);
+    return res.status(200).send('deleted');
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).send('Internal Server Error');
+  }
 });
+
 module.exports = router;

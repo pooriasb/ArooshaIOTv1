@@ -22,11 +22,16 @@ router.get('/mySchedules/:userId', async (req, res) => {
     res.send(schedules);
 });
 
-router.get('/deleteSchedule/:scheduleId', (req, res) => {
-    scheduleModel.deleteSchedule(req.params.scheduleId).then((value) => {
-        return value;
-    });
+router.get('/deleteSchedule/:scheduleId', async (req, res) => {
+ try {
+   const value = await scheduleModel.deleteSchedule(req.params.scheduleId);
+   return res.status(200).send('deleted');
+ } catch (error) {
+   console.error(error);
+   return res.status(500).send('Internal Server Error');
+ }
 });
+
 router.post('/updateSchedule', async (req, res) => {
     const { isOnce, weekDays, hour, minute, events, scheduleId } = req.body;
     var result = await scheduleModel.updateScheduleDocument( scheduleId, { isOnce, weekDays, hour, minute, events });

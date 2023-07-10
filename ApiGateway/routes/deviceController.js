@@ -9,14 +9,11 @@ router.use(express.json());
 
 const checkAuth = async (req, res, next) => {
     const { token } = req.headers;
-   
     console.clear();
- 
     console.log('client IP : ' + req.ip);
     if (!token) {
         return res.status(401).json({ msg: 'No token, authorization denied' });
     }
-
     try {
 
         var validateTokenResult = await axios.post(config.AuthAddress + `/api/auth/validateToken`, { token: token });
@@ -29,7 +26,6 @@ const checkAuth = async (req, res, next) => {
         } else {
             res.status(401).json({ message: 'Invalid token' });
         }
-
     } catch (err) {
         res.status(401).json({ message: 'Invalid token' });
     }
@@ -245,7 +241,7 @@ router.post('/updateDeviceName', checkAuth, async (req, res) => {
     try {
         const { deviceId, newDeviceName } = req.body;
 
-        const response = await axios.post(config.DeviceServiceAddress + '/api/ctrl/updateDeviceName/', { deviceId, newDeviceName });
+        const response = await axios.post(config.DeviceServiceAddress + '/api/ctrl/updateDeviceName/', {userId: req.userId ,deviceId, newDeviceName });
 
         if (response.data) {
             return res.status(200).send(response.data);

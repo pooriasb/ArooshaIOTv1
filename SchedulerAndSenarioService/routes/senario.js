@@ -22,55 +22,55 @@ router.post('/updateSenario', async (req, res) => {
   }
 });
 router.post('/createSenario', async (req, res) => {
-    try {
+  try {
 
-        const {name,eventList} = req.body;
-        var data = {userId : 'sajad',name,eventList}
-        const result = await senario.createSenario(data); 
-        if (result === "1") {
-            res.status(200).send('Senario created successfully');
-        } else {
-            res.status(500).send('Error creating senario');
-        }
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error creating senario');
+    const { name, eventList } = req.body;
+    var data = { userId: 'sajad', name, eventList }
+    const result = await senario.createSenario(data);
+    if (result === "1") {
+      res.status(200).send('Senario created successfully');
+    } else {
+      res.status(500).send('Error creating senario');
     }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error creating senario');
+  }
 });
 
 router.get('/deleteSenario/:senarioId', async (req, res) => {
-    try {
-        const result = await senario.deleteSenario(req.params.senarioId);
-        if (result === "1") {
-            res.status(200).send('Senario deleted successfully');
-        } else {
-            res.status(500).send('Error deleting senario');
-        }
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error deleting senario');
+  try {
+    const result = await senario.deleteSenario(req.params.senarioId);
+    if (result === "1") {
+      res.status(200).send('Senario deleted successfully');
+    } else {
+      res.status(500).send('Error deleting senario');
     }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error deleting senario');
+  }
 });
 
 router.get('/Senarios/:userId', async (req, res) => {
-    try {
-        const result = await senario.readSenarios(req.params.userId); // assuming the user id is passed as a param in the URL
-        res.status(200).json(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error getting Senarios');
-    }
+  try {
+    const result = await senario.readSenarios(req.params.userId); // assuming the user id is passed as a param in the URL
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error getting Senarios');
+  }
 });
 router.get('/Senario/:senarioId', async (req, res) => {
-    try {
-        const senarioId = req.params.senarioId;
-        const result = await senario.readSenario(senarioId);
+  try {
+    const senarioId = req.params.senarioId;
+    const result = await senario.readSenario(senarioId);
 
-        res.status(200).json(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error getting Senario');
-    }
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error getting Senario');
+  }
 });
 
 let messageList = [];
@@ -79,6 +79,13 @@ router.post('/startSenario', async (req, res) => {
   try {
     const { senarioId } = req.body;
     const Senario = await senario.readSenario(senarioId);
+    console.log(Senario);   // Check the value of Senario
+    console.log(Senario.eventList);
+
+    if (!Senario || !Array.isArray(Senario.eventList)) {
+      console.log(JSON.stringify(Senario.eventList));
+      return res.status(400).send('Senario not found');
+    }
     const eventListIndb = Senario.eventList;
     const messageList = [];
 
@@ -117,43 +124,43 @@ function sendToSocketService(messageList) {
 }
 
 function addToMEssageList(message) {
-    messageList.push(message);
+  messageList.push(message);
 }
 async function createMessage(element) {
-    const deviceTopic = await getTopic(element.deviceId);
-    const deviceMac = `${await getTMac(element.deviceId)}${Math.floor(Math.random() * 100) + 1}`;
-    const message = { deviceTopic, deviceMac, eventid: element.eventId };
-    return message;
+  const deviceTopic = await getTopic(element.deviceId);
+  const deviceMac = `${await getTMac(element.deviceId)}${Math.floor(Math.random() * 100) + 1}`;
+  const message = { deviceTopic, deviceMac, eventid: element.eventId };
+  return message;
 }
 function getTMac(deviceId) {
-    return new Promise((resolve, reject) => {
-        http.get(config.DeviceServiceAddress + '/GetDeviceMac/' + deviceId, resp => {
-            let data = '';
-            resp.on('data', chunk => data += chunk);
-            resp.on('end', () => resolve(data));
-        }).on('error', err => reject(err));
-    });
+  return new Promise((resolve, reject) => {
+    http.get(config.DeviceServiceAddress + '/GetDeviceMac/' + deviceId, resp => {
+      let data = '';
+      resp.on('data', chunk => data += chunk);
+      resp.on('end', () => resolve(data));
+    }).on('error', err => reject(err));
+  });
 }
 function getTopic(deviceId) {
-    return p = new Promise((resolve, reject) => {
+  return p = new Promise((resolve, reject) => {
 
-        http.get(config.DeviceServiceAddress + '/GetDeviceTopic/' + deviceId, (resp) => {
-            let data = "";
+    http.get(config.DeviceServiceAddress + '/GetDeviceTopic/' + deviceId, (resp) => {
+      let data = "";
 
-            // A chunk of data has been recieved.
-            resp.on("data", chunk => {
-                data += chunk;
-            });
-            // The whole response has been received. Print out the result.
-            resp.on("end", () => {
-                //    let url = JSON.parse(data).message;
+      // A chunk of data has been recieved.
+      resp.on("data", chunk => {
+        data += chunk;
+      });
+      // The whole response has been received. Print out the result.
+      resp.on("end", () => {
+        //    let url = JSON.parse(data).message;
 
-                resolve(data);
-            });
-        }).on("error", err => {
-            console.log("Error: " + err.message);
-        });
+        resolve(data);
+      });
+    }).on("error", err => {
+      console.log("Error: " + err.message);
     });
+  });
 }
 
 module.exports = router;

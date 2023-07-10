@@ -102,8 +102,8 @@ router.get('/getDevicesInRoomByRoomName/:roomName', async (req, res) => {
 });
 router.post('/updateDeviceName', async (req, res) => {
   try {
-    const { deviceId, newDeviceName } = req.body;
-    const result = await device.updateDeviceName('sajad', deviceId, newDeviceName);
+    const {userId, deviceId, newDeviceName } = req.body;
+    const result = await device.updateDeviceName(userId, deviceId, newDeviceName);
     return res.status(200).send(result);
   } catch (error) {
     console.error('Error updating device name');
