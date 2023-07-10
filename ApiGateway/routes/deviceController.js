@@ -8,17 +8,21 @@ router.use(express.json());
 
 
 const checkAuth = async (req, res, next) => {
-    const { token } = req.body;
+    const { token } = req.headers;
+   
+    console.clear();
+ 
+    console.log('client IP : ' + req.ip);
     if (!token) {
         return res.status(401).json({ msg: 'No token, authorization denied' });
     }
 
     try {
-       
+
         var validateTokenResult = await axios.post(config.AuthAddress + `/api/auth/validateToken`, { token: token });
-     
+        console.log('token validation result:' + validateTokenResult.data);
         if (validateTokenResult.data == true) {
-        var decodedToken = await axios.post(config.AuthAddress + `/api/auth/decodeToken`, { token: token });
+            var decodedToken = await axios.post(config.AuthAddress + `/api/auth/decodeToken`, { token: token });
             console.log(decodedToken.data);
             req.userId = decodedToken.data.userId;
             next();
@@ -35,9 +39,9 @@ const checkAuth = async (req, res, next) => {
 
 
 
-router.post('/sendMessage', async (req, res) => {
+router.post('/sendMessage',checkAuth, async (req, res) => {
     try {
-        console.clear();
+        
         const mac = req.body.MacAddress;
         const powerstatus = req.body.powerStatus;
         if (!mac || !powerstatus) return res.status(400).send('Mac or power status not valid');
@@ -71,11 +75,11 @@ router.post('/sendMessage', async (req, res) => {
         console.log('socket Response : ' + response.data);
         res.status(200).send(completedMessage);
     } catch (error) {
-        console.error('error in send message ');
+        console.error('error in send message '+error.message);
         res.status(500).send({ error: 'send message Internal Server Error' });
     }
 });
-router.post('/sendMessageToRoom', async (req, res) => {
+router.post('/sendMessageToRoom',checkAuth, async (req, res) => {
     try {
         console.clear();
         const roomId = req.body.roomId;
@@ -140,10 +144,10 @@ router.get('/getMyDeviceList', checkAuth, async (req, res) => {
             sendGetMyRoomListToservice(userId),
         ]);
 
-        if (!deviceList || deviceList.length === 0 ) {
-            deviceList ={};
+        if (!deviceList || deviceList.length === 0) {
+            deviceList = {};
         }
-        if ( !roomList || roomList.length === 0){
+        if (!roomList || roomList.length === 0) {
             roomList = {};
         }
 
@@ -163,9 +167,6 @@ router.get('/getMyDeviceList', checkAuth, async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-
-
-
 
 
 async function getDeviceStatus(macAddress) {
@@ -189,7 +190,9 @@ async function getMyDeviceListFromService(userId) {
         return 'error';
     }
 }
-router.get('/getDeviceByMac/:mac', async (req, res) => {
+
+
+router.get('/getDeviceByMac/:mac', checkAuth, async (req, res) => {
     try {
         const result = await axios.get(config.DeviceServiceAddress + '/api/ctrl/getDeviceByMac/' + req.params.mac);
         res.send(result.data);
@@ -198,7 +201,7 @@ router.get('/getDeviceByMac/:mac', async (req, res) => {
     }
 });
 
-router.get('/isDeviceCreated/:mac', async (req, res) => {
+router.get('/isDeviceCreated/:mac', checkAuth, async (req, res) => {
     try {
         const result = await axios.get(config.DeviceServiceAddress + '/api/ctrl/getDeviceByMac/' + req.params.mac);
         if (result.data) {
@@ -228,7 +231,7 @@ router.post('/CreateDevice', async (req, res) => {
 });
 
 
-router.get('/checkDeviceByMac/:mac', async (req, res) => {
+router.get('/checkDeviceByMac/:mac', checkAuth, async (req, res) => {
     try {
         var response = await axios.post(config.DeviceServiceAddress + '/api/ctrl/checkDeviceByMac/' + req.params.mac);
         return res.status(200).send(response.data);
@@ -238,7 +241,7 @@ router.get('/checkDeviceByMac/:mac', async (req, res) => {
 });
 
 
-router.post('/updateDeviceName', async (req, res) => {
+router.post('/updateDeviceName', checkAuth, async (req, res) => {
     try {
         const { deviceId, newDeviceName } = req.body;
 
@@ -256,7 +259,7 @@ router.post('/updateDeviceName', async (req, res) => {
 });
 
 
-router.get('/DeleteDevice/:mac', (req, res) => {
+router.get('/DeleteDevice/:mac', checkAuth, (req, res) => {
     res.send(sendDeleteRequestToService(req.params.mac));
 });
 function sendDeleteRequestToService(mac) {
@@ -269,7 +272,7 @@ function sendDeleteRequestToService(mac) {
         });
 }
 
-router.get('/GetDevicesInRoom/:roomName', async (req, res) => {
+router.get('/GetDevicesInRoom/:roomName', checkAuth, async (req, res) => {
     try {
         const response = await axios.get(config.DeviceServiceAddress + '/api/ctrl/getDevicesInRoom/' + req.params.roomName);
         res.status(200).send(response.data);
@@ -282,9 +285,9 @@ router.get('/GetDevicesInRoom/:roomName', async (req, res) => {
 
 /************************************************************ */
 /*********************************Room Management */
-router.get('/GetMyRoomList/:userId', async (req, res) => {
-
-    var response = await sendGetMyRoomListToservice(req.params.userId);
+router.get('/GetMyRoomList/', checkAuth, async (req, res) => {
+    const userId = req.userId;
+    var response = await sendGetMyRoomListToservice(userId);
     res.send(JSON.stringify(response));
 });
 
@@ -299,7 +302,7 @@ async function sendGetMyRoomListToservice(userId) {
     }
 }
 
-router.post('/CreateRoom', (req, res) => {
+router.post('/CreateRoom', checkAuth, (req, res) => {
     try {
         const { roomName } = req.body;
         console.log(roomName);
@@ -320,7 +323,7 @@ router.post('/CreateRoom', (req, res) => {
     }
 
 });
-router.get('/DeleteRoom/:roomId', async (req, res) => {
+router.get('/DeleteRoom/:roomId', checkAuth, async (req, res) => {
     const response = await axios.get(config.DeviceServiceAddress + '/api/room/delete/' + req.params.roomId);
 
     res.status(200).send(response.data);
@@ -328,7 +331,7 @@ router.get('/DeleteRoom/:roomId', async (req, res) => {
 router.get('/updateRoom', (req, res) => {
     res.sendStatus(200);
 });
-router.post('/updateRoomName', async (req, res) => {
+router.post('/updateRoomName', checkAuth, async (req, res) => {
     try {
 
         const { roomName, roomId } = req.body
@@ -353,7 +356,7 @@ router.get('/getDevicesInRoomByRoomId/:roomId', async (req, res) => {
     var response = await axios.get(config.DeviceServiceAddress + '/api/room/getDevicesInRoomByRoomId/' + req.params.roomId);
     res.status(200).json(response.data);
 });
-router.post('/AddDevicetoRoom', (req, res) => {
+router.post('/AddDevicetoRoom', checkAuth, (req, res) => {
     try {
         const { roomId, deviceMac } = req.body;
 
@@ -374,7 +377,7 @@ router.post('/AddDevicetoRoom', (req, res) => {
 });
 
 
-router.get('/removeDeviceFromRoom/:roomId/:deviceMac', (req, res) => {
+router.get('/removeDeviceFromRoom/:roomId/:deviceMac', checkAuth, (req, res) => {
     try {
         const { roomId, deviceMac } = req.params;
         axios.get(config.DeviceServiceAddress + '/api/room/removeDeviceFromRoom/' + roomId + '/' + deviceMac)
