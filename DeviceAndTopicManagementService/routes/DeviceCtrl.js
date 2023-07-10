@@ -2,20 +2,38 @@ const express = require('express');
 const router = express.Router();
 const device = require('../models/device');
 const deviceinfo = require('../models/deviceinfo');
-
+const config = require('config');
+const axios = require('axios');
 
 
 router.get('/list/:userId', (req, res) => {
   device.getUserDeviceList(req.params.userId).then(value => { res.send(value) });
 });
 
-router.post('/create', (req, res) => {
-  const { userId, deviceName, deviceModel, Topic, MacAddress,powerStatus,deviceCustomization } = req.body;
+router.post('/create', async (req, res) => {
+  const { userId, deviceName, deviceModel, Topic, MacAddress, powerStatus, deviceCustomization } = req.body;
   const recivedDevice = { userId, deviceName, deviceModel, Topic, MacAddress };
-  //TODO: do proper validation 
-  device.createDevice(recivedDevice)
-    .then((value) => res.send(value))
-    .catch((error) => res.status(400).send(error));
+  const completedMessage = {
+    MacAddress: MacAddress,
+    powerStatus: powerStatus,
+    protocol: newMessage.protocol || lastMessage.protocol,
+    deviceCustomization: deviceCustomization
+  };
+
+  const response = await axios.post(`${config.SocketAddress}/sendMessage`, {
+    mac: MacAddress,
+    powerStatus: powerstatus,
+    message: completedMessage
+  });
+  if (response.status !== 200) {
+    res.status(500).send('Error Saving message send Again');
+  }
+  try {
+    const value = await device.createDevice(recivedDevice);
+    res.send(value);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
 });
 
 router.get('/delete/:mac', (req, res) => {
@@ -43,10 +61,22 @@ router.get('/GetdeviceinfoByModel/:model', (req, res) => {
 
 router.get('/getDeviceByMac/:mac', async (req, res) => {
   try {
-    const deviceobj = await device.getDeviceByMac(req.params.mac);
+    const mac = req.params.mac;
+    const deviceobj = await device.getDeviceByMac(mac);
     res.send(deviceobj);
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: 'Error getting device by MAC address' });
+  }
+});
+
+router.get('/checkDeviceByMac/:mac', async (req, res) => {
+  try {
+    const mac = req.params.mac;
+    const deviceobj = await device.getDeviceByMac(mac);
+    res.send(deviceobj ? "true" : "false");
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ errorMessage: 'Error getting device by MAC address' });
   }
 });

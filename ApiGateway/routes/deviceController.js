@@ -1,10 +1,40 @@
 const express = require('express');
 const router = express.Router();
 const config = require('config');
-
+//const { authMiddleware } = require('../middleware/auth');
 const axios = require('axios');
 //const { route } = require('./deviceController');
 router.use(express.json());
+
+
+const checkAuth = async (req, res, next) => {
+    const { token } = req.body;
+    if (!token) {
+        return res.status(401).json({ msg: 'No token, authorization denied' });
+    }
+
+    try {
+       
+        var validateTokenResult = await axios.post(config.AuthAddress + `/api/auth/validateToken`, { token: token });
+     
+        if (validateTokenResult.data == true) {
+        var decodedToken = await axios.post(config.AuthAddress + `/api/auth/decodeToken`, { token: token });
+            console.log(decodedToken.data);
+            req.userId = decodedToken.data.userId;
+            next();
+        } else {
+            res.status(401).json({ message: 'Invalid token' });
+        }
+
+    } catch (err) {
+        res.status(401).json({ message: 'Invalid token' });
+    }
+};
+
+
+
+
+
 router.post('/sendMessage', async (req, res) => {
     try {
         console.clear();
@@ -51,19 +81,19 @@ router.post('/sendMessageToRoom', async (req, res) => {
         const roomId = req.body.roomId;
         const powerstatus = req.body.powerStatus;
         const newMessage = req.body;
-        const response = await axios.get(config.DeviceServiceAddress + '/api/room/getDevicesInRoomByRoomId/' +roomId);
+        const response = await axios.get(config.DeviceServiceAddress + '/api/room/getDevicesInRoomByRoomId/' + roomId);
         const devices = response.data.devices.map(device => device.MacAddress);
-    
+
         const energyResult = await Promise.all(devices.map(async mac => {
-           
+
             // get last message saved in database 
             const logResponse = await axios.get(`${config.LogAddress}/api/log/getLastMessage/${mac}`);
             const lastMessage = logResponse.data;
-        
+
             // complete new message with missing parameters using last message's parameters
             const lastCustomization = lastMessage.deviceCustomization;
             const newCustomization = newMessage.deviceCustomization;
-    
+
             const completedMessage = {
                 MacAddress: mac,
                 powerStatus: powerstatus,
@@ -73,7 +103,7 @@ router.post('/sendMessageToRoom', async (req, res) => {
                     ...newCustomization
                 }
             };
-    
+
             const response = await axios.post(`${config.SocketAddress}/sendMessage`, {
                 mac: mac,
                 powerStatus: powerstatus,
@@ -83,8 +113,8 @@ router.post('/sendMessageToRoom', async (req, res) => {
         res.status(200).send('sent');
 
     } catch (error) {
-        console.error('error in send message '+ error.message);
-        res.status(500).send({ error: 'send message Internal Server Error'+error.message });
+        console.error('error in send message ' + error.message);
+        res.status(500).send({ error: 'send message Internal Server Error' + error.message });
     }
 });
 
@@ -100,28 +130,43 @@ router.get('/getLastMessage/:mac', async (req, res) => {
 
 /***************************************************Device Management  */
 
-router.get('/getMyDeviceList/:userId', async (req, res) => {
-    try {
-        let [deviceList, roomList] = await Promise.all([
-            getMyDeviceListFromService(req.params.userId),
-            sendGetMyRoomListToservice(req.params.userId),
 
+router.get('/getMyDeviceList', checkAuth, async (req, res) => {
+    try {
+        const userId = req.userId;
+        console.log(userId);
+        let [deviceList, roomList] = await Promise.all([
+            getMyDeviceListFromService(userId),
+            sendGetMyRoomListToservice(userId),
         ]);
 
-        /// for each device in deviceList get mac and pass to getDeviceStatus
+        if (!deviceList || deviceList.length === 0 ) {
+            deviceList ={};
+        }
+        if ( !roomList || roomList.length === 0){
+            roomList = {};
+        }
+
         const deviceListWithStatus = await Promise.all(deviceList.map(async (device) => {
             return {
                 ...device,
                 status: await getDeviceStatus(device.MacAddress) || 'off'
             };
         }));
+
         deviceList = deviceListWithStatus;
-        res.json({ deviceList, roomList });
+
+        res.json({ deviceList, roomList }); // Move this line to after previous processing
+
     } catch (error) {
         console.log('Error:  ' + error);
         res.status(500).json({ error: error.message });
     }
 });
+
+
+
+
 
 async function getDeviceStatus(macAddress) {
     try {
@@ -167,21 +212,31 @@ router.get('/isDeviceCreated/:mac', async (req, res) => {
 });
 
 
-router.get('/CreateDevice/:userId/:deviceName/:deviceModel/:Topic/:MacAddress', (req, res) => {
-    //TODO: validation 
-    sendCreateRequestToService();
-    res.sendStatus(200);
+router.post('/CreateDevice', async (req, res) => {
+    try {
+        const { userId, deviceName, deviceModel, Topic, MacAddress, powerStatus, deviceCustomization } = req.body;
+        var response = await axios.post(config.DeviceServiceAddress + '/api/ctrl/createDevice', { userId, deviceName, deviceModel, Topic, MacAddress, powerStatus, deviceCustomization });
+
+        if (response.data) {
+            return res.status(200).send(response.data);
+        } else {
+            return res.status(500).send('Error creating device');
+        }
+    } catch (error) {
+        return res.status(500).send('Internal server error');
+    }
 });
-function sendCreateRequestToService(device) {
-    const data = {
-        userId: device.userId,
-        deviceName: device.deviceName,
-        deviceModel: device.deviceModel,
-        topic: device.topic,
-        macAddress: device.macAddress
-    };
-    return axios.post(config.DeviceServiceAddress + '/api/ctrl/createDevice', data);
-}
+
+
+router.get('/checkDeviceByMac/:mac', async (req, res) => {
+    try {
+        var response = await axios.post(config.DeviceServiceAddress + '/api/ctrl/checkDeviceByMac/' + req.params.mac);
+        return res.status(200).send(response.data);
+    } catch (error) {
+        return res.status(500).send('Internal server error' + error.message);
+    }
+});
+
 
 router.post('/updateDeviceName', async (req, res) => {
     try {
