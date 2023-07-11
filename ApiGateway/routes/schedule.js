@@ -15,7 +15,6 @@ const checkAuth = async (req, res, next) => {
         return res.status(401).json({ msg: 'No token, authorization denied' });
     }
     try {
-
         var validateTokenResult = await axios.post(config.AuthAddress + `/api/auth/validateToken`, { token: token });
         console.log('token validation result:' + validateTokenResult.data);
         if (validateTokenResult.data == true) {
