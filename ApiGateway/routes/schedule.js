@@ -54,14 +54,19 @@ router.post('/createSchedule',checkAuth, async (req, res) => {
     return res.send(response.data);
 });
 
-router.post('/setScheduleStatus',checkAuth, async (req, res) => {
-    const { status, token, scheduleId } = req.body;
-    var response = await axios.post(config.SchedulerAddress + '/api/scheduler/setActivation', {
-        scheduleId,
-        isScheduled: status
-    });
-    res.send(response.data);
+router.post('/setScheduleStatus', checkAuth, async (req, res) => {
+    try {
+        const { status, scheduleId } = req.body;
+        var response = await axios.post(config.SchedulerAddress + '/api/scheduler/setActivation', {
+            scheduleId,
+            isScheduled: status
+        });
+        res.send(response.data);
+    } catch (error) {
+        res.status(500).send(error);
+    }
 });
+
 router.post('/updateShedule',checkAuth, async (req, res) => {
     const { isOnce, weekDays, hour, minute, events, scheduleId } = req.body;
     var response = await axios.post(config.SchedulerAddress + '/api/scheduler/updateSchedule', {

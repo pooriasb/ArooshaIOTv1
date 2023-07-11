@@ -112,7 +112,7 @@ async function updateScheduleDocument(scheduleId, updateData) {
 
 const setScheduleActivation = async (scheduleId, isScheduled) => {
   try {
-    const scheduleDocument = await ScheduleDocumentChema.findById(scheduleId);
+    const scheduleDocument = await ScheduleDocument.findById(scheduleId);
     
     if (!scheduleDocument) {
      console.log('Schedule document not found');

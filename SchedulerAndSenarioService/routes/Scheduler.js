@@ -23,27 +23,31 @@ router.get('/mySchedules/:userId', async (req, res) => {
 });
 
 router.get('/deleteSchedule/:scheduleId', async (req, res) => {
- try {
-   const value = await scheduleModel.deleteSchedule(req.params.scheduleId);
-   return res.status(200).send('deleted');
- } catch (error) {
-   console.error(error);
-   return res.status(500).send('Internal Server Error');
- }
+    try {
+        const value = await scheduleModel.deleteSchedule(req.params.scheduleId);
+        return res.status(200).send('deleted');
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send('Internal Server Error');
+    }
 });
 
 router.post('/updateSchedule', async (req, res) => {
     const { isOnce, weekDays, hour, minute, events, scheduleId } = req.body;
-    var result = await scheduleModel.updateScheduleDocument( scheduleId, { isOnce, weekDays, hour, minute, events });
+    var result = await scheduleModel.updateScheduleDocument(scheduleId, { isOnce, weekDays, hour, minute, events });
     res.send(result);
 });
-/******************************End create scheduler */
-router.post('/setActivation', (req, res) => {
-    const { scheduleId, isScheduled } = req.body;//we have to get token and some validation here
-    scheduleModel.setScheduleActivation(scheduleId, isScheduled).then((value) => {
-        return value;
-    });
+/******************************End create scheduler *****************/
+router.post('/setActivation', async (req, res) => {
+    try {
+        const { scheduleId, isScheduled } = req.body; // we have to get token and some validation here
+        var result = await scheduleModel.setScheduleActivation(scheduleId, isScheduled);
+        return res.status(200).send(result);
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
 });
+
 
 router.get('/getSchedule/:scheduleId', async (req, res) => {
     var result = await scheduleModel.getScheduleById(req.params.scheduleId);
