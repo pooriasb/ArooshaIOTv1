@@ -36,6 +36,9 @@ app.get('/',(req,res)=>{
   res.send('Hellow From Aoosha');
 });
 
-
+app.get('/.well-known/pki-validation/084E92B387799EDC05286B489F9A56D2.txt',(req,res)=>{
+  const filePath = `C:\\Users\\Administrator\\Desktop\\www\\ArooshaIOTv1\\ApiGateway\\Public\\084E92B387799EDC05286B489F9A56D2.txt`;
+  res.sendFile(filePath);
+});
 // Export the app instance
 module.exports = app;
