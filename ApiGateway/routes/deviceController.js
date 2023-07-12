@@ -349,12 +349,13 @@ router.post('/updateRoomName', checkAuth, async (req, res) => {
 
 //removeDeviceFromRoom
 
-router.get('/getDevicesInRoomByRoomName/:roomName', async (req, res) => {
+router.get('/getDevicesInRoomByRoomName/:roomName',checkAuth, async (req, res) => {
     var response = await axios.get(config.DeviceServiceAddress + '/api/ctrl/getDevicesInRoomByRoomName/' + req.params.roomName);
     res.status(200).json(response.data);
 });
-router.get('/getDevicesInRoomByRoomId/:roomId', async (req, res) => {
-    var response = await axios.get(config.DeviceServiceAddress + '/api/room/getDevicesInRoomByRoomId/' + req.params.roomId);
+router.get('/getDevicesInRoomByRoomId/:roomId',checkAuth, async (req, res) => {
+    const{userId} = req;
+    var response = await axios.get(config.DeviceServiceAddress + '/api/room/getDevicesInRoomByRoomId/' + req.params.roomId+'/'+userId);
     res.status(200).json(response.data);
 });
 router.post('/AddDevicetoRoom', checkAuth, (req, res) => {

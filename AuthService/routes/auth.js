@@ -19,8 +19,8 @@ router.get('/addChild/:phone',async (req, res) => {
 
     res.send(result);
 });
-router.get('/getChildren/',async (req, res) => {
-    var result = await User.getChildren('sajad');
+router.get('/getChildren/:userId',async (req, res) => {
+    var result = await User.getChildren(req.params.userId);
     res.send(result);
 });
 router.post('/blockChild/:childId',async (req, res) => {
