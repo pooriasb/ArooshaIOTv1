@@ -24,8 +24,8 @@ router.post('/updateSenario', async (req, res) => {
 router.post('/createSenario', async (req, res) => {
   try {
 
-    const { name, eventList } = req.body;
-    var data = { userId: 'sajad', name, eventList }
+    const {userId, name, eventList } = req.body;
+    var data = { userId: userId, name, eventList }
     const result = await senario.createSenario(data);
     if (result === "1") {
       res.status(200).send('Senario created successfully');

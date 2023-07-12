@@ -2,9 +2,7 @@ const express = require('express');
 const router = express.Router();
 const config = require('config');
 const axios = require('axios');
-//127.0.0.1:3002/api/scheduler
-//mySchedules
-//setActivation
+
 router.use(express.json());
 
 const checkAuth = async (req, res, next) => {
@@ -30,15 +28,24 @@ const checkAuth = async (req, res, next) => {
     }
 };
 
-router.get('/getSchedule/:scheduleId',checkAuth, async (req, res) => {
-
+router.get('/getSchedule/:scheduleId', checkAuth, async (req, res) => {
+  try {
     var response = await axios.get(config.SchedulerAddress + '/api/scheduler/getSchedule/' + req.params.scheduleId);
     res.send(response.data);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
-router.get('/getMyScheduleList/',checkAuth, async (req, res) => {
+
+router.get('/getMyScheduleList/', checkAuth, async (req, res) => {
+  try {
     var response = await axios.get(config.SchedulerAddress + '/api/scheduler/mySchedules/' + req.userId);
     res.json(response.data);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
+
 
 
 router.post('/createSchedule', checkAuth, async (req, res) => {

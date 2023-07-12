@@ -51,23 +51,31 @@ router.get('/getSenario/:senarioId',checkAuth, async (req, res) => {
   }
 });
 
-router.post('/createSenario',checkAuth, async (req, res) => {
+router.post('/createSenario', checkAuth, async (req, res) => {
   const { name, eventList } = req.body;
+  const { userId } = req;
+
+  if (!name) {
+    return res.status(400).send('Name is required');
+  }
+
+  if (!eventList || eventList.length === 0) {
+    return res.status(400).send('Event list is required');
+  }
+
   try {
     const response = await axios.post(
       `${config.SchedulerAddress}/api/senario/createSenario`,
-      { name, eventList }
+      { userId, name, eventList }
     );
+
     const { data } = response;
 
     if (data) {
       return res.status(200).send(data);
     } else {
-
       return res.status(500).send('No data from senario service');
-
     }
-
   } catch (error) {
     console.error('Error creating senario:', error.message);
     res.status(500).send('Error creating senario');
