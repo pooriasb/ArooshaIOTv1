@@ -47,7 +47,8 @@ router.get('/Check/:id', checkAuth, async (req, res) => {
 
 // Endpoint to create a new limit entry
 router.post('/create', checkAuth, async (req, res) => {
-  const { userId, deviceMac, deviceName, maxUsePower, dimmer } = req.body;
+  const {  deviceMac, deviceName, maxUsePower, dimmer } = req.body;
+  const { userId} = req;
   if (!userId) {
     res.status(400).send('Please provide a valid userId');
   } else if (!deviceMac) {
