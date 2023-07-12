@@ -76,7 +76,7 @@ router.post('/create', checkAuth, async (req, res) => {
 });
 
 // Endpoint to get a limit entry by userId
-router.get('/:userId', checkAuth, async (req, res) => {
+router.get('/', checkAuth, async (req, res) => {
   try {
     const { userId } = req;
     const result = await axios.get(config.EnergyAddress + '/api/limit/' + userId);
