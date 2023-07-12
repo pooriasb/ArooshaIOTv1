@@ -301,8 +301,9 @@ async function sendGetMyRoomListToservice(userId) {
 router.post('/CreateRoom', checkAuth, (req, res) => {
     try {
         const { roomName } = req.body;
+        const { userId } = req;
         console.log(roomName);
-        axios.post(config.DeviceServiceAddress + '/api/room/create', { roomName })
+        axios.post(config.DeviceServiceAddress + '/api/room/create', {userId, roomName })
             .then(response => {
                 res.sendStatus(200);
             })

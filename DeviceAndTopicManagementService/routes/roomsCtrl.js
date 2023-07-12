@@ -16,9 +16,9 @@ router.get('/getSingle/:roomId', (req, res) => {
 });
 
 router.post('/create', async (req, res) => {
-    const { roomName } = req.body;
+    const {userId, roomName } = req.body;
     try {
-        const newRoom = await rooms.createRoom('sajad', roomName);
+        const newRoom = await rooms.createRoom(userId, roomName);
         res.send(newRoom);
     } catch (error) {
         // Replace with appropriate error handling mechanism
