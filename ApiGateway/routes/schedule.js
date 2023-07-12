@@ -90,13 +90,52 @@ router.post('/setScheduleStatus', checkAuth, async (req, res) => {
   }
 });
 
-router.post('/updateShedule',checkAuth, async (req, res) => {
+router.post('/updateShedule', checkAuth, async (req, res) => {
+  try {
     const { isOnce, weekDays, hour, minute, events, scheduleId } = req.body;
+
+    // Validation
+    if (!isOnce) {
+      return res.status(400).send("Error: isOnce is not set.");
+    }
+
+    if (isOnce !== "true" && isOnce !== "false") {
+      return res.status(400).send("Error: isOnce must be 'true' or 'false'.");
+    }
+
+    if (weekDays && !Array.isArray(weekDays)) {
+      return res.status(400).send("Error: weekDays must be an array.");
+    }
+
+    if (weekDays) {
+      for (const day of weekDays) {
+        if (day < 0 || day > 7) {
+          return res.status(400).send("Error: weekDays item must be between 0 and 7.");
+        }
+      }
+    }
+
+    if (hour < 0 || hour > 24) {
+      return res.status(400).send("Error: hour must be between 0 and 24.");
+    }
+
+    if (minute < 0 || minute > 60) {
+      return res.status(400).send("Error: minute must be between 0 and 60.");
+    }
+
+    if (!scheduleId) {
+      return res.status(400).send("Error: scheduleId is not set.");
+    }
+  
     var response = await axios.post(config.SchedulerAddress + '/api/scheduler/updateSchedule', {
-        isOnce, weekDays, hour, minute, events, scheduleId
+      isOnce, weekDays, hour, minute, events, scheduleId
     });
-    res.send(response.data);
+    res.status(200).send(response.data);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
+
 router.post('/deleteSchedule/:scheduleId', async (req, res) => {
   try {
     var response = await axios.get(config.SchedulerAddress + '/api/scheduler/deleteSchedule/' + req.params.scheduleId);
