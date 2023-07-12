@@ -39,32 +39,55 @@ router.get('/getMyScheduleList/',checkAuth, async (req, res) => {
     var response = await axios.get(config.SchedulerAddress + '/api/scheduler/mySchedules/' + req.userId);
     res.json(response.data);
 });
-router.post('/createSchedule',checkAuth, async (req, res) => {
+
+
+router.post('/createSchedule', checkAuth, async (req, res) => {
     const { isOnce, weekDays, hour, minute, events } = req.body;
-    const {userId} = req;
+    const { userId } = req;
+
+    // Validation
     if (!isOnce || !weekDays || !hour || !minute || !events) {
         return res.status(400).send("Error: Please set all parameters.");
     }
 
+    if (hour < 0 || hour > 24) {
+        return res.status(400).send("Error: Hour must be between 0 and 24.");
+    }
+
+    if (minute < 0 || minute > 60) {
+        return res.status(400).send("Error: Minute must be between 0 and 60.");
+    }
+
     console.log(req.body);
     var response = await axios.post(config.SchedulerAddress + '/api/scheduler/CreateScheduler', {
-        userId,   isOnce, weekDays, hour, minute, events
+        userId, isOnce, weekDays, hour, minute, events
     });
+
     return res.send(response.data);
 });
 
+
 router.post('/setScheduleStatus', checkAuth, async (req, res) => {
-    try {
-        const { status, scheduleId } = req.body;
-     
-        var response = await axios.post(config.SchedulerAddress + '/api/scheduler/setActivation', {
-            scheduleId,
-            isScheduled: status
-        });
-        res.send(response.data);
-    } catch (error) {
-        res.status(500).send(error);
+  try {
+    const { status, scheduleId } = req.body;
+
+    // Validation
+    if (!scheduleId) {
+      return res.status(400).send("Error: scheduleId is not set.");
     }
+
+    if (status !== true && status !== false) {
+      return res.status(400).send("Error: status must be true or false.");
+    }
+
+    var response = await axios.post(config.SchedulerAddress + '/api/scheduler/setActivation', {
+      scheduleId,
+      isScheduled: status
+    });
+    res.status(200).send(response.data);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
 router.post('/updateShedule',checkAuth, async (req, res) => {

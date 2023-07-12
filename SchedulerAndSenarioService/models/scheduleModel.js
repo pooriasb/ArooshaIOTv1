@@ -115,15 +115,16 @@ const setScheduleActivation = async (scheduleId, isScheduled) => {
     const scheduleDocument = await ScheduleDocument.findById(scheduleId);
     
     if (!scheduleDocument) {
-     console.log('Schedule document not found');
-     return "0";
+     console.log('Schedule document not found' + scheduleId);
+     return "Error : Schedule document not found.";
     }
     
     scheduleDocument.isScheduled = isScheduled;
     await scheduleDocument.save();
-    return "1";
+    return scheduleDocument;
   } catch (error) {
     console.error('set schedule actiovation error'+error);
+    return "error : "+error.message;
   }
 };
 
