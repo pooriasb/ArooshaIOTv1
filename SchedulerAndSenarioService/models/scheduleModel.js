@@ -27,11 +27,11 @@ const ScheduleDocument = mongoose.model('ScheduleDocument',ScheduleDocumentChema
 // create test device
 
 async function createScheduler(data) {
-  const {  isOnce, weekDays, hour, minute, events } = data; // destructuring the input object
+  const { userId, isOnce, weekDays, hour, minute, events } = data; // destructuring the input object
   // const scheduleTime = { isOnce, weekDays, hour, minute };
   try {
     const newSchedule = await ScheduleDocument.create({
-      userId:'sajad' ,
+      userId:userId ,
       scheduleDateTime: Date.now(),
       eventList:events,
       isScheduled: true,

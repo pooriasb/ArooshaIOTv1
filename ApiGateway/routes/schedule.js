@@ -41,14 +41,14 @@ router.get('/getMyScheduleList/',checkAuth, async (req, res) => {
 });
 router.post('/createSchedule',checkAuth, async (req, res) => {
     const { isOnce, weekDays, hour, minute, events } = req.body;
-
+    const {userId} = req;
     if (!isOnce || !weekDays || !hour || !minute || !events) {
         return res.status(400).send("Error: Please set all parameters.");
     }
 
     console.log(req.body);
     var response = await axios.post(config.SchedulerAddress + '/api/scheduler/CreateScheduler', {
-        isOnce, weekDays, hour, minute, events
+        userId,   isOnce, weekDays, hour, minute, events
     });
     return res.send(response.data);
 });
@@ -56,6 +56,7 @@ router.post('/createSchedule',checkAuth, async (req, res) => {
 router.post('/setScheduleStatus', checkAuth, async (req, res) => {
     try {
         const { status, scheduleId } = req.body;
+     
         var response = await axios.post(config.SchedulerAddress + '/api/scheduler/setActivation', {
             scheduleId,
             isScheduled: status
