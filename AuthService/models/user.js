@@ -88,9 +88,9 @@ const createChildUser = async (parentUserId, childPhone) => {
 
     // Save the child user and assign it to the parent user
     await childUser.save();
-    parentUser.children.push(childUser);
-    await parentUser.save();
-    await sendSms(activationCode, phone);
+    // parentUser.children.push(childUser);
+    // await parentUser.save();
+    await sendSms(activationCode, childPhone);
     // Return the created child user
     return childUser;
   } catch (err) {
@@ -98,6 +98,27 @@ const createChildUser = async (parentUserId, childPhone) => {
     return err.message;
   }
 };
+
+const getUserById = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    const userData = {
+      name: user.name,
+      phone: user.phone
+    };
+    return {
+      userData,
+      settings: user.settings
+    };
+  } catch (error) {
+    console.error(error);
+    throw new Error('Internal Server Error');
+  }
+}
+
 
 const getChildren = async (parentId) => {
   try {
@@ -267,5 +288,6 @@ module.exports = {
   createChildUser,
   blockChild,
   getChildren,
-  setUserSettings
+  setUserSettings,
+  getUserById
 };
