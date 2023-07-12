@@ -112,7 +112,6 @@ async function energyUsageByDevice(mac, start) {
 
 router.get('/energyUsageByUser/:userId/:start', async (req, res) => {
   //1. get user devices by mac
-  //127.0.0.1:3003/api/ctrl/list/sajad
   const macs = [];
   const deviceResponse = await axios.get(`${config.DeviceServiceAddress}/api/ctrl/list/${req.params.userId}`);
   const devices = deviceResponse.data;

@@ -35,9 +35,9 @@ const checkAuth = async (req, res, next) => {
 
 
 
-router.post('/sendMessage',checkAuth, async (req, res) => {
+router.post('/sendMessage', checkAuth, async (req, res) => {
     try {
-        
+
         const mac = req.body.MacAddress;
         const powerstatus = req.body.powerStatus;
         if (!mac || !powerstatus) return res.status(400).send('Mac or power status not valid');
@@ -71,11 +71,11 @@ router.post('/sendMessage',checkAuth, async (req, res) => {
         console.log('socket Response : ' + response.data);
         res.status(200).send(completedMessage);
     } catch (error) {
-        console.error('error in send message '+error.message);
+        console.error('error in send message ' + error.message);
         res.status(500).send({ error: 'send message Internal Server Error' });
     }
 });
-router.post('/sendMessageToRoom',checkAuth, async (req, res) => {
+router.post('/sendMessageToRoom', checkAuth, async (req, res) => {
     try {
         console.clear();
         const roomId = req.body.roomId;
@@ -241,7 +241,7 @@ router.post('/updateDeviceName', checkAuth, async (req, res) => {
     try {
         const { deviceId, newDeviceName } = req.body;
 
-        const response = await axios.post(config.DeviceServiceAddress + '/api/ctrl/updateDeviceName/', {userId: req.userId ,deviceId, newDeviceName });
+        const response = await axios.post(config.DeviceServiceAddress + '/api/ctrl/updateDeviceName/', { userId: req.userId, deviceId, newDeviceName });
 
         if (response.data) {
             return res.status(200).send(response.data);
@@ -303,7 +303,7 @@ router.post('/CreateRoom', checkAuth, (req, res) => {
         const { roomName } = req.body;
         const { userId } = req;
         console.log(roomName);
-        axios.post(config.DeviceServiceAddress + '/api/room/create', {userId, roomName })
+        axios.post(config.DeviceServiceAddress + '/api/room/create', { userId, roomName })
             .then(response => {
                 res.sendStatus(200);
             })
@@ -325,14 +325,18 @@ router.get('/DeleteRoom/:roomId', checkAuth, async (req, res) => {
 
     res.status(200).send(response.data);
 });
-router.get('/updateRoom', (req, res) => {
-    res.sendStatus(200);
-});
-router.post('/updateRoomName', checkAuth, async (req, res) => {
-    try {
 
-        const { roomName, roomId } = req.body
+router.post('/updateRoomName', checkAuth, async (req, res) => {
+    const { roomName, roomId } = req.body;
+
+    if (!roomName || !roomId) {
+        return res.status(400).send('Room name and room ID are required');
+    }
+
+    try {
+        const { userId } = req;
         const response = await axios.post(config.DeviceServiceAddress + '/api/room/updateName/', {
+            userId,
             roomName,
             roomId
         });

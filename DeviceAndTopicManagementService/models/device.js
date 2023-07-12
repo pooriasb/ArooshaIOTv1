@@ -101,8 +101,6 @@ async function getMyRoolList(userId) {
 
     const devices = await DeviceDocument.find({ userId: userId });
     devices.forEach(device => {
-        //  console.log(`User ID: ${device.userId}, Topic: ${device.Topic}`);
-        // "ArooshaIOT/sajad/h1/r2"
         const arr = device.Topic.split("/");
         Topics.push(arr[3]);
     });

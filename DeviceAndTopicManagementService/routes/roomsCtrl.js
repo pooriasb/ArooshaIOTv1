@@ -43,12 +43,11 @@ router.post('/update/:id', async (req, res) => {
 
 router.post('/updateName/', async (req, res) => {
 
-    const { roomName, roomId } = req.body;
-
+    const {userId, roomName, roomId } = req.body;
     try {
         const oldRoom = await rooms.getRoomById(roomId)
         if (oldRoom) {
-            const updateDeviceRoomNameResult =await device.updateDeviceRoom(oldRoom.roomName, 'sajad', roomName);
+            const updateDeviceRoomNameResult =await device.updateDeviceRoom(oldRoom.roomName, userId, roomName);
             if (updateDeviceRoomNameResult == 200) {
                 const updatedRoom = await rooms.updateRoomName(roomId, roomName);
             } else if (updateDeviceRoomNameResult == 500) return res.status(500).send('Error on rename device room name')

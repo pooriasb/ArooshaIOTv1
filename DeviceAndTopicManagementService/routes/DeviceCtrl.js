@@ -93,7 +93,7 @@ router.get('/getDeviceInfoByModel/:deviceModel', async (req, res) => {
 
 router.get('/getDevicesInRoomByRoomName/:roomName', async (req, res) => {
   try {
-    const result = await device.getDevicesInRoomByRoomName(req.params.roomName, 'sajad');
+    const result = await device.getDevicesInRoomByRoomName(req.params.roomName);
     res.status(200).send(result);
   } catch (error) {
     console.error(error);
