@@ -85,19 +85,17 @@ router.get('/delete/:id', async (req, res) => {
         res.status(500).send('Failed to delete room by ID');
     }
 });
-router.get('/addDeviceToRoom/:roomId/:deviceMac', async (req, res) => {
-    const roomId = req.params.roomId;
-    console.log(roomId);
-    console.log(req.params.deviceMac);
-    try {
-        var result = await rooms.addDeviceToRoom(roomId, req.params.deviceMac, 'sajad');
-        res.send(result);
-    } catch (error) {
-        // Replace with appropriate error handling mechanism
-        console.error(error);
-        res.status(500).send('Failed to delete room by ID');
-    }
+router.get('/addDeviceToRoom/:roomId/:deviceMac/:userId', async (req, res) => {
+  const { roomId, deviceMac, userId } = req.params;
+  try {
+    const result = await rooms.addDeviceToRoom(roomId, deviceMac, userId);
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Failed to add device to room');
+  }
 });
+
 router.get('/removeDeviceFromRoom/:roomId/:deviceMac', async (req, res) => {
     const roomId = req.params.roomId;
     try {

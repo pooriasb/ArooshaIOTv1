@@ -356,8 +356,8 @@ router.get('/getDevicesInRoomByRoomId/:roomId', async (req, res) => {
 router.post('/AddDevicetoRoom', checkAuth, (req, res) => {
     try {
         const { roomId, deviceMac } = req.body;
-
-        axios.get(config.DeviceServiceAddress + '/api/room/addDeviceToRoom/' + roomId + '/' + deviceMac)
+        const { userId } = req;
+        axios.get(config.DeviceServiceAddress + '/api/room/addDeviceToRoom/' + roomId + '/' + deviceMac + '/' + userId)
             .then(response => {
                 res.status(200).send(response.data);
             })

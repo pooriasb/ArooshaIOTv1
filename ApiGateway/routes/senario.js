@@ -10,27 +10,27 @@ const checkAuth = async (req, res, next) => {
   console.clear();
   console.log('client IP : ' + req.ip);
   if (!token) {
-      return res.status(401).json({ msg: 'No token, authorization denied' });
+    return res.status(401).json({ msg: 'No token, authorization denied' });
   }
   try {
 
-      var validateTokenResult = await axios.post(config.AuthAddress + `/api/auth/validateToken`, { token: token });
-      console.log('token validation result:' + validateTokenResult.data);
-      if (validateTokenResult.data == true) {
-          var decodedToken = await axios.post(config.AuthAddress + `/api/auth/decodeToken`, { token: token });
-          console.log(decodedToken.data);
-          req.userId = decodedToken.data.userId;
-          next();
-      } else {
-          res.status(401).json({ message: 'Invalid token' });
-      }
-  } catch (err) {
+    var validateTokenResult = await axios.post(config.AuthAddress + `/api/auth/validateToken`, { token: token });
+    console.log('token validation result:' + validateTokenResult.data);
+    if (validateTokenResult.data == true) {
+      var decodedToken = await axios.post(config.AuthAddress + `/api/auth/decodeToken`, { token: token });
+      console.log(decodedToken.data);
+      req.userId = decodedToken.data.userId;
+      next();
+    } else {
       res.status(401).json({ message: 'Invalid token' });
+    }
+  } catch (err) {
+    res.status(401).json({ message: 'Invalid token' });
   }
 };
 
 
-router.get('/getMySenarioList',checkAuth, async (req, res) => {
+router.get('/getMySenarioList', checkAuth, async (req, res) => {
   try {
     const response = await axios.get(config.SchedulerAddress + '/api/senario/Senarios/' + req.userId);
     if (response.data) return res.status(200).send(response.data);
@@ -40,7 +40,7 @@ router.get('/getMySenarioList',checkAuth, async (req, res) => {
     res.sendStatus(500);
   }
 });
-router.get('/getSenario/:senarioId',checkAuth, async (req, res) => {
+router.get('/getSenario/:senarioId', checkAuth, async (req, res) => {
   try {
     const response = await axios.get(config.SchedulerAddress + '/api/senario/Senario/' + req.params.senarioId);
     if (response.data) return res.status(200).send(response.data);
@@ -82,7 +82,7 @@ router.post('/createSenario', checkAuth, async (req, res) => {
   }
 });
 
-router.post('/startSenario',checkAuth, async (req, res) => {
+router.post('/startSenario', checkAuth, async (req, res) => {
   try {
     const { senarioId } = req.body;
     const response = await axios.post(
@@ -100,7 +100,7 @@ router.post('/startSenario',checkAuth, async (req, res) => {
   }
 });
 
-router.post('/updateSenario',checkAuth, async (req, res) => {
+router.post('/updateSenario', checkAuth, async (req, res) => {
   const { name, eventList, senarioId } = req.body;
   try {
     const response = await axios.post(
@@ -118,7 +118,7 @@ router.post('/updateSenario',checkAuth, async (req, res) => {
   }
 });
 
-router.get('/deleteSenario/:senarioId',checkAuth, async (req, res) => {
+router.get('/deleteSenario/:senarioId', checkAuth, async (req, res) => {
   try {
     const response = await axios.get(config.SchedulerAddress + '/api/senario/deleteSenario/' + req.params.senarioId);
     if (response.data) {
