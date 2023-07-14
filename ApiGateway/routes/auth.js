@@ -4,6 +4,8 @@ const axios = require('axios');
 const config = require('config');
 
 
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
 
 
 
@@ -95,8 +97,13 @@ router.get('/getChildren', checkAuth, async (req, res) => {
 router.post('/setSettings', checkAuth, async (req, res) => {
   try {
     const { settings } = req.body;
-    const {userId} = req;
-    var response = await axios.post(config.AuthAddress + '/api/auth/setSettings/', {userId,settings });
+    const { userId } = req;
+    
+    if (!settings) {
+      return res.status(400).send('Settings not set');
+    }
+    
+    var response = await axios.post(config.AuthAddress + '/api/auth/setSettings/', { userId, settings });
     res.status(500).send(response.data);
   } catch (error) {
     // Handle the error here
