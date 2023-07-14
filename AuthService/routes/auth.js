@@ -63,7 +63,7 @@ router.post('/setSettings', async (req, res) => {
 });
 
 
-router.get('getUserbyId/:userId', async (req, res) => {
+router.get('/getUserbyId/:userId', async (req, res) => {
   const { userId } = req.params;
   var result = await User.getUserById(userId);
   res.send(result);

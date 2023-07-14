@@ -109,20 +109,20 @@ router.post('/setSettings', checkAuth, async (req, res) => {
 router.get('/getUserbyId/:userId', checkAuth, async (req, res) => {
   try {
     const { userId } = req.params;
-    var response = await axios.post(config.AuthAddress + '/api/auth/getUserbyId/' + userId);
+    var response = await axios.get(config.AuthAddress + '/api/auth/getUserbyId/' + userId);
     res.status(200).send(response.data);
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
     res.status(500).send('Internal Server Error');
   }
 });
 router.get('/getUserbyId', checkAuth, async (req, res) => {
   try {
     const { userId } = req;
-    var response = await axios.post(config.AuthAddress + '/api/auth/getUserbyId/' + userId);
+    var response = await axios.get(config.AuthAddress + '/api/auth/getUserbyId/' + userId);
     res.status(200).send(response.data);
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
     res.status(500).send('Internal Server Error');
   }
 });
