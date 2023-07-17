@@ -84,7 +84,16 @@ router.post('/blockChild/:childId', checkAuth, async (req, res) => {
   }
 });
 
-
+router.post('/unblockChild/:childId', checkAuth, async (req, res) => {
+  try {
+    var response = await axios.post(config.AuthAddress + '/api/auth/unblockChild/' + req.params.childId);
+    res.send(response.data);
+  } catch (error) {
+    // Handle the error here
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 router.get('/getChildren', checkAuth, async (req, res) => {
   try {
     const { userId } = req;

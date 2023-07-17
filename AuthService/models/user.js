@@ -220,10 +220,12 @@ async function createOrUpdateSettings(userId, settings) {
   }
 }
 
-async function blockChild(childId) {8
+async function blockChild(childId) {
   return User.findByIdAndUpdate(childId, { isBlocked: true });
 }
-
+async function unblockChild(childId) {
+  return User.findByIdAndUpdate(childId, { isBlocked: false });
+}
 function validateJwt(token) {
   try {
     // Verify the JWT token using the secret key

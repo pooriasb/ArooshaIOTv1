@@ -24,10 +24,12 @@ router.get('/getChildren/:userId', async (req, res) => {
 });
 router.post('/blockChild/:childId', async (req, res) => {
   var result = await User.blockChild(req.params.childId);
-
   res.send(result);
 });
-
+router.post('/unblockChild/:childId', async (req, res) => {
+  var result = await User.unblockChild(req.params.childId);
+  res.send(result);
+});
 router.post('/validateToken', async (req, res) => {
   try {
     var result = await User.validateJwt(req.body.token);
