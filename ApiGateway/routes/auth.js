@@ -23,6 +23,10 @@ const checkAuth = async (req, res, next) => {
     console.log('token validation result:' + validateTokenResult.data);
     if (validateTokenResult.data == true) {
       var decodedToken = await axios.post(config.AuthAddress + `/api/auth/decodeToken`, { token: token });
+    
+    if(decodedToken === 'Token is not valid' || decodedToken === 'Server error'){
+      res.status(401).json({ message: 'Invalid token. cannot token' });
+    }
       console.log(decodedToken.data);
       req.userId = decodedToken.data.userId;
       next();

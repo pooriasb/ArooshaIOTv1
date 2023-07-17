@@ -110,17 +110,17 @@ router.post('/updateShedule', checkAuth, async (req, res) => {
       return res.status(400).send("Error: isOnce must be 'true' or 'false'.");
     }
 
-    if (weekDays && !Array.isArray(weekDays)) {
-      return res.status(400).send("Error: weekDays must be an array.");
-    }
+    // if (weekDays && !Array.isArray(weekDays)) {
+    //   return res.status(400).send("Error: weekDays must be an array.");
+    // }
 
-    if (weekDays) {
-      for (const day of weekDays) {
-        if (day < 0 || day > 7) {
-          return res.status(400).send("Error: weekDays item must be between 0 and 7.");
-        }
-      }
-    }
+    // if (weekDays) {
+    //   for (const day of weekDays) {
+    //     if (day < 0 || day > 7) {
+    //       return res.status(400).send("Error: weekDays item must be between 0 and 7.");
+    //     }
+    //   }
+    // }
 
     if (hour < 0 || hour > 24) {
       return res.status(400).send("Error: hour must be between 0 and 24.");

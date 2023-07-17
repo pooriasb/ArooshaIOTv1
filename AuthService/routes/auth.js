@@ -10,7 +10,6 @@ router.get('/login/:phone', async (req, res) => {
 
 router.get('/validatePhone/:phone/:code', async (req, res) => {
   var result = await User.authenticateUser(req.params.phone, req.params.code);
-
   res.send(result);
 });
 
@@ -33,10 +32,10 @@ router.post('/validateToken', async (req, res) => {
   try {
     var result = await User.validateJwt(req.body.token);
     console.log('validate token : ' + result);
-    res.send(result);
+  return  res.send(result);
   } catch (err) {
     console.log(err.message);
-    res.status(500).send(false);
+   return res.status(500).send(false);
   }
 });
 
@@ -46,12 +45,12 @@ router.post('/decodeToken', async (req, res) => {
     const result = await User.validateJwt(req.body.token);
     if (result && result !== 0) {
       const decoded = await User.decodeJwt(req.body.token);
-      res.send(decoded);
+  return    res.send(decoded);
     } else {
-      res.send('Token is not valid');
+    return  res.send('Token is not valid');
     }
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+ return   res.status(500).json({ error: 'Server error' });
   }
 });
 
