@@ -33,7 +33,7 @@ const createUserAndSendCode = async (phone, name) => {
     // Step 2 or 3: create activation code, send SMS, and save user
     const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
     const activationTTL = Date.now() + 5 * 60 * 1000; // 5 minutes in milliseconds
-//Step 3 : if user dont exist then create it and send activation code 
+    //Step 3 : if user dont exist then create it and send activation code 
     if (!user) {
       // User doesn't exist, create new user
       const newUser = new User({
@@ -49,17 +49,17 @@ const createUserAndSendCode = async (phone, name) => {
 
       return { status: 200, message: 'Created and Send code' };
     } else {
-   
-        user.activationCode = activationCode;
-        user.activationTTL = activationTTL;
-        await user.save();
-        await sendSms(activationCode, phone);
-        return { status: 200, message: 'User exists sms sent to the phone To Login' };
-     
-      // User exists, update activation code and TTL
-    
 
-     
+      user.activationCode = activationCode;
+      user.activationTTL = activationTTL;
+      await user.save();
+      await sendSms(activationCode, phone);
+      return { status: 200, message: 'User exists sms sent to the phone To Login' };
+
+      // User exists, update activation code and TTL
+
+
+
     }
   } catch (err) {
     console.error(err);
@@ -67,20 +67,20 @@ const createUserAndSendCode = async (phone, name) => {
   }
 };
 
-const createChildUser = async (parentUserId, childPhone,name) => {
+const createChildUser = async (parentUserId, childPhone, name) => {
   try {
     // Find the parent user by their ID
     const parentUser = await User.findById(parentUserId);
-    if(parentUser.phone == childPhone) return {status :400 ,message :'error : child phone must be diffrent from parent phone'};
+    if (parentUser.phone == childPhone) return { status: 400, message: 'error : child phone must be diffrent from parent phone' };
 
     // If the parent user does not exist, throw an error
-    if (!parentUser) return {status :400 ,message :'error : user not found'};
+    if (!parentUser) return { status: 400, message: 'error : user not found' };
 
     const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
     const activationTTL = Date.now() + 5 * 60 * 1000; // 5 minutes in milliseconds
     // Create the child user
     const childUser = new User({
-      name : name,
+      name: name,
       phone: childPhone,
       activationCode,
       activationTTL,
@@ -95,10 +95,10 @@ const createChildUser = async (parentUserId, childPhone,name) => {
     // await parentUser.save();
     await sendSms(activationCode, childPhone);
     // Return the created child user
-    return {status:200 , message: childUser};
+    return { status: 200, message: childUser };
   } catch (err) {
     console.error(err);
-    return {status:500 , message: err.message};
+    return { status: 500, message: err.message };
   }
 };
 
@@ -165,7 +165,7 @@ const authenticateUser = async (phone, activationCode) => {
     // Step 4: Update user and set isBlocked to false
     await User.findByIdAndUpdate(user._id, { isValid: true });
 
-    return { status: 200, message: 'Success', token , isChild : user.isChild , name : user.name };
+    return { status: 200, message: 'Success', token, isChild: user.isChild, name: user.name };
   } catch (err) {
     console.error(err);
     return { status: 500, message: 'Internal server error' };
@@ -247,16 +247,17 @@ async function deleteChildUser(userId) {
   }
 }
 
-function validateJwt(token) {
+async function validateJwt(token) {
+
   try {
     // Verify the JWT token using the secret key
     const decodedToken = jwt.verify(token, process.env.JWTSECKEY_Pooria);
 
     // Add any additional validation logic here
     const { userId, phone } = decodedToken;
-console.log(`user in token :${userId} , phone : ${phone}`);
+    console.log(`user in token :${userId} , phone : ${phone}`);
     // Check if the user exists in the database
-    const user = User.findById(userId);
+    const user = await User.findById(userId);
 
     if (!user || user.phone !== phone) {
       console.log('user not find or phone is not valid')
@@ -267,7 +268,7 @@ console.log(`user in token :${userId} , phone : ${phone}`);
     return true
   } catch (err) {
     // If the token is invalid or has expired
-    console.log('error in validate token : '+err.message);
+    console.log('error in validate token : ' + err.message);
     return false;
   }
 }
@@ -317,7 +318,7 @@ module.exports = {
   authenticateUser,
   validateJwt,
   decodeJwt,
-  createOrUpdateSettings, 
+  createOrUpdateSettings,
   createChildUser,
   blockChild,
   getChildren,
