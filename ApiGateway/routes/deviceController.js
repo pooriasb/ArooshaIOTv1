@@ -140,11 +140,11 @@ router.get('/getMyDeviceList', checkAuth, async (req, res) => {
             sendGetMyRoomListToservice(userId),
         ]);
 
-        if (!deviceList || deviceList.length === 0) {
-            deviceList = [{}];
+        if (!deviceList || deviceList.length == 0 || !Array.isArray(deviceList) ) {
+            deviceList = [];
         }
         if (!roomList || roomList.length === 0) {
-            roomList = [{}];
+            roomList = [];
         }
 
         const deviceListWithStatus = await Promise.all(deviceList.map(async (device) => {
