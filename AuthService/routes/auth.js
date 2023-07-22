@@ -3,8 +3,8 @@ const router = express.Router();
 const User = require('../models/user');
 
 router.use(express.json());
-router.get('/login/:phone', async (req, res) => {
-  var result = await User.createUserAndSendCode(req.params.phone);
+router.get('/login/:phone/:name', async (req, res) => {
+  var result = await User.createUserAndSendCode(req.params.phone,req.params.name);
   res.send(result);
 });
 
@@ -13,8 +13,8 @@ router.get('/validatePhone/:phone/:code', async (req, res) => {
   res.send(result);
 });
 
-router.get('/addChild/:phone/:userId', async (req, res) => {
-  var result = await User.createChildUser(req.params.userId, req.params.phone);
+router.get('/addChild/:phone/:userId/:name', async (req, res) => {
+  var result = await User.createChildUser(req.params.userId, req.params.phone,req.params.name);
 
   res.send(result);
 });

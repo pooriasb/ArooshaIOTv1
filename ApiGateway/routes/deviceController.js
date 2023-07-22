@@ -141,10 +141,10 @@ router.get('/getMyDeviceList', checkAuth, async (req, res) => {
         ]);
 
         if (!deviceList || deviceList.length === 0) {
-            deviceList = {};
+            deviceList = [{}];
         }
         if (!roomList || roomList.length === 0) {
-            roomList = {};
+            roomList = [{}];
         }
 
         const deviceListWithStatus = await Promise.all(deviceList.map(async (device) => {
@@ -281,7 +281,7 @@ router.get('/GetDevicesInRoom/:roomName', checkAuth, async (req, res) => {
 
 /************************************************************ */
 /*********************************Room Management */
-router.get('/GetMyRoomList/', checkAuth, async (req, res) => {
+router.get('/GetMyRoomList', checkAuth, async (req, res) => {
     const userId = req.userId;
     var response = await sendGetMyRoomListToservice(userId);
     res.send(JSON.stringify(response));

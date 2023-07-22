@@ -23,10 +23,10 @@ const checkAuth = async (req, res, next) => {
     console.log('token validation result:' + validateTokenResult.data);
     if (validateTokenResult.data == true) {
       var decodedToken = await axios.post(config.AuthAddress + `/api/auth/decodeToken`, { token: token });
-    
-    if(decodedToken === 'Token is not valid' || decodedToken === 'Server error'){
-      res.status(401).json({ message: 'Invalid token. cannot token' });
-    }
+
+      if (decodedToken === 'Token is not valid' || decodedToken === 'Server error') {
+        res.status(401).json({ message: 'Invalid token. cannot token' });
+      }
       console.log(decodedToken.data);
       req.userId = decodedToken.data.userId;
       next();
@@ -38,9 +38,9 @@ const checkAuth = async (req, res, next) => {
   }
 };
 
-router.get('/login/:phone', async (req, res) => {
+router.get('/login/:phone/:name', async (req, res) => {
   try {
-    var response = await axios.get(config.AuthAddress + '/api/auth/login/' + req.params.phone);
+    var response = await axios.get(config.AuthAddress + '/api/auth/login/' + req.params.phone + '/' + req.params.name);
     res.status(200).send(response.data);
   } catch (error) {
     // Handle the error here
@@ -60,10 +60,10 @@ router.get('/validatePhone/:phone/:code', async (req, res) => {
   }
 });
 
-router.get('/addChild/:phone', checkAuth, async (req, res) => {
+router.get('/addChild/:phone/:name', checkAuth, async (req, res) => {
   try {
     const { userId } = req;
-    var response = await axios.get(config.AuthAddress + '/api/auth/addChild/' + req.params.phone + '/' + userId);
+    var response = await axios.get(config.AuthAddress + '/api/auth/addChild/' + req.params.phone + '/' + userId + '/' + req.params.name);
     res.status(200).send(response.data);
   } catch (error) {
     // Handle the error here
@@ -111,11 +111,11 @@ router.post('/setSettings', checkAuth, async (req, res) => {
   try {
     const { settings } = req.body;
     const { userId } = req;
-    
+
     if (!settings) {
       return res.status(400).send('Settings not set');
     }
-    
+
     var response = await axios.post(config.AuthAddress + '/api/auth/setSettings/', { userId, settings });
     res.status(500).send(response.data);
   } catch (error) {
