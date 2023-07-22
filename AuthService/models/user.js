@@ -259,7 +259,7 @@ function validateJwt(token) {
     const user = User.findById(userId);
 
     if (!user || user.phone !== phone) {
-      
+      console.log('user not find or phone is not valid')
       return false;
     }
 
@@ -267,6 +267,7 @@ function validateJwt(token) {
     return true
   } catch (err) {
     // If the token is invalid or has expired
+    console.log('error in validate token : '+err.message);
     return false;
   }
 }
