@@ -127,7 +127,7 @@ router.post('/setSettings', checkAuth, async (req, res) => {
     }
 
     var response = await axios.post(config.AuthAddress + '/api/auth/setSettings/', { userId, settings });
-    res.status(500).send(response.data);
+    res.status(200).send(response.data);
   } catch (error) {
     // Handle the error here
     console.error(error.message);
