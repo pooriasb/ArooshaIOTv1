@@ -254,7 +254,7 @@ function validateJwt(token) {
 
     // Add any additional validation logic here
     const { userId, phone } = decodedToken;
-
+console.log(`user in token :${userId} , phone : ${phone}`);
     // Check if the user exists in the database
     const user = User.findById(userId);
 
