@@ -322,5 +322,6 @@ module.exports = {
   getChildren,
   setUserSettings,
   getUserById,
-  unblockChild
+  unblockChild,
+  deleteChildUser
 };

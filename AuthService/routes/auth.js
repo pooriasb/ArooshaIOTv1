@@ -69,6 +69,11 @@ router.get('/getUserbyId/:userId', async (req, res) => {
   var result = await User.getUserById(userId);
   res.send(result);
 });
+router.get('/deleteChildUser/:userId', async (req, res) => {
+  const { userId } = req.params;
+  var result = await User.deleteChildUser(userId);
+  res.send(result);
+});
 
 
 module.exports = router;

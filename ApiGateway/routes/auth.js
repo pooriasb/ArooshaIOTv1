@@ -105,7 +105,17 @@ router.get('/getChildren', checkAuth, async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
-
+router.get('/deleteChildUser/:childId', checkAuth, async (req, res) => {
+  try {
+  
+    var response = await axios.get(config.AuthAddress + '/api/auth/deleteChildUser/' + req.params.childId);
+    res.send(response.data);
+  } catch (error) {
+    // Handle the error here
+    console.error(error.message);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 router.post('/setSettings', checkAuth, async (req, res) => {
   try {
