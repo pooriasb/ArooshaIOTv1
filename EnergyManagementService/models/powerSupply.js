@@ -14,7 +14,7 @@ const powerSchema = new mongoose.Schema({
     powerType: String,
     senarioId: String,
     maxPower: String,
-    mac : string
+    mac : String
 });
 
 const PowerSupply = mongoose.model('powerSupply', powerSchema);
