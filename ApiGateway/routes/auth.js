@@ -107,7 +107,7 @@ router.get('/getChildren', checkAuth, async (req, res) => {
 });
 router.get('/deleteChildUser/:childId', checkAuth, async (req, res) => {
   try {
-  
+
     var response = await axios.get(config.AuthAddress + '/api/auth/deleteChildUser/' + req.params.childId);
     res.send(response.data);
   } catch (error) {
@@ -132,6 +132,19 @@ router.post('/setSettings', checkAuth, async (req, res) => {
     // Handle the error here
     console.error(error.message);
     res.status(500).send('Internal Server Error');
+  }
+});
+router.post('/updateName', checkAuth, async (req, res) => {
+  try {
+    const { userId } = req;
+    const { newName } = req.body;
+    var response = await axios.post(config.AuthAddress + '/api/auth/updateName/', {
+      userId,
+      newName
+    });
+    return res.status(200).send(response.data);
+  } catch (error) {
+    return res.status(500).send(error.message);
   }
 });
 

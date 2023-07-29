@@ -4,7 +4,7 @@ const User = require('../models/user');
 
 router.use(express.json());
 router.get('/login/:phone/:name', async (req, res) => {
-  var result = await User.createUserAndSendCode(req.params.phone,req.params.name);
+  var result = await User.createUserAndSendCode(req.params.phone, req.params.name);
   res.send(result);
 });
 
@@ -14,7 +14,7 @@ router.get('/validatePhone/:phone/:code', async (req, res) => {
 });
 
 router.get('/addChild/:phone/:userId/:name', async (req, res) => {
-  var result = await User.createChildUser(req.params.userId, req.params.phone,req.params.name);
+  var result = await User.createChildUser(req.params.userId, req.params.phone, req.params.name);
 
   res.send(result);
 });
@@ -34,10 +34,10 @@ router.post('/validateToken', async (req, res) => {
   try {
     var result = await User.validateJwt(req.body.token);
     console.log('validate token : ' + result);
-  return  res.send(result);
+    return res.send(result);
   } catch (err) {
     console.log(err.message);
-   return res.status(500).send(false);
+    return res.status(500).send(false);
   }
 });
 
@@ -47,12 +47,12 @@ router.post('/decodeToken', async (req, res) => {
     const result = await User.validateJwt(req.body.token);
     if (result && result !== 0) {
       const decoded = await User.decodeJwt(req.body.token);
-  return    res.send(decoded);
+      return res.send(decoded);
     } else {
-    return  res.send('Token is not valid');
+      return res.send('Token is not valid');
     }
   } catch (error) {
- return   res.status(500).json({ error: 'Server error' });
+    return res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -62,7 +62,11 @@ router.post('/setSettings', async (req, res) => {
   var result = await User.setUserSettings(userId, settings);
   res.send(result);
 });
-
+router.post('/updateName', async (req, res) => {
+  const { userId, newName } = req.body;
+  var result = await User.updateName(userId, newName);
+  res.send(result);
+});
 
 router.get('/getUserbyId/:userId', async (req, res) => {
   const { userId } = req.params;

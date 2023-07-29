@@ -311,6 +311,16 @@ const setUserSettings = async (userId, settings) => {
   }
 };
 
+const updateName = async (userId, newName) => {
+  await User.findByIdAndUpdate(userId, { name: newName }, { new: true }, (err, updatedUser) => {
+    if (err) {
+      return err;
+    } else {
+      return updatedUser
+    }
+  });
+}
+
 
 
 module.exports = {
@@ -325,5 +335,6 @@ module.exports = {
   setUserSettings,
   getUserById,
   unblockChild,
-  deleteChildUser
+  deleteChildUser,
+  updateName
 };
