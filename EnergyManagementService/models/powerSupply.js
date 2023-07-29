@@ -13,7 +13,8 @@ const powerSchema = new mongoose.Schema({
     userId: String,
     powerType: String,
     senarioId: String,
-    maxPower: String
+    maxPower: String,
+    mac : string
 });
 
 const PowerSupply = mongoose.model('powerSupply', powerSchema);
@@ -25,12 +26,13 @@ router.post('/', async (req, res) => {
             userId,
             powerType,
             senarioId,
-            maxPower
+            maxPower,
+            mac
           } = req.body;
         const powerSupply = new PowerSupply({    userId,
             powerType,
             senarioId,
-            maxPower});
+            maxPower,mac});
         await powerSupply.save();
         res.status(201).send(powerSupply);
     } catch (error) {
@@ -41,7 +43,7 @@ router.post('/', async (req, res) => {
 // Get a list of all powerSupplies
 router.get('/', async (req, res) => {
     try {
-        const powerSupplies = await PowerSupply.find({userId:'sajad'});
+        const powerSupplies = await PowerSupply.find({userId:req.body.userId});
         res.send(powerSupplies);
     } catch (error) {
         res.status(500).send(error);

@@ -4,13 +4,35 @@ const config = require('config');
 const axios = require('axios');
 router.use(express.json());
 
+const checkAuth = async (req, res, next) => {
+  const { token } = req.headers;
+  console.clear();
+  console.log('client IP : ' + req.ip);
+  if (!token) {
+      return res.status(401).json({ msg: 'No token, authorization denied' });
+  }
+  try {
+      var validateTokenResult = await axios.post(config.AuthAddress + `/api/auth/validateToken`, { token: token });
+      console.log('token validation result:' + validateTokenResult.data);
+      if (validateTokenResult.data == true) {
+          var decodedToken = await axios.post(config.AuthAddress + `/api/auth/decodeToken`, { token: token });
+          console.log(decodedToken.data);
+          req.userId = decodedToken.data.userId;
+          next();
+      } else {
+          res.status(401).json({ message: 'Invalid token' });
+      }
+  } catch (err) {
+      res.status(401).json({ message: 'Invalid token' });
+  }
+};
 
 
 //Create new power supply
-router.post('/', async (req, res) => {
+router.post('/',checkAuth ,async (req, res) => {
   try {
+    const{userId} = req;
     const {
-      userId,
       powerType,
       senarioId,
       maxPower
@@ -38,9 +60,10 @@ router.post('/', async (req, res) => {
 });
 
 // get all power supplies of a user
-router.get('/', async (req, res) => {
+router.get('/',checkAuth, async (req, res) => {
   try {
-    const result = await axios.get(config.EnergyAddress + '/api/power/');
+    const {userId} = req;
+    const result = await axios.get(config.EnergyAddress + '/api/power/',{userId});
     res.send(result.data);
   } catch (error) {
     if (error.response && error.response.status >= 400 && error.response.status <= 500) {
@@ -52,7 +75,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get a single powerSupply by id
-router.get('/:id', async (req, res) => {
+router.get('/:id',checkAuth, async (req, res) => {
   try {
     const result = await axios.get(config.EnergyAddress + '/api/power/' + req.params.id);
     res.send(result.data);
