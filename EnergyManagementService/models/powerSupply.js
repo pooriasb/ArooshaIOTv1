@@ -41,9 +41,9 @@ router.post('/', async (req, res) => {
 });
 
 // Get a list of all powerSupplies
-router.get('/', async (req, res) => {
+router.get('/list/:userId', async (req, res) => {
     try {
-        const powerSupplies = await PowerSupply.find({userId:req.body.userId});
+        const powerSupplies = await PowerSupply.find({userId:req.params.userId});
         res.send(powerSupplies);
     } catch (error) {
         res.status(500).send(error);

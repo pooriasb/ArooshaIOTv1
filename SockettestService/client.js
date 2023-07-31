@@ -43,7 +43,7 @@ socket.on('response', (data) => {
 //   console.log('Received message from server:', data);
 // });
 
-//setInterval(sendAliveSignal,90000);
+setInterval(sendAliveSignal,9000);
 
 
 

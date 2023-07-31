@@ -63,7 +63,7 @@ router.post('/',checkAuth ,async (req, res) => {
 router.get('/',checkAuth, async (req, res) => {
   try {
     const {userId} = req;
-    const result = await axios.get(config.EnergyAddress + '/api/power/',{userId});
+    const result = await axios.get(config.EnergyAddress + '/api/power/list/'+userId);
     res.send(result.data);
   } catch (error) {
     if (error.response && error.response.status >= 400 && error.response.status <= 500) {
