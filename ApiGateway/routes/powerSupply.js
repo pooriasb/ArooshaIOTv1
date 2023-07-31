@@ -35,7 +35,8 @@ router.post('/',checkAuth ,async (req, res) => {
     const {
       powerType,
       senarioId,
-      maxPower
+      maxPower,
+      mac
     } = req.body;
 
     if (!userId || !powerType || !senarioId || !maxPower) {
@@ -46,7 +47,8 @@ router.post('/',checkAuth ,async (req, res) => {
       userId,
       powerType,
       senarioId,
-      maxPower
+      maxPower,
+      mac
     });
 
     res.send(result.data);

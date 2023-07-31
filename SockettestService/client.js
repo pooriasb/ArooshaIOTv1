@@ -21,7 +21,7 @@ var message =  {
 // });
 const socket = io('http://154.211.2.176:3004', {
   extraHeaders: {
-    mac: "0253"
+    mac: "BK:85:P0:JA"
   }
 });
 // Listen for connection event
@@ -31,7 +31,7 @@ socket.on('connect', () => {
 
 // Listen for message event
 socket.on('response', (data) => {
-  console.clear();
+  //console.clear();
   console.log('Received message from server:', data);
   // message.message.rgbBrightness = data.deviceCustomization.rgbBrightness || 0;
   // message.message.colorTemperature = data.deviceCustomization.yellowWhiteTemp || 0;
@@ -43,7 +43,7 @@ socket.on('response', (data) => {
 //   console.log('Received message from server:', data);
 // });
 
-setInterval(sendAliveSignal,9000);
+//setInterval(sendAliveSignal,9000);
 
 
 
