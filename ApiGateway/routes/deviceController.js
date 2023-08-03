@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const config = require('config');
+const cache = require('memory-cache');
 //const { authMiddleware } = require('../middleware/auth');
 const axios = require('axios');
 //const { route } = require('./deviceController');
@@ -131,38 +132,81 @@ router.get('/getLastMessage/:mac', async (req, res) => {
 /***************************************************Device Management  */
 
 
+
 router.get('/getMyDeviceList', checkAuth, async (req, res) => {
     try {
         const userId = req.userId;
         console.log(userId);
+
+        // Check if the data is already cached
+        const cachedData = cache.get(userId);
+        if (cachedData) {
+            console.log('Data found in cache');
+            res.json(cachedData);
+            return;
+        }
+
         let [deviceList, roomList] = await Promise.all([
             getMyDeviceListFromService(userId),
             sendGetMyRoomListToservice(userId),
         ]);
 
-        if (!deviceList || deviceList.length == 0 || !Array.isArray(deviceList) ) {
+        // Process deviceList
+        if (!deviceList || deviceList.length == 0 || !Array.isArray(deviceList)) {
             deviceList = [];
         }
-        if (!roomList || roomList.length === 0) {
-            roomList = [];
-        }
-
         const deviceListWithStatus = await Promise.all(deviceList.map(async (device) => {
             return {
                 ...device,
                 status: await getDeviceStatus(device.MacAddress) || 'off'
             };
         }));
-
         deviceList = deviceListWithStatus;
 
-        res.json({ deviceList, roomList }); // Move this line to after previous processing
+        // Cache the data for future use
+        const data = { deviceList, roomList };
+        cache.put(userId, data);
+
+        res.json(data);
 
     } catch (error) {
         console.log('Error:  ' + error);
         res.status(500).json({ error: error.message });
     }
 });
+
+// router.get('/getMyDeviceList', checkAuth, async (req, res) => {
+//     try {
+//         const userId = req.userId;
+//         console.log(userId);
+//         let [deviceList, roomList] = await Promise.all([
+//             getMyDeviceListFromService(userId),
+//             sendGetMyRoomListToservice(userId),
+//         ]);
+
+//         if (!deviceList || deviceList.length == 0 || !Array.isArray(deviceList)) {
+//             deviceList = [];
+//         }
+//         if (!roomList || roomList.length === 0) {
+//             roomList = [];
+//         }
+
+//         const deviceListWithStatus = await Promise.all(deviceList.map(async (device) => {
+//             return {
+//                 ...device,
+//                 status: await getDeviceStatus(device.MacAddress) || 'off'
+//             };
+//         }));
+
+//         deviceList = deviceListWithStatus;
+
+//         res.json({ deviceList, roomList }); // Move this line to after previous processing
+
+//     } catch (error) {
+//         console.log('Error:  ' + error);
+//         res.status(500).json({ error: error.message });
+//     }
+// });
 
 
 async function getDeviceStatus(macAddress) {
@@ -349,13 +393,13 @@ router.post('/updateRoomName', checkAuth, async (req, res) => {
 
 //removeDeviceFromRoom
 
-router.get('/getDevicesInRoomByRoomName/:roomName',checkAuth, async (req, res) => {
+router.get('/getDevicesInRoomByRoomName/:roomName', checkAuth, async (req, res) => {
     var response = await axios.get(config.DeviceServiceAddress + '/api/ctrl/getDevicesInRoomByRoomName/' + req.params.roomName);
     res.status(200).json(response.data);
 });
-router.get('/getDevicesInRoomByRoomId/:roomId',checkAuth, async (req, res) => {
-    const{userId} = req;
-    var response = await axios.get(config.DeviceServiceAddress + '/api/room/getDevicesInRoomByRoomId/' + req.params.roomId+'/'+userId);
+router.get('/getDevicesInRoomByRoomId/:roomId', checkAuth, async (req, res) => {
+    const { userId } = req;
+    var response = await axios.get(config.DeviceServiceAddress + '/api/room/getDevicesInRoomByRoomId/' + req.params.roomId + '/' + userId);
     res.status(200).json(response.data);
 });
 router.post('/AddDevicetoRoom', checkAuth, (req, res) => {
