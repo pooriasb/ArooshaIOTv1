@@ -11,8 +11,8 @@ router.get('/energyReports/:mac/:count', async (req, res) => {
         var result = await axios.get(`${config.reportAddress}/energyReports/${req.params.mac}/${req.params.count}`);
         res.status(200).json(result.data);
     } catch (error) {
-        console.error('Error retrieving energy reports:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        console.error('Error retrieving energy reports:', error.message);
+        res.status(500).json({ error: error.message });
     }
 });
 
