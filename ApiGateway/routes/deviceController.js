@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const config = require('config');
-const cache = require('memory-cache');
 const NodeCache = require('node-cache');
 
 //const { authMiddleware } = require('../middleware/auth');
