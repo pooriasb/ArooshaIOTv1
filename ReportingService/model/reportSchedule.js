@@ -3,7 +3,7 @@ const config = require('config');
 const axios = require('axios');
 const { createEnergyReport } = require('../model/report');
 ///api/ctrl
-cron.schedule('10 * * * * *', async () => {
+cron.schedule('*/10 * * * *', async () => {
     console.log('schedule run ' + Date.now());
     try {
         var result = await axios.get(config.DeviceServiceAddress + '/api/ctrl/GetAllDevices');
@@ -17,7 +17,7 @@ cron.schedule('10 * * * * *', async () => {
                     console.log('a new report is created for mac' + mac);
                 }
             } catch (error) {
-                console.error(error);
+                console.error(error.message);
             }
         });
 

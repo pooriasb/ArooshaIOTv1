@@ -21,7 +21,10 @@ var message =  {
 // });
 const socket = io('http://154.211.2.176:3004', {
   extraHeaders: {
-    mac: "BK:85:P0:JA"
+   // mac: "BK:85:P0:SA"
+     //mac: "BK:85:P0:SB"
+    //  mac: "BK:85:P0:SC"
+     mac: "BK:85:P0:SD"
   }
 });
 // Listen for connection event
@@ -33,17 +36,19 @@ socket.on('connect', () => {
 socket.on('response', (data) => {
   //console.clear();
   console.log('Received message from server:', data);
-  // message.message.rgbBrightness = data.deviceCustomization.rgbBrightness || 0;
-  // message.message.colorTemperature = data.deviceCustomization.yellowWhiteTemp || 0;
-  // message.message.brightness = data.deviceCustomization.yellowWhiteBrightness || 0;
-  // message.message.dance = data.deviceCustomization.rgbDance;
-  //sendAliveSignal()
+  if(data && data.deviceCustomization && data.deviceCustomization.rgbBrightness){
+  message.message.rgbBrightness = data.deviceCustomization.rgbBrightness || 0;
+  message.message.colorTemperature = data.deviceCustomization.yellowWhiteTemp || 0;
+  message.message.brightness = data.deviceCustomization.yellowWhiteBrightness || 0;
+  message.message.dance = data.deviceCustomization.rgbDance || 0;
+  sendAliveSignal();
+  }
 });
 // socket.on('messageFromServer', (data) => {
 //   console.log('Received message from server:', data);
 // });
 
-//setInterval(sendAliveSignal,9000);
+setInterval(sendAliveSignal,9000);
 
 
 
