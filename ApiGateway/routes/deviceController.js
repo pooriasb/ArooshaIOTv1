@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const config = require('config');
 const cache = require('memory-cache');
+const NodeCache = require('node-cache');
+
 //const { authMiddleware } = require('../middleware/auth');
 const axios = require('axios');
 //const { route } = require('./deviceController');
@@ -131,19 +133,20 @@ router.get('/getLastMessage/:mac', async (req, res) => {
 
 /***************************************************Device Management  */
 
-
+// Initialize memory cache
+const cache = new NodeCache({ stdTTL: 3 });
 
 router.get('/getMyDeviceList', checkAuth, async (req, res) => {
     try {
         const userId = req.userId;
         console.log(userId);
 
-        // Check if the data is already cached
-        const cachedData = cache.get(userId);
+        // Check if data is already cached
+        const cacheKey = `deviceList_${userId}`;
+        const cachedData = cache.get(cacheKey);
         if (cachedData) {
-            console.log('Data found in cache');
-            res.json(cachedData);
-            return;
+            console.log('Returning data from cache');
+            return res.json(cachedData);
         }
 
         let [deviceList, roomList] = await Promise.all([
@@ -151,29 +154,35 @@ router.get('/getMyDeviceList', checkAuth, async (req, res) => {
             sendGetMyRoomListToservice(userId),
         ]);
 
-        // Process deviceList
         if (!deviceList || deviceList.length == 0 || !Array.isArray(deviceList)) {
             deviceList = [];
         }
+        if (!roomList || roomList.length === 0) {
+            roomList = [];
+        }
+
         const deviceListWithStatus = await Promise.all(deviceList.map(async (device) => {
             return {
                 ...device,
                 status: await getDeviceStatus(device.MacAddress) || 'off'
             };
         }));
+
         deviceList = deviceListWithStatus;
 
-        // Cache the data for future use
-        const data = { deviceList, roomList };
-        cache.put(userId, data);
+        // Cache the data
+        cache.set(cacheKey, { deviceList, roomList });
 
-        res.json(data);
+        res.json({ deviceList, roomList }); // Move this line to after previous processing
 
     } catch (error) {
         console.log('Error:  ' + error);
         res.status(500).json({ error: error.message });
     }
 });
+
+
+
 
 // router.get('/getMyDeviceList', checkAuth, async (req, res) => {
 //     try {
