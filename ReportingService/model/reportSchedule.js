@@ -26,7 +26,7 @@ cron.schedule('*/10 * * * *', async () => {
     } catch (error) {
         console.error('Error getting all devices:', error);
     }
-}, { scheduled: false });
+}, { scheduled: true });
 
 
 
