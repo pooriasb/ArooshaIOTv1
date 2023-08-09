@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const { InfluxDB } = require('@influxdata/influxdb-client')
 
 const dbManager = require('./routes/dbManagement');
 app.use(express.json());
@@ -12,6 +13,11 @@ app.post('/Alive', (req, res) => {
 
 
 app.get('/getSignalsByMac/:mac/:start', async (req, res) => {
+
+  const queryApi = new InfluxDB({ url: 'http://154.211.2.176:8086', token: token }).getQueryApi(org);
+  const indexQuery = 'CREATE TAG INDEX value_index ON Aroosha _value';
+  await queryApi.collectRows(indexQuery);
+
   const mac = req.params.mac;
   const start = req.params.start || '-1d'; // Default to last day if start parameter is not provided
 

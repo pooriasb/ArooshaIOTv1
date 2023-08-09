@@ -4,7 +4,7 @@ module.exports = {
       name: "Device",
       script: "./index.js",
       watch: true,
-      instances: "max",
+      instances: "2",
       exec_mode: "cluster",
       env: {
         NODE_ENV: "production",
