@@ -22,6 +22,9 @@ const EnergyReport = mongoose.model('EnergyReport', EnergyReportSchema);
 async function readEnergyReports(mac, count) {
   try {
     const reports = await EnergyReport.find({ mac: mac }).sort({ CreateDateTime: -1 }).limit(count);
+
+ 
+
     return reports;
   } catch (error) {
     console.error('Error retrieving energy reports:', error);

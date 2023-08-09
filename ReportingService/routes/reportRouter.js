@@ -5,12 +5,31 @@ const {
   deleteEnergyReport,
   createEnergyReport
 } = require('../model/report');
-
+const reg = require('../model/reg');
 // Get energy reports for a specific MAC address
 router.get('/energyReports/:mac/:count', async (req, res) => {
   const { mac, count } = req.params;
   try {
     const reports = await readEnergyReports(mac, parseInt(count));
+
+    // const resultList = reports.map((report, index) => ({
+    //   time: index + 1,
+    //   energy: report.energy.sumAll
+    // }));
+    const resultList = reports.reduce((accumulator, report, index) => {
+      if (report.energy.sumAll !== 0) {
+        accumulator.push({
+          time: index + 1,
+          energy: report.energy.sumAll
+        });
+      }
+      return accumulator;
+    }, []);
+ 
+    console.log(resultList);
+    var predicted = reg.CalculatePredictedEnergy(resultList, parseInt(count) + 1);
+  
+    console.log(predicted);
     res.status(200).json(reports);
   } catch (error) {
     console.error('Error retrieving energy reports:', error);
