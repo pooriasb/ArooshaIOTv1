@@ -1,9 +1,12 @@
-const { InfluxDB } = require('@influxdata/influxdb-client')
+const { InfluxDB } = require('@influxdata/influxdb-client');
+
+const { BucketsAPI } = require('@influxdata/influxdb-client-apis');
 
 // You can generate a Token from the "Tokens Tab" in the UI
 const token = 'XKlWnw2A09WNqISlYUuprBH9WryaFg6L31dtpjJ0EtZ6wFXUy1tLvb3y5ET9Wy2cHxZDoMF6lubvAlK3HPqUZA=='
 const org = 'Aroosha'
 const bucket = 'Aroosha'
+
 
 
 
@@ -88,7 +91,7 @@ async function getSignalByMac(mac, start) {
     if (cache[cacheKey] && Date.now() - cache[cacheKey].timestamp < 2 * 60 * 1000) {
       return cache[cacheKey].resultArray;
     }
-    
+
     const queryApi = new InfluxDB({ url: 'http://154.211.2.176:8086', token: token }).getQueryApi(org);
     const fluxQuery = `from(bucket: "Aroosha")
     |> range(start: ${start})
