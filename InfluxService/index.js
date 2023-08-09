@@ -16,7 +16,10 @@ app.get('/getSignalsByMac/:mac/:start', async (req, res) => {
   const start = req.params.start || '-1d'; // Default to last day if start parameter is not provided
 
   try {
+    console.time('getSignal');
     const signals = await dbManager.getSignalByMac(mac, start);
+    console.timeEnd('getSignal');
+
     res.send(signals);
   } catch (error) {
     console.error(error);
