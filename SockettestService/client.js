@@ -21,10 +21,10 @@ var message =  {
 // });
 const socket = io('http://154.211.2.176:3004', {
   extraHeaders: {
-   // mac: "BK:85:P0:SA"
+    mac: "BK:85:P0:SA"
      //mac: "BK:85:P0:SB"
     //  mac: "BK:85:P0:SC"
-     mac: "BK:85:P0:SD"
+    // mac: "BK:85:P0:SD"
   }
 });
 // Listen for connection event
