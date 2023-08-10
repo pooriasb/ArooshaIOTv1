@@ -23,7 +23,8 @@ async function readEnergyReports(mac, count) {
   try {
     const reports = await EnergyReport.find({ mac: mac }).sort({ CreateDateTime: -1 }).limit(count);
 
- 
+   
+    
 
     return reports;
   } catch (error) {
@@ -56,6 +57,7 @@ async function createEnergyReport(mac, energyData) {
     return error.message;
   }
 }
+
 
 
 module.exports = {

@@ -10,9 +10,19 @@ var message =  {
   },
   type: 'A'
 }
+var sample ={
+  rgbBrightness : 100,
+  rgbColor : '#1515213',
+  colorTemperature:100,
+  brightness:100,
+  RGBDanceCode:'0'
+}
 
-
-
+sample_data = [
+  {'rgbBrightness': 100, 'rgbColor': '#1515213', 'colorTemperature': 100, 'brightness': 100, 'RGBDanceCode': '0'},
+  {'rgbBrightness': 50, 'rgbColor': '#9090AB', 'colorTemperature': 75, 'brightness': 80, 'RGBDanceCode': '2'},
+  {'rgbBrightness': 80, 'rgbColor': '#FF0000', 'colorTemperature': 90, 'brightness': 100, 'RGBDanceCode': '1'},
+]
 // Connect to the server
 // const socket = io('http://localhost:3004', {
 //   extraHeaders: {

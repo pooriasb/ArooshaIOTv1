@@ -14,7 +14,8 @@ const powerSchema = new mongoose.Schema({
     powerType: String,
     senarioId: String,
     maxPower: String,
-    mac : String
+    mac : String,
+    isStarted : {default : false}
 });
 
 const PowerSupply = mongoose.model('powerSupply', powerSchema);
@@ -88,5 +89,40 @@ router.delete('/:id', async (req, res) => {
         res.status(500).send(error);
     }
 });
+
+// Create the powerSupply route
+app.post('/powerSupply', async (req, res) => {
+    try {
+        
+      const {id, powerType, senarioId, maxPower, mac, isStarted } = req.body;
+      
+      // Check if a record with the given userId already exists
+      const existingRecord = await PowerSupply.findOne({ _id:id });
+      
+      if (existingRecord) {
+        // Update the existing record
+        existingRecord.powerType = powerType;
+        existingRecord.senarioId = senarioId;
+        existingRecord.maxPower = maxPower;
+        existingRecord.mac = mac;
+        existingRecord.isStarted = isStarted;
+        
+        await existingRecord.save();
+        
+        res.json({ message: 'Record updated successfully' });
+      } else {
+        // Insert a new record
+        const newRecord = new PowerSupply({ userId, powerType, senarioId, maxPower, mac, isStarted });
+        
+        await newRecord.save();
+        
+        res.json({ message: 'Record inserted successfully' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
 
 module.exports = router;

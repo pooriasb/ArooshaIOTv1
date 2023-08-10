@@ -6,14 +6,21 @@ const NodeCache = require('node-cache');
 const dbManager = require('./routes/dbManagement');
 app.use(express.json());
 
-app.post('/Alive', (req, res) => {
-  const { userId, mac, hue, rgbBrightness, colorTemperature, brightness, dance } = req.body;
-  dbManager.saveAliveSignal(userId, mac, hue, rgbBrightness, colorTemperature, brightness, dance);
-  res.sendStatus(200);
+app.post('/Alive', async (req, res) => {
+  try {
+
+    const { userId, mac, hue, rgbBrightness, colorTemperature, brightness, dance } = req.body;
+    await dbManager.saveAliveSignal(userId, mac, hue, rgbBrightness, colorTemperature, brightness, dance);
+    res.sendStatus(200);
+  }
+  catch {
+    console.error('Error saving alive signal:', error.message);
+    res.status(500).send('Error saving alive signal');
+
+  }
 });
 
 const signalCache = new NodeCache({ stdTTL: 300, checkperiod: 60 });
-
 app.get('/getSignalsByMac/:mac/:start?', async (req, res) => {
 
   try {
@@ -28,9 +35,9 @@ app.get('/getSignalsByMac/:mac/:start?', async (req, res) => {
     }
 
 
-    console.time('getSignal');
+   
     const signals = await dbManager.getSignalByMac(mac, start);
-    console.timeEnd('getSignal');
+   
 
     // Store the signals in cache
     signalCache.set(cacheKey, signals);
