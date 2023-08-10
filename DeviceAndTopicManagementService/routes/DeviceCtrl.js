@@ -106,8 +106,8 @@ router.post('/updateDeviceName', async (req, res) => {
     const result = await device.updateDeviceName(userId, deviceId, newDeviceName);
     return res.status(200).send(result);
   } catch (error) {
-    console.error('Error updating device name');
-    return res.status(500).send('Error updating device name');
+    console.error('Error updating device name'+error.message);
+    return res.status(500).send('Error updating device name'+error.message);
   }
 });
 
