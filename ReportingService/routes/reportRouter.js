@@ -12,11 +12,8 @@ router.get('/energyReports/:mac/:count', async (req, res) => {
   try {
     const reports = await readEnergyReports(mac, parseInt(count));
 
-    // const resultList = reports.map((report, index) => ({
-    //   time: index + 1,
-    //   energy: report.energy.sumAll
-    // }));
-    const resultList = reports.reduce((accumulator, report, index) => {
+    // calculate sum Energy
+    const sumEnergyList = reports.reduce((accumulator, report, index) => {
       if (report.energy.sumAll !== 0) {
         accumulator.push({
           time: index + 1,
@@ -25,12 +22,32 @@ router.get('/energyReports/:mac/:count', async (req, res) => {
       }
       return accumulator;
     }, []);
- 
-    console.log(resultList);
-    var predicted = reg.CalculatePredictedEnergy(resultList, parseInt(count) + 1);
-  
-    console.log(predicted);
-    res.status(200).json(reports);
+    console.log(sumEnergyList);
+    var predictedSumEnergy = reg.CalculatePredictedEnergy(sumEnergyList, parseInt(count) + 1);
+    /// End of calculate sum Energy
+
+    /// calculate SumWhite power
+    const sumWhiteList = reports.reduce((accumulator, report, index) => {
+      if (report.energy.sumAll !== 0) {
+        accumulator.push({
+          time: index + 1,
+          energy: report.energy.sumAll
+        });
+      }
+      return accumulator;
+    }, []);
+    console.log(sumWhiteList);
+    var predictedSumWhite = reg.CalculatePredictedEnergy(sumWhiteList, parseInt(count) + 1);
+    /// End of calculate SumWhite power
+
+    var result = {
+      predictedSumWhite,
+      predictedSumEnergy,
+      reports
+
+    }
+
+    res.status(200).json(result);
   } catch (error) {
     console.error('Error retrieving energy reports:', error);
     res.status(500).json({ error: 'Failed to retrieve energy reports' });
