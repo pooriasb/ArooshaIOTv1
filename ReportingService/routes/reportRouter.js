@@ -28,10 +28,10 @@ router.get('/energyReports/:mac/:count', async (req, res) => {
 
     /// calculate SumWhite power
     const sumWhiteList = reports.reduce((accumulator, report, index) => {
-      if (report.energy.sumAll !== 0) {
+      if (report.energy.sumColorWhitePower !== 0) {
         accumulator.push({
           time: index + 1,
-          energy: report.energy.sumAll
+          energy: report.energy.sumColorWhitePower
         });
       }
       return accumulator;
@@ -39,8 +39,22 @@ router.get('/energyReports/:mac/:count', async (req, res) => {
     console.log(sumWhiteList);
     var predictedSumWhite = reg.CalculatePredictedEnergy(sumWhiteList, parseInt(count) + 1);
     /// End of calculate SumWhite power
-
+  
+    /// calculate SumYellow power
+    const sumYellowList = reports.reduce((accumulator, report, index) => {
+      if (report.energy.sumColorYellowPower !== 0) {
+        accumulator.push({
+          time: index + 1,
+          energy: report.energy.sumColorYellowPower
+        });
+      }
+      return accumulator;
+    }, []);
+    console.log(sumYellowList);
+    var predictedSumYellow = reg.CalculatePredictedEnergy(sumYellowList, parseInt(count) + 1);
+    /// End of calculate SumWhite power
     var result = {
+      predictedSumYellow,
       predictedSumWhite,
       predictedSumEnergy,
       reports
