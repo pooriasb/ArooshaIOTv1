@@ -91,7 +91,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // Create the powerSupply route
-app.post('/powerSupply', async (req, res) => {
+router.post('/powerSupply', async (req, res) => {
     try {
 
       const {userId,id, powerType, senarioId, maxPower, mac, isStarted } = req.body;
