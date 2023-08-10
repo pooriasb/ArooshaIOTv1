@@ -37,7 +37,7 @@ router.get('/energyReports/:mac/:count', async (req, res) => {
       return accumulator;
     }, []);
     console.log(sumWhiteList);
-    var predictedSumWhite = reg.CalculatePredictedEnergy(sumWhiteList, parseInt(count) + 1);
+    const predictedSumWhite = reg.CalculatePredictedEnergy(sumWhiteList, parseInt(count) + 1);
     /// End of calculate SumWhite power
 
     /// calculate SumYellow power
@@ -51,7 +51,7 @@ router.get('/energyReports/:mac/:count', async (req, res) => {
       return accumulator;
     }, []);
     console.log(sumYellowList);
-    var predictedSumYellow = reg.CalculatePredictedEnergy(sumYellowList, parseInt(count) + 1);
+    const predictedSumYellow = reg.CalculatePredictedEnergy(sumYellowList, parseInt(count) + 1);
     /// End of calculate SumYellow power
     /// calculate SumRGB power
     const sumRGBList = reports.reduce((accumulator, report, index) => {
@@ -63,18 +63,18 @@ router.get('/energyReports/:mac/:count', async (req, res) => {
       }
       return accumulator;
     }, []);
+
     console.log(sumRGBList);
-    var predictedsumRGB = reg.CalculatePredictedEnergy(sumRGBList, parseInt(count) + 1);
+
+    const predictedsumRGB = reg.CalculatePredictedEnergy(sumRGBList, parseInt(count) + 1);
+
     /// End of calculate SumRGB power
-
-
     var result = {
       predictedsumRGB,
       predictedSumYellow,
       predictedSumWhite,
       predictedSumEnergy,
       reports
-
     }
 
     res.status(200).json(result);
