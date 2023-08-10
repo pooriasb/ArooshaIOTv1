@@ -93,8 +93,8 @@ router.delete('/:id', async (req, res) => {
 // Create the powerSupply route
 app.post('/powerSupply', async (req, res) => {
     try {
-        
-      const {id, powerType, senarioId, maxPower, mac, isStarted } = req.body;
+
+      const {userId,id, powerType, senarioId, maxPower, mac, isStarted } = req.body;
       
       // Check if a record with the given userId already exists
       const existingRecord = await PowerSupply.findOne({ _id:id });

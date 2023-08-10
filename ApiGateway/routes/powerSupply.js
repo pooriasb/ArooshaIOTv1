@@ -133,4 +133,41 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+
+router.post('/powerSupply', async (req, res) => {
+  try {
+    const{userId} = req;
+    const {
+      id,
+      powerType,
+      senarioId,
+      maxPower,
+      mac
+    } = req.body;
+
+    if (!userId || !powerType || !senarioId || !maxPower) {
+      res.status(400).send({ message: 'Please provide all required fields.' });
+    }
+
+    const result = await axios.post(config.EnergyAddress + '/api/power/powerSupply', {
+      userId,
+      id,
+      powerType,
+      senarioId,
+      maxPower,
+      mac
+    });
+
+    res.send(result.data);
+  } catch (error) {
+    if (error.response && error.response.status >= 400 && error.response.status <= 500) {
+      res.status(error.response.status).send({ message: error.response.data.message || 'Error occurred.' });
+    } else {
+      res.status(500).send({ message: 'Error occurred.' });
+    }
+  }
+
+
+});
+
 module.exports = router;

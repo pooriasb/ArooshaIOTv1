@@ -33,11 +33,9 @@ app.use('/api/limit',limitRouter);
 app.use('/api/power',powerRouter);
 app.use('/api/report',reportsRouter);
 app.get('/',(req,res)=>{
-  res.send('Hellow From Aoosha');
+  res.status(418).send('Hellow From Aoosha yourIp : ' +req.ip);
 });
-app.get('/a',(req,res)=>{
-  res.status(418).send('Hellow');
-});
+
 // app.get('/.well-known/pki-validation/084E92B387799EDC05286B489F9A56D2.txt',(req,res)=>{
 //   const filePath = `C:\\Users\\Administrator\\Desktop\\www\\ArooshaIOTv1\\ApiGateway\\Public\\084E92B387799EDC05286B489F9A56D2.txt`;
 //   res.sendFile(filePath);
