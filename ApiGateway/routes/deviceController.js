@@ -292,8 +292,9 @@ router.get('/checkDeviceByMac/:mac', checkAuth, async (req, res) => {
 router.post('/updateDeviceName', checkAuth, async (req, res) => {
     try {
         const { deviceId, newDeviceName } = req.body;
-
-        const response = await axios.post(config.DeviceServiceAddress + '/api/ctrl/updateDeviceName/', { userId: req.userId, deviceId, newDeviceName });
+        const { userId } = req;
+        console.log('update device name called with this userId : ' + userId);
+        const response = await axios.post(config.DeviceServiceAddress + '/api/ctrl/updateDeviceName/', { userId: userId, deviceId, newDeviceName });
 
         if (response.data) {
             return res.status(200).send(response.data);
