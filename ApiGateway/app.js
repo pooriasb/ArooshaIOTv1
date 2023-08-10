@@ -8,7 +8,7 @@ const limitRouter = require('./routes/limit');
 const powerRouter = require('./routes/powerSupply');
 const reportsRouter = require('./routes/report');
 const cors = require('cors');
-
+var geoip = require('geoip-lite');
 const config = require('config');
 const app = express();
 
@@ -33,15 +33,9 @@ app.use('/api/limit',limitRouter);
 app.use('/api/power',powerRouter);
 app.use('/api/report',reportsRouter);
 app.get('/',(req,res)=>{
-  res.status(418).send('Hellow From Aoosha yourIp : ' +req.ip);
+  
+  var ip = req.ip;
+  var geo = geoip.lookup(ip);
+  res.status(418).send('Hellow From Aoosha yourIp : ' + geo);
 });
-
-// app.get('/.well-known/pki-validation/084E92B387799EDC05286B489F9A56D2.txt',(req,res)=>{
-//   const filePath = `C:\\Users\\Administrator\\Desktop\\www\\ArooshaIOTv1\\ApiGateway\\Public\\084E92B387799EDC05286B489F9A56D2.txt`;
-//   res.sendFile(filePath);
-// });
-// Export the app instance
-
-
-
 module.exports = app;
