@@ -18,6 +18,7 @@ cron.schedule('*/5 * * * * *', async () => {
     console.log(result);
     calculateRGBEnergyUsage(result.predictedsumRGB, result.sumRGBList,50)
     calculateYellowEnergyUsage(result.predictedSumYellow, result.sumYellowList,50)
+    calculateWhiteEnergyUsage(result.predictedSumWhite, result.sumWhiteList,50)
    
     // predictedSumYellow: 3650,
     // predictedSumWhite: 2628,
@@ -42,6 +43,14 @@ const calculateYellowEnergyUsage = async (predictedsumRGB, sumYellowList,offset)
   if (sumYellowList.length > 0) {
     const lastItem = sumYellowList[sumYellowList.length - 1];
     if (lastItem.energy >= predictedsumRGB + offset) {
+      //Send Notif
+    }
+  }
+}
+const calculateWhiteEnergyUsage = async (predictedSumWhite, sumWhiteList,offset) => {
+  if (sumWhiteList.length > 0) {
+    const lastItem = sumWhiteList[sumWhiteList.length - 1];
+    if (lastItem.energy >= predictedSumWhite + offset) {
       //Send Notif
     }
   }
