@@ -308,9 +308,18 @@ router.post('/updateDeviceName', checkAuth, async (req, res) => {
 });
 
 
-router.get('/DeleteDevice/:mac', checkAuth, (req, res) => {
-    res.send(sendDeleteRequestToService(req.params.mac));
+router.get('/DeleteDevice/:mac', checkAuth, async (req, res) => {
+  try {
+    var response = await axios.get(config.DeviceServiceAddress + '/api/ctrl/delete/' + mac);
+    res.status(200).send(response.data);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
+
+
+
+
 function sendDeleteRequestToService(mac) {
     axios.get(config.DeviceServiceAddress + '/api/ctrl/delete/' + mac)
         .then(response => {

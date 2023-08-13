@@ -16,14 +16,9 @@ cron.schedule('*/5 * * * * *', async () => {
     var result = await getDeviceEnergyData('BK:85:P0:SA', 7);
 
     console.log(result);
-    calculateRGBEnergyUsage(result.predictedsumRGB, result.sumRGBList,50)
-    calculateYellowEnergyUsage(result.predictedSumYellow, result.sumYellowList,50)
-    calculateWhiteEnergyUsage(result.predictedSumWhite, result.sumWhiteList,50)
-   
-    // predictedSumYellow: 3650,
-    // predictedSumWhite: 2628,
-    // predictedSumEnergy: 7058,
-
+    calculateRGBEnergyUsage(result.predictedsumRGB, result.sumRGBList,50);
+    calculateYellowEnergyUsage(result.predictedSumYellow, result.sumYellowList,50);
+    calculateWhiteEnergyUsage(result.predictedSumWhite, result.sumWhiteList,50);
 
   } catch (error) {
     console.error('Something Went wrong:', error.message);

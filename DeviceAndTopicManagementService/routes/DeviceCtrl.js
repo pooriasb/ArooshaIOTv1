@@ -36,11 +36,16 @@ router.post('/create', async (req, res) => {
   }
 });
 
-router.get('/delete/:mac', (req, res) => {
-  device.deleteDevice(req.params.mac).then((value) => {
-    res.send(value);
-  });
+router.get('/delete/:mac', async (req, res) => {
+  try {
+    const deletedDevice = await device.deleteDevice(req.params.mac);
+    //TODO Send Socket 
+    res.status(200).send(deletedDevice);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
+
 
 router.get('/RoomList/:userId', async (req, res) => {
 
