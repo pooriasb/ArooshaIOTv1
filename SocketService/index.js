@@ -1,4 +1,5 @@
 const express = require('express');
+const db = require('./models/dbManager');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server, { cors: { origin: '*' } });
@@ -26,7 +27,7 @@ io.use((socket, next) => {
 // Listen for new client connections
 io.on('connection', (socket) => {
   console.log('New client: ' + socket.id);
-
+  db.createDeviceConnectionStatus(socket.id, "CONNECTED");
   // const ttValue = socket.handshake.headers['tt'];
   // console.log(`Value of tt: ${ttValue}`);
 
@@ -85,6 +86,8 @@ io.on('connection', (socket) => {
 
   function handleDisconnect() {
     console.log('Client disconnected.');
+    db.createDeviceConnectionStatus(socket.id, "CONNECTED");
+
   }
 });
 
@@ -92,8 +95,8 @@ app.post('/sendMessage', async (req, res) => {
   try {
     console.log(req.body);
     io.to(req.body.mac).emit('response', req.body.message);
-    var response = await axios.post(configfile.LogAddress + '/api/log/logMessage', { mac: req.body.mac, powerStatus : req.body.powerstatus, message: req.body.message });
-  
+    var response = await axios.post(configfile.LogAddress + '/api/log/logMessage', { mac: req.body.mac, powerStatus: req.body.powerstatus, message: req.body.message });
+
     res.sendStatus(200);
   } catch (err) {
     console.error(err.message);
@@ -127,7 +130,7 @@ function processAliveSignal(macAddress, data) {
 
 
 const { PORT = 3004 } = process.env;
-app.get('/pinger',(req,res)=>{res.send(`Socket is ok`)});
+app.get('/pinger', (req, res) => { res.send(`Socket is ok`) });
 
 server.listen(PORT, () => {
   console.log(`SocketService is listening on port ${PORT}`);
