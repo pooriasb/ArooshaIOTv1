@@ -16,8 +16,9 @@ cron.schedule('*/5 * * * * *', async () => {
     var result = await getDeviceEnergyData('BK:85:P0:SA', 7);
 
     console.log(result);
-
-    // predictedsumRGB: 780,
+    calculateRGBEnergyUsage(result.predictedsumRGB, result.sumRGBList,50)
+    calculateYellowEnergyUsage(result.predictedSumYellow, result.sumYellowList,50)
+   
     // predictedSumYellow: 3650,
     // predictedSumWhite: 2628,
     // predictedSumEnergy: 7058,
@@ -28,8 +29,23 @@ cron.schedule('*/5 * * * * *', async () => {
   }
 }, { scheduled: true });
 
-
-
+// offset means how much more energy i use to pull the trigger
+const calculateRGBEnergyUsage = async (predictedSumYellow, sumRGBList,offset) => {
+  if (sumRGBList.length > 0) {
+    const lastItem = sumRGBList[sumRGBList.length - 1];
+    if (lastItem.energy >= predictedSumYellow + offset) {
+      //Send Notif
+    }
+  }
+}
+const calculateYellowEnergyUsage = async (predictedsumRGB, sumYellowList,offset) => {
+  if (sumYellowList.length > 0) {
+    const lastItem = sumYellowList[sumYellowList.length - 1];
+    if (lastItem.energy >= predictedsumRGB + offset) {
+      //Send Notif
+    }
+  }
+}
 
 
 const getDeviceEnergyData = async (mac, count) => {
@@ -97,6 +113,10 @@ const getDeviceEnergyData = async (mac, count) => {
     predictedSumYellow,
     predictedSumWhite,
     predictedSumEnergy,
+    sumEnergyList,
+    sumRGBList,
+    sumWhiteList,
+    sumYellowList,
     reports
   }
   return result;
