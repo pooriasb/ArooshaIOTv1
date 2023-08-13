@@ -3,7 +3,7 @@ const app = express();
 const server = require('http').Server(app);
 const report = require('./routes/reportRouter');
 const reportSchedule = require('./model/reportSchedule');
-
+const Recommander = require('./model/recommendation');
 app.use(express.json());
 app.use('/api/report', report);
 

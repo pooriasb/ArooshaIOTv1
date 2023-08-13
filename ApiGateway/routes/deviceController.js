@@ -302,7 +302,7 @@ router.post('/updateDeviceName', checkAuth, async (req, res) => {
             throw new Error('Error updating device name');
         }
     } catch (error) {
-        console.error('Error updating device name:', error);
+        console.error('Error updating device name:', error.message);
         return res.status(500).send('Error updating device name');
     }
 });
